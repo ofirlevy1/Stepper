@@ -10,6 +10,15 @@ public class StepDataType<T extends Presentable> {
     private boolean hasAlias;
     private T data;
 
+    public StepDataType(boolean userFriendly, String name, String alias, String userFriendlyName, boolean hasAlias, T data) {
+        this.userFriendly = userFriendly;
+        this.name = name;
+        this.alias = alias;
+        this.userFriendlyName = userFriendlyName;
+        this.hasAlias = hasAlias;
+        this.data = data;
+    }
+
     public String getPresentableString(){
         return data.getPresentableString();
     }
