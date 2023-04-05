@@ -1,8 +1,8 @@
 import java.util.List;
 
 public abstract class  Step {
-    List<StepDataType> inputs;
-    List<StepDataType> outputs;
+    private List<StepDataType> inputs;
+    private List<StepDataType> outputs;
     private String stepName;
     private String aliasName;
     private Boolean hasAlias;
@@ -78,14 +78,6 @@ public abstract class  Step {
 
     public String getFinalName(){
         return hasAlias ?aliasName:stepName;
-    }
-
-    public Boolean getIsReadOnly() {
-        return isReadOnly;
-    }
-
-    public void setIsReadOnly(Boolean readOnly) {
-        isReadOnly = readOnly;
     }
 
     public int getRunTimeInMs() {
