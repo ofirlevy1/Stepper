@@ -1,6 +1,8 @@
 import java.util.List;
 
 public abstract class  Step {
+    List<StepDataType> inputs;
+    List<StepDataType> outputs;
     private String stepName;
     private String aliasName;
     private Boolean hasAlias;
@@ -13,7 +15,39 @@ public abstract class  Step {
 
     public  void Execute(){}
 
-    public String getLogs(){
+    public List<StepDataType> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(List<StepDataType> inputs) {
+        this.inputs = inputs;
+    }
+
+    public void setOutputs(List<StepDataType> outputs) {
+        this.outputs = outputs;
+    }
+
+    public List<StepDataType> getOutputs() {
+        return outputs;
+    }
+
+    public String getSummaryLine() {
+        return summaryLine;
+    }
+
+    public void setSummaryLine(String summaryLine) {
+        this.summaryLine = summaryLine;
+    }
+
+    public Boolean getReadOnly() {
+        return isReadOnly;
+    }
+
+    public void setReadOnly(Boolean readOnly) {
+        isReadOnly = readOnly;
+    }
+
+    public String getLogsAsString(){
         String logsString="";
         for(Log log : logs){
             logsString=logsString+log.toString()+"\n";
