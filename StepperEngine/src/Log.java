@@ -1,12 +1,18 @@
+import java.text.DateFormat;
 import java.util.Date;
 
 public class Log {
-    String LogDesctiption;
-    Date LogTimeStamp;
+    private String logDescription;
+    private Date logTimeStamp;
 
-    public void Log(String logDesctiption)
+    public Log(String logDescription)
     {
-        this.LogDesctiption=logDesctiption;
-        LogTimeStamp=new Date();
+        this.logDescription = logDescription;
+        logTimeStamp =new Date();
+    }
+
+    @Override
+    public String toString() {
+        return logTimeStamp+" "+logDescription;
     }
 }
