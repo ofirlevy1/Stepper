@@ -1,11 +1,12 @@
-import java.text.DateFormat;
+package Steps;
+
 import java.util.Date;
 
-public class Log {
+public class StepLog {
     private String logDescription;
     private Date logTimeStamp;
 
-    public Log(String logDescription)
+    public StepLog(String logDescription)
     {
         this.logDescription = logDescription;
         logTimeStamp =new Date();

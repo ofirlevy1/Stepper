@@ -1,31 +1,66 @@
+package Steps;
+
 import DataTypes.StepDataType;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class  Step {
-    private List<StepDataType> inputs;
-    private List<StepDataType> outputs;
+    protected ArrayList<StepDataType> inputs;
+    protected ArrayList<StepDataType> outputs;
     private String stepName;
     private String aliasName;
     private Boolean hasAlias;
     private Boolean isReadOnly;
     private int runTimeInMs;
     private int startUpCount;
-    private List<Log> logs;
+    private ArrayList<StepLog> logs;
     private String summaryLine;
+    private StepStatus status;
 
+    public Step(String stepName, Boolean isReadOnly, List<StepDataType> inputs, List<StepDataType> outputs){
+        this.stepName=stepName;
+        this.isReadOnly=isReadOnly;
+        this.inputs=new ArrayList<>();
+        this.outputs=new ArrayList<>();
+        this.logs=new ArrayList<>();
+        this.inputs.addAll(inputs);
+        if(outputs!=null)
+            this.outputs.addAll(outputs);
+        this.hasAlias=false;
+        this.status=StepStatus.NotRunYet;
+    }
 
-    public  void Execute(){}
+    public abstract void execute();
+
+    public String getLogsAsString(){
+        String logsString="";
+        for(StepLog log : logs){
+            logsString=logsString+log.toString()+"\n";
+        }
+        return  logsString;
+    }
+
+    public void addLog(String logString){
+        this.logs.add(new StepLog(logString));
+    }
+
+    public String getFinalName(){
+        return hasAlias ?aliasName:stepName;
+    }
+
+    //Methods that were made automatically, might be deleted later
 
     public List<StepDataType> getInputs() {
         return inputs;
     }
 
-    public void setInputs(List<StepDataType> inputs) {
+    public void setInputs(ArrayList<StepDataType> inputs) {
         this.inputs = inputs;
     }
 
-    public void setOutputs(List<StepDataType> outputs) {
+    public void setOutputs(ArrayList<StepDataType> outputs) {
         this.outputs = outputs;
     }
 
@@ -49,18 +84,6 @@ public abstract class  Step {
         isReadOnly = readOnly;
     }
 
-    public String getLogsAsString(){
-        String logsString="";
-        for(Log log : logs){
-            logsString=logsString+log.toString()+"\n";
-        }
-        return  logsString;
-    }
-
-    public void addLog(String logString){
-        this.logs.add(new Log(logString));
-    }
-
     public String getStepName() {
         return stepName;
     }
@@ -76,10 +99,6 @@ public abstract class  Step {
     public void setAliasName(String aliasName) {
         this.aliasName = aliasName;
         this.hasAlias =true;
-    }
-
-    public String getFinalName(){
-        return hasAlias ?aliasName:stepName;
     }
 
     public int getRunTimeInMs() {
@@ -104,5 +123,13 @@ public abstract class  Step {
 
     public void setHasAlias(Boolean hasAlias) {
         this.hasAlias = hasAlias;
+    }
+
+    public StepStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(StepStatus status) {
+        this.status = status;
     }
 }
