@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class StepDataType<T extends Presentable> {
+public abstract class StepDataType<T> {
 
     // user friendly means it can be given by the user.
     private boolean userFriendly;
@@ -8,20 +8,17 @@ public class StepDataType<T extends Presentable> {
     private String alias;
     private String userFriendlyName;
     private boolean hasAlias;
-    private T data;
+    protected T data;
 
-    public StepDataType(boolean userFriendly, String name, String alias, String userFriendlyName, boolean hasAlias, T data) {
+    public StepDataType(String name, String userFriendlyName, boolean userFriendly, T data) {
         this.userFriendly = userFriendly;
-        this.name = name;
-        this.alias = alias;
         this.userFriendlyName = userFriendlyName;
-        this.hasAlias = hasAlias;
+        this.name = name;
+        hasAlias = false;
         this.data = data;
     }
 
-    public String getPresentableString(){
-        return data.getPresentableString();
-    }
+    public abstract String getPresentableString();
 
     public T getData() {
         return data;
@@ -37,10 +34,6 @@ public class StepDataType<T extends Presentable> {
 
     public boolean isUserFriendly() {
         return userFriendly;
-    }
-
-    public void setUserFriendly(boolean userFriendly) {
-        this.userFriendly = userFriendly;
     }
 
     public String getName() {
