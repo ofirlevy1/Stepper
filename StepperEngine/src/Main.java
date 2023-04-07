@@ -2,6 +2,7 @@ import DataTypes.DoubleType;
 import DataTypes.NumberType;
 import DataTypes.StepDataType;
 import DataTypes.StringType;
+import Steps.*;
 
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ public class Main {
     {
         ArrayList<StepDataType> arr = new ArrayList<>();
 
-        arr.add(new NumberType(5));
+        arr.add(new NumberType(0));
 
         arr.add(new StringType("Hello there"));
         arr.add(new DoubleType(5.434));
@@ -19,5 +20,9 @@ public class Main {
         for(StepDataType step : arr)
             System.out.println(step.getPresentableString());
 
+        Step sst= new SpendSomeTimeStep(arr,null);
+        sst.execute();
+        System.out.println(sst.getLogsAsString());
+        System.out.println(sst.getSummaryLine());
     }
 }
