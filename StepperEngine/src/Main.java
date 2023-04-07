@@ -11,7 +11,7 @@ public class Main {
     {
         ArrayList<StepDataType> arr = new ArrayList<>();
 
-        arr.add(new NumberType(2));
+        arr.add(new NumberType(0));
 
         arr.add(new StringType("Hello there"));
         arr.add(new DoubleType(5.434));

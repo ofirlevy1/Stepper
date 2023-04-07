@@ -17,7 +17,14 @@ public abstract class  Step {
     private int startUpCount;
     private ArrayList<StepLog> logs;
     private String summaryLine;
-    private StepStatus status;
+
+    public enum Status {
+        Success,
+        Warning,
+        Failure,
+        NotRunYet
+    }
+    private Status status;
 
     public Step(String stepName, Boolean isReadOnly, List<StepDataType> inputs, List<StepDataType> outputs){
         this.stepName=stepName;
@@ -29,10 +36,12 @@ public abstract class  Step {
         if(outputs!=null)
             this.outputs.addAll(outputs);
         this.hasAlias=false;
-        this.status=StepStatus.NotRunYet;
+        this.status=Status.NotRunYet;
     }
 
     public abstract void execute();
+
+    protected abstract void runStepFlow() throws Exception;
 
     public String getLogsAsString(){
         String logsString="";
@@ -125,11 +134,11 @@ public abstract class  Step {
         this.hasAlias = hasAlias;
     }
 
-    public StepStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(StepStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }
