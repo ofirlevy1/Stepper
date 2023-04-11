@@ -7,8 +7,8 @@ import java.util.List;
 public abstract class  Step {
     protected ArrayList<DataType> inputs;
     protected ArrayList<DataType> outputs;
-    private String stepName;
-    private String aliasName;
+    private String name;
+    private String alias;
     private Boolean hasAlias;
     private Boolean isReadOnly; // a readonly step doesn't change anything in the system.
     private int runTimeInMs;
@@ -25,7 +25,7 @@ public abstract class  Step {
     private Status status;
 
     public Step(String stepName, Boolean isReadOnly, List<DataType> inputs, List<DataType> outputs){
-        this.stepName=stepName;
+        this.name =stepName;
         this.isReadOnly=isReadOnly;
         this.inputs=new ArrayList<>();
         this.outputs=new ArrayList<>();
@@ -54,7 +54,7 @@ public abstract class  Step {
     }
 
     public String getFinalName(){
-        return hasAlias ?aliasName:stepName;
+        return hasAlias ? alias : name;
     }
 
     //Methods that were made automatically, might be deleted later
@@ -91,20 +91,20 @@ public abstract class  Step {
         isReadOnly = readOnly;
     }
 
-    public String getStepName() {
-        return stepName;
+    public String getName() {
+        return name;
     }
 
-    public void setStepName(String stepName) {
-        this.stepName = stepName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAliasName() {
-        return aliasName;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setAliasName(String aliasName) {
-        this.aliasName = aliasName;
+    public void setAlias(String alias) {
+        this.alias = alias;
         this.hasAlias =true;
     }
 
