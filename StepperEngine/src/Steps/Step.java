@@ -11,8 +11,9 @@ public abstract class  Step {
     private String alias;
     private Boolean hasAlias;
     private Boolean isReadOnly; // a readonly step doesn't change anything in the system.
-    private int runTimeInMs;
-    private int startUpCount;
+    private static double durationAvgInMs = 0.0;
+    private static int stepRunsCounter = 0;
+
     private ArrayList<StepLog> logs;
     private String summaryLine;
 
@@ -108,22 +109,6 @@ public abstract class  Step {
         this.hasAlias =true;
     }
 
-    public int getRunTimeInMs() {
-        return runTimeInMs;
-    }
-
-    public void setRunTimeInMs(int runTimeInMs) {
-        this.runTimeInMs = runTimeInMs;
-    }
-
-    public int getStartUpCount() {
-        return startUpCount;
-    }
-
-    public void setStartUpCount(int startUpCount) {
-        this.startUpCount = startUpCount;
-    }
-
     public Boolean getHasAlias() {
         return hasAlias;
     }
@@ -140,7 +125,4 @@ public abstract class  Step {
         this.status = status;
     }
 
-    public String getEffectiveName() {
-        return hasAlias ? alias : name;
-    }
 }
