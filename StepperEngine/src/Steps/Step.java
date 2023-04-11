@@ -10,7 +10,7 @@ public abstract class  Step {
     private String stepName;
     private String aliasName;
     private Boolean hasAlias;
-    private Boolean isReadOnly;
+    private Boolean isReadOnly; // a readonly step doesn't change anything in the system.
     private int runTimeInMs;
     private int startUpCount;
     private ArrayList<StepLog> logs;
@@ -138,5 +138,9 @@ public abstract class  Step {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getEffectiveName() {
+        return hasAlias ? alias : name;
     }
 }
