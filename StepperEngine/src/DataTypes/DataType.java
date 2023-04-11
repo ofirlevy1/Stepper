@@ -1,6 +1,6 @@
 package DataTypes;
 
-public abstract class StepDataType<T> {
+public abstract class DataType<T> {
 
     // user friendly means it can be given by the user.
     private boolean userFriendly;
@@ -10,7 +10,7 @@ public abstract class StepDataType<T> {
     private boolean hasAlias;
     protected T data;
 
-    public StepDataType(String name, String userFriendlyName, boolean userFriendly, T data) {
+    public DataType(String name, String userFriendlyName, boolean userFriendly, T data) {
         this.userFriendly = userFriendly;
         this.userFriendlyName = userFriendlyName;
         this.name = name;

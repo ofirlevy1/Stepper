@@ -1,14 +1,12 @@
 package Steps;
 
-import DataTypes.StepDataType;
-
-
+import DataTypes.DataType;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class  Step {
-    protected ArrayList<StepDataType> inputs;
-    protected ArrayList<StepDataType> outputs;
+    protected ArrayList<DataType> inputs;
+    protected ArrayList<DataType> outputs;
     private String stepName;
     private String aliasName;
     private Boolean hasAlias;
@@ -26,7 +24,7 @@ public abstract class  Step {
     }
     private Status status;
 
-    public Step(String stepName, Boolean isReadOnly, List<StepDataType> inputs, List<StepDataType> outputs){
+    public Step(String stepName, Boolean isReadOnly, List<DataType> inputs, List<DataType> outputs){
         this.stepName=stepName;
         this.isReadOnly=isReadOnly;
         this.inputs=new ArrayList<>();
@@ -61,19 +59,19 @@ public abstract class  Step {
 
     //Methods that were made automatically, might be deleted later
 
-    public List<StepDataType> getInputs() {
+    public List<DataType> getInputs() {
         return inputs;
     }
 
-    public void setInputs(ArrayList<StepDataType> inputs) {
+    public void setInputs(ArrayList<DataType> inputs) {
         this.inputs = inputs;
     }
 
-    public void setOutputs(ArrayList<StepDataType> outputs) {
+    public void setOutputs(ArrayList<DataType> outputs) {
         this.outputs = outputs;
     }
 
-    public List<StepDataType> getOutputs() {
+    public List<DataType> getOutputs() {
         return outputs;
     }
 

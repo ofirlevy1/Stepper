@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class RelationType extends StepDataType<Relation> {
+public class RelationType extends DataType<Relation> {
 
     public RelationType(Relation relation) {
         super("Relation", "Relation", false, relation);

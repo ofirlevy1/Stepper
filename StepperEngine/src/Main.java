@@ -1,6 +1,6 @@
 import DataTypes.DoubleType;
 import DataTypes.NumberType;
-import DataTypes.StepDataType;
+import DataTypes.DataType;
 import DataTypes.StringType;
 import Steps.*;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args)
     {
-        ArrayList<StepDataType> arr = new ArrayList<>();
+        ArrayList<DataType> arr = new ArrayList<>();
 
         arr.add(new NumberType(0));
 
@@ -17,7 +17,7 @@ public class Main {
         arr.add(new DoubleType(5.434));
 
         // testing the presentable strings
-        for(StepDataType step : arr)
+        for(DataType step : arr)
             System.out.println(step.getPresentableString());
 
         Step sst= new SpendSomeTimeStep(arr,null);
