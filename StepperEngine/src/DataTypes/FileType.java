@@ -1,5 +1,6 @@
 package DataTypes;
 
+
 import java.io.File;
 
 public class FileType extends StepDataType<File>{
@@ -10,4 +11,5 @@ public class FileType extends StepDataType<File>{
     public String getPresentableString() {
         return data.getAbsolutePath();
     }
+
 }

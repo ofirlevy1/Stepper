@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class NumberType extends StepDataType<Integer> {
+public class NumberType extends DataType<Integer> {
 
     public NumberType(Integer num) {
         super("Number", "Number", true, num);
