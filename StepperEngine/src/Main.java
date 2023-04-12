@@ -1,10 +1,8 @@
-import DataTypes.DoubleType;
-import DataTypes.NumberType;
-import DataTypes.StepDataType;
-import DataTypes.StringType;
+import DataTypes.*;
 import Steps.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args)
@@ -12,17 +10,19 @@ public class Main {
         ArrayList<StepDataType> arr = new ArrayList<>();
 
         arr.add(new NumberType(0));
-
         arr.add(new StringType("Hello there"));
         arr.add(new DoubleType(5.434));
-
+        ListType arr2 = new ListType(arr);
+        ArrayList<StepDataType> arr3=new ArrayList<>();
+        arr3.add(arr2);
         // testing the presentable strings
         for(StepDataType step : arr)
             System.out.println(step.getPresentableString());
 
-        Step sst= new SpendSomeTimeStep(arr,null);
-        sst.execute();
-        System.out.println(sst.getLogsAsString());
-        System.out.println(sst.getSummaryLine());
+        System.out.println(arr2.getPresentableString());
+
+        Step fds=new FilesDeleterStep(arr3,null);
+        fds.execute();
+
     }
 }
