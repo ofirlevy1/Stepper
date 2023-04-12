@@ -14,6 +14,8 @@ public class ListType extends  StepDataType<ArrayList<StepDataType>>{
     @Override
     public String getPresentableString() {
         String prestableString="";
+        if(data.isEmpty())
+            return "The list is empty";
         for(int i=0;i<data.size();i++)
         {
             prestableString+=(i+1)+":"+data.get(i).getPresentableString()+", ";

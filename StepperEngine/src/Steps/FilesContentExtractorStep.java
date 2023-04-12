@@ -1,5 +1,8 @@
-package DataTypes;
+package Steps;
 
+import DataTypes.Relation;
+import DataTypes.RelationType;
+import DataTypes.StepDataType;
 import Steps.Step;
 
 import java.io.*;
@@ -9,6 +12,12 @@ public class FilesContentExtractorStep extends Step {
 
     public class EmptyFileListException extends Exception{
         public EmptyFileListException(String str){
+            super(str);
+        }
+    }
+
+    public class NoSuchLineException extends Exception{
+        public NoSuchLineException(String str){
             super(str);
         }
     }
@@ -46,19 +55,26 @@ public class FilesContentExtractorStep extends Step {
         {
             File file=(File) files.get(i).getData();
 
-            try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file.getAbsoluteFile())))){
-                for(int j=0;j<=fileLine;j++)
+            try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file.getPath())));){
+                for(int j=0;j<=fileLine;j++) {
                     extractedLine = in.readLine();
+                    if(extractedLine==null)throw new NoSuchLineException("No Such Line");
+                }
+
                 relation.set(i,0,String.valueOf(i+1));
                 relation.set(i,1,file.getName());
                 relation.set(i,2,extractedLine);
             }
             catch (FileNotFoundException e){
-                relation.set(i,1,"File not Found");
+                relation.set(i,0,String.valueOf(i+1));
+                relation.set(i,1,file.getName());
+                relation.set(i,2,"File not Found");
                 this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName());
             }
-            catch (IOException e){
-                relation.set(i,1,"No such line");
+            catch (NoSuchLineException e){
+                relation.set(i,0,String.valueOf(i+1));
+                relation.set(i,1,file.getName());
+                relation.set(i,2,"No such line");
                 this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName());
             }
 

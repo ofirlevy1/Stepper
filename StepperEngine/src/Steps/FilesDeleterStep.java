@@ -1,9 +1,6 @@
 package Steps;
 
-import DataTypes.FileType;
-import DataTypes.ListType;
-import DataTypes.StepDataType;
-import DataTypes.StringType;
+import DataTypes.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +30,7 @@ public class FilesDeleterStep extends Step{
         catch (EmptyFileListException e){
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
-            //this.outputs.add()
+            this.outputs.add(new MappingType(new Mapping(new NumberType(0),new NumberType(0))));
 
         } catch (EveryFileFailedToDeleteException e) {
             this.setSummaryLine(e.getMessage());
@@ -50,11 +47,14 @@ public class FilesDeleterStep extends Step{
     protected void runStepFlow() throws Exception {
         ArrayList<StepDataType> files=(ArrayList<StepDataType>)inputs.get(0).getData();
         ArrayList<StepDataType> filesNotDeletedList=new ArrayList<>();
+        int existingFilesCount=0;
 
         this.addLog("About to start deleting "+files.size()+" files");
         for(StepDataType fileType:files)
         {
             File file=(File)fileType.getData();
+            if(file.exists())
+                existingFilesCount++;
             file.delete();
             if(file.exists())
             {
@@ -65,8 +65,9 @@ public class FilesDeleterStep extends Step{
 
         this.outputs.add(new ListType(filesNotDeletedList));
         this.setStatus(Status.Success);
+        this.setSummaryLine("Successfully deleted "+(existingFilesCount-filesNotDeletedList.size())+" out of "+files.size()+" files");
         if(files.isEmpty())throw new EmptyFileListException("File list is empty");
-        //this.outputs.add()
+        this.outputs.add(new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size()),new NumberType(filesNotDeletedList.size()))));
         if(filesNotDeletedList.size()==files.size())throw  new EveryFileFailedToDeleteException("Every file in the list has failed to be deleted");
 
 
