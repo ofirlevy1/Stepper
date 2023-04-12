@@ -1,6 +1,6 @@
 package Steps;
 
-import DataTypes.StepDataType;
+import DataTypes.DataType;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ public class SpendSomeTimeStep extends Step{
         }
     }
 
-    public SpendSomeTimeStep(ArrayList<StepDataType> inputs, ArrayList<StepDataType> outputs) {
+    public SpendSomeTimeStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
         super("TIME_TO_SPEND", true, inputs, outputs);
     }
     @Override

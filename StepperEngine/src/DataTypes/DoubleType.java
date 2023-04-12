@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class DoubleType extends StepDataType<Double> {
+public class DoubleType extends DataType<Double> {
 
     public DoubleType(Double num) {
         super("Double", "Double", true, num);

@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class StringType extends StepDataType<String> {
+public class StringType extends DataType<String> {
 
     public StringType(String str) {
         super("String", "String", true, str);
