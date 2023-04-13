@@ -2,9 +2,9 @@ package DataTypes;
 
 import java.util.ArrayList;
 
-public class ListType extends  StepDataType<ArrayList<StepDataType>>{
+public class ListType extends  DataType<ArrayList<DataType>>{
 
-    public ListType(ArrayList<StepDataType> list){super("List", "List", false, list);}
+    public ListType(ArrayList<DataType> list){super("List", "List", false, list);}
 
     /**
      * returns a string in the format:

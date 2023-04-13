@@ -1,27 +1,27 @@
 package DataTypes;
 
 public class Mapping {
-    StepDataType car;
-    StepDataType cdr;
+    DataType car;
+    DataType cdr;
 
-    public Mapping(StepDataType car, StepDataType cdr){
+    public Mapping(DataType car, DataType cdr){
         this.car=car;
         this.cdr=cdr;
     }
 
-    public StepDataType getCar() {
+    public DataType getCar() {
         return car;
     }
 
-    public StepDataType getCdr() {
+    public DataType getCdr() {
         return cdr;
     }
 
-    public void setCar(StepDataType car) {
+    public void setCar(DataType car) {
         this.car = car;
     }
 
-    public void setCdr(StepDataType cdr) {
+    public void setCdr(DataType cdr) {
         this.cdr = cdr;
     }
 }
