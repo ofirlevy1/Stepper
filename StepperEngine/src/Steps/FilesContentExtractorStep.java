@@ -2,7 +2,7 @@ package Steps;
 
 import DataTypes.Relation;
 import DataTypes.RelationType;
-import DataTypes.StepDataType;
+import DataTypes.DataType;
 import Steps.Step;
 
 import java.io.*;
@@ -22,7 +22,7 @@ public class FilesContentExtractorStep extends Step {
         }
     }
 
-    public FilesContentExtractorStep(ArrayList<StepDataType> inputs, ArrayList<StepDataType> outputs) {
+    public FilesContentExtractorStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
         super("FILES_CONTENT_EXTRACTOR", true, inputs, outputs);
     }
 
@@ -46,7 +46,7 @@ public class FilesContentExtractorStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         String extractedLine="";
-        ArrayList<StepDataType> files=(ArrayList<StepDataType>)inputs.get(0).getData();
+        ArrayList<DataType> files=(ArrayList<DataType>)inputs.get(0).getData();
         Integer fileLine= (Integer) inputs.get(1).getData();
         Relation relation=new Relation( files.size(), 3,"serial number", "file name", "text data");
 
@@ -69,13 +69,13 @@ public class FilesContentExtractorStep extends Step {
                 relation.set(i,0,String.valueOf(i+1));
                 relation.set(i,1,file.getName());
                 relation.set(i,2,"File not Found");
-                this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName());
+                this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName()+" :file does not exist");
             }
             catch (NoSuchLineException e){
                 relation.set(i,0,String.valueOf(i+1));
                 relation.set(i,1,file.getName());
                 relation.set(i,2,"No such line");
-                this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName());
+                this.addLog("Problem extracting line number "+fileLine+" from file "+file.getName()+" :no such line");
             }
 
         }

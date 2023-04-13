@@ -18,22 +18,18 @@ public class Main {
         
         arr.add(new FileType(new File("D:\\tasks\\java\\Stepper\\StepperEngine\\src\\text1.txt")));
         arr.add(new FileType(new File("D:\\tasks\\java\\Stepper\\StepperEngine\\src\\text2.txt")));
-        arr.add(new FileType(new File("D:\\tasks\\java\\Stepper\\StepperEngine\\src\\text4.txt")));
+        arr.add(new FileType(new File("D:\\tasks\\java\\Stepper\\StepperEngine\\src\\text3.txt")));
         
         ListType arr2 = new ListType(arr);//ListType recieves a list of StepDataTypes
-        ArrayList<StepDataType> arr3=new ArrayList<>();
+        ArrayList<DataType> arr3=new ArrayList<>();
         arr3.add(arr2);
-        arr3.add(new NumberType(3));
-
-
-        System.out.println(fds.getSummaryLine());
-
+        arr3.add(new NumberType(9));
 
         // testing the presentable strings
         for(DataType step : arr3)
             System.out.println(step.getPresentableString());
             
-        Step fds=new FilesDeleterStep(arr3,null);
+        Step fds=new FilesContentExtractorStep(arr3,null);
         fds.execute();
         
         System.out.println(fds.getLogsAsString());

@@ -19,7 +19,7 @@ public class FilesDeleterStep extends Step{
         }
     }
 
-    public FilesDeleterStep(ArrayList<StepDataType> inputs, ArrayList<StepDataType> outputs) {
+    public FilesDeleterStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
         super("FILES_DELETER", false, inputs, outputs);
     }
     @Override
@@ -45,12 +45,12 @@ public class FilesDeleterStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
-        ArrayList<StepDataType> files=(ArrayList<StepDataType>)inputs.get(0).getData();
-        ArrayList<StepDataType> filesNotDeletedList=new ArrayList<>();
+        ArrayList<DataType> files=(ArrayList<DataType>)inputs.get(0).getData();
+        ArrayList<DataType> filesNotDeletedList=new ArrayList<>();
         int existingFilesCount=0;
 
         this.addLog("About to start deleting "+files.size()+" files");
-        for(StepDataType fileType:files)
+        for(DataType fileType:files)
         {
             File file=(File)fileType.getData();
             if(file.exists())

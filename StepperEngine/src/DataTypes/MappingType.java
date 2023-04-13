@@ -1,6 +1,6 @@
 package DataTypes;
 
-public class MappingType extends StepDataType<Mapping>{
+public class MappingType extends DataType<Mapping>{
 
     public MappingType(Mapping mapping){super("Mapping", "Mapping", false, mapping);}
     @Override
