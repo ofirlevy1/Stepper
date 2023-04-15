@@ -10,7 +10,25 @@ import java.util.LinkedList;
 public class Main {
     public static void main(String[] args)
     {
-        filesDumperTest();
+
+        filesRenamerTest();
+    }
+
+    public static void filesRenamerTest()
+    {
+        ArrayList<DataType> filesList = new ArrayList<DataType>();
+
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\renameMe.txt")));
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\twoSuffixes.hello.txt")));
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\dir.dir")));
+        ListType filesListType = new ListType(filesList);
+        Step step = new FilesRenamer(filesListType, new StringType("1"), new StringType("2"));
+        step.execute();
+
+        System.out.println("FilesRenamer done. logs:");
+        System.out.println(step.getLogsAsString());
+        System.out.println("summaryLine: " + step.getSummaryLine());
+        System.out.println("Status: " + step.getStatus());
     }
 
     public static void filesDumperTest(){
