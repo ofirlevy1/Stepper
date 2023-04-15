@@ -1,29 +1,19 @@
 package Steps;
 
-import DataTypes.Relation;
-import DataTypes.RelationType;
-import DataTypes.DataType;
+import DataTypes.*;
 import Steps.Step;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FilesContentExtractorStep extends Step {
-
-    public class EmptyFileListException extends Exception{
-        public EmptyFileListException(String str){
-            super(str);
-        }
-    }
-
-    public class NoSuchLineException extends Exception{
-        public NoSuchLineException(String str){
-            super(str);
-        }
-    }
-
-    public FilesContentExtractorStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
-        super("FILES_CONTENT_EXTRACTOR", true, inputs, outputs);
+    private ListType filesList;
+    private NumberType lineNumber;
+    public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {
+        super("FILES_CONTENT_EXTRACTOR", true);
+        this.filesList = filesList;
+        this.lineNumber = lineNumber;
     }
 
     @Override
@@ -46,8 +36,8 @@ public class FilesContentExtractorStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         String extractedLine="";
-        ArrayList<DataType> files=(ArrayList<DataType>)inputs.get(0).getData();
-        Integer fileLine= (Integer) inputs.get(1).getData();
+        ArrayList<DataType> files=(ArrayList<DataType>)filesList.getData();
+        Integer fileLine= (Integer) lineNumber.getData();
         Relation relation=new Relation( files.size(), 3,"serial number", "file name", "text data");
 
         if(files.isEmpty())throw new EmptyFileListException("File list is empty");
@@ -83,5 +73,17 @@ public class FilesContentExtractorStep extends Step {
         this.outputs.add(new RelationType(relation));
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
+    }
+
+    public class EmptyFileListException extends Exception{
+        public EmptyFileListException(String str){
+            super(str);
+        }
+    }
+
+    public class NoSuchLineException extends Exception{
+        public NoSuchLineException(String str){
+            super(str);
+        }
     }
 }

@@ -6,21 +6,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class FilesDeleterStep extends Step{
-
-    public class EmptyFileListException extends Exception{
-        public EmptyFileListException(String str){
-            super(str);
-        }
-    }
-
-    public class EveryFileFailedToDeleteException extends Exception{
-        public EveryFileFailedToDeleteException(String str){
-            super(str);
-        }
-    }
-
-    public FilesDeleterStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
-        super("FILES_DELETER", false, inputs, outputs);
+    private ListType filesList;
+    public FilesDeleterStep(ListType filesList) {
+        super("FILES_DELETER", false);
+        this.filesList = filesList;
     }
     @Override
     public void execute() {
@@ -45,7 +34,7 @@ public class FilesDeleterStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
-        ArrayList<DataType> files=(ArrayList<DataType>)inputs.get(0).getData();
+        ArrayList<DataType> files=filesList.getData();
         ArrayList<DataType> filesNotDeletedList=new ArrayList<>();
         int existingFilesCount=0;
 
@@ -71,5 +60,16 @@ public class FilesDeleterStep extends Step{
         if(filesNotDeletedList.size()==files.size())throw  new EveryFileFailedToDeleteException("Every file in the list has failed to be deleted");
 
 
+    }
+    public class EmptyFileListException extends Exception{
+        public EmptyFileListException(String str){
+            super(str);
+        }
+    }
+
+    public class EveryFileFailedToDeleteException extends Exception{
+        public EveryFileFailedToDeleteException(String str){
+            super(str);
+        }
     }
 }
