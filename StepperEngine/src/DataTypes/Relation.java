@@ -49,4 +49,8 @@ public class Relation {
     public void setColumnNames(String[] columnNames) {
         this.columnNames = columnNames.clone();
     }
+
+    public boolean isEmpty() {
+        return rows == 0;
+    }
 }
