@@ -10,7 +10,14 @@ import java.util.LinkedList;
 public class Main {
     public static void main(String[] args)
     {
-        filesCollectorTest();
+        filesDumperTest();
+    }
+
+    public static void filesDumperTest(){
+        Step filesDumper=new FileDumperStep(new StringType("some line \n and new line"), new StringType("D:\\tasks\\text1.txt"));
+        filesDumper.execute();
+        System.out.println(filesDumper.getSummaryLine());
+        System.out.println(filesDumper.getLogsAsString());
     }
 
     public static void filesCollectorTest()
