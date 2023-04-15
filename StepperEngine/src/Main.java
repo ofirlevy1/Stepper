@@ -10,8 +10,22 @@ import java.util.LinkedList;
 public class Main {
     public static void main(String[] args)
     {
-        filesDeleterTest();
+        filesCollectorTest();
     }
+
+    public static void filesCollectorTest()
+    {
+        Step filesCollector = new CollectFilesInFolderStep(new StringType("C:\\Users\\Ofir\\Desktop\\temp\\testJava"));
+        filesCollector.execute();
+        System.out.println("step finished. logs:");
+        System.out.println(filesCollector.getLogsAsString());
+        System.out.println("matching files list:");
+        System.out.println(filesCollector.getOutputs().get(0).getPresentableString());
+        System.out.println("number of matching files:");
+        System.out.println(filesCollector.getOutputs().get(1).getPresentableString());
+    }
+
+
 
     public static void filesDeleterTest()
     {
