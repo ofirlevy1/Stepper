@@ -3,8 +3,6 @@ package Steps;
 import DataTypes.*;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class CollectFilesInFolderStep extends Step{
@@ -38,14 +36,14 @@ public class CollectFilesInFolderStep extends Step{
         addLog("Reading folder " + folderName.toString() + " content with filter " + (filter == null ? "null (no filter)" : filter));
         File folder = new File(folderName.getData());
         if (!folder.exists() || !folder.isDirectory()) {
-            SetStatusAndLog(Status.Failure,
+            setStatusAndLog(Status.Failure,
                     "The FilesCollector failed because the given path either doesn't exist, or isn't a folder",
                     "The FilesCollector failed because the given path either doesn't exist, or isn't a folder");
             return;
         }
         // If directory is empty - finish with warning:
         if(folder.listFiles().length == 0) {
-            SetStatusAndLog(Status.Warning,
+            setStatusAndLog(Status.Warning,
                     "The FilesCollector finished with warning because the given folder is empty",
                     "The FilesCollector finished with warning because the given folder is empty");
             outputs.add(new ListType(new ArrayList<DataType>()));

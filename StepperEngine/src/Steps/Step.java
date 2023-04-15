@@ -107,7 +107,7 @@ public abstract class  Step {
         this.status = status;
     }
 
-    protected void SetStatusAndLog(Status status, String summaryLine, String log) {
+    protected void setStatusAndLog(Status status, String summaryLine, String log) {
         this.status = status;
         setSummaryLine(summaryLine);
         addLog(log);

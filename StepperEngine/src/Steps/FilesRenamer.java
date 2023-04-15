@@ -6,7 +6,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class FilesRenamer extends Step {
     private ListType filesToRename;
@@ -35,7 +34,7 @@ public class FilesRenamer extends Step {
         try {
             runStepFlow();
         } catch (Exception e) {
-            SetStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
+            setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
             this.outputs.add(new StringType("Failure"));
         }
     }
