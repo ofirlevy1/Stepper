@@ -8,15 +8,10 @@ import DataTypes.StringType;
 import java.util.ArrayList;
 
 public class PropertiesExporterStep extends Step{
-
-    public class EmptyPropertiesRelationException extends Exception{
-        public EmptyPropertiesRelationException(String str){
-            super(str);
-        }
-    }
-
-    public PropertiesExporterStep(ArrayList<DataType> inputs, ArrayList<DataType> outputs) {
-        super("PROPERTIES_EXPORTER", true, inputs, outputs);
+    private RelationType source;
+    public PropertiesExporterStep(RelationType source) {
+        super("PROPERTIES_EXPORTER", true);
+        this.source = source;
     }
 
     @Override
@@ -37,7 +32,7 @@ public class PropertiesExporterStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
-        Relation relation=(Relation) this.inputs.get(0).getData();
+        Relation relation=(Relation) source.getData();
         String properties="";
         this.addLog("About to process "+relation.getRows()+" lines of data");
         if(relation.getRows()==0&&relation.getCols()==0) throw new EmptyPropertiesRelationException("Properties Relation is empty");
@@ -51,5 +46,11 @@ public class PropertiesExporterStep extends Step{
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.outputs.add(new StringType(properties.substring(0,properties.length()-1)));//getting rid of unnecessary new line at end of string
+    }
+
+    public class EmptyPropertiesRelationException extends Exception{
+        public EmptyPropertiesRelationException(String str){
+            super(str);
+        }
     }
 }
