@@ -107,4 +107,9 @@ public abstract class  Step {
         this.status = status;
     }
 
+    protected void fail(String summaryLine, String log) {
+        this.status = Status.Failure;
+        setSummaryLine(summaryLine);
+        addLog(log);
+    }
 }
