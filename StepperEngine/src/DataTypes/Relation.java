@@ -51,6 +51,11 @@ public class Relation {
     }
 
     public boolean isEmpty() {
-        return rows == 0;
+        for(int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++) {
+                if(matrix[i][j] != null)
+                    return false;
+            }
+        return true;
     }
 }
