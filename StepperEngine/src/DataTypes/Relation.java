@@ -49,4 +49,13 @@ public class Relation {
     public void setColumnNames(String[] columnNames) {
         this.columnNames = columnNames.clone();
     }
+
+    public boolean isEmpty() {
+        for(int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++) {
+                if(matrix[i][j] != null)
+                    return false;
+            }
+        return true;
+    }
 }

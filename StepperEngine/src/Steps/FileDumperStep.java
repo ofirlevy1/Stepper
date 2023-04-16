@@ -3,8 +3,6 @@ package Steps;
 import DataTypes.StringType;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class FileDumperStep extends  Step{
 
@@ -21,7 +19,7 @@ public class FileDumperStep extends  Step{
         try {
             runStepFlow();
         } catch (Exception e) {
-            SetStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
+            setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
             this.outputs.add(new StringType("Failure"));
         }
 
@@ -36,7 +34,7 @@ public class FileDumperStep extends  Step{
         if(file.exists()) throw new Exception("File already exists");
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter((new FileOutputStream(fileName))))) {
             if(content.length()==0)
-                SetStatusAndLog(Status.Warning, "Created file with no content", "entered an empty string");
+                setStatusAndLog(Status.Warning, "Created file with no content", "entered an empty string");
             else
             {
                 setStatus(Status.Success);

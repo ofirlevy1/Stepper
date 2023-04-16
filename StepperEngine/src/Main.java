@@ -10,7 +10,47 @@ import java.util.LinkedList;
 public class Main {
     public static void main(String[] args)
     {
-        filesDumperTest();
+
+        csvExporterTest();
+    }
+
+    public static void csvExporterTest() {
+        Relation table = new Relation(3,3, "First Name", "Family Name", "Age");
+//        table.set(0,0, "Ofir");
+//        table.set(0,1, "Levy");
+//        table.set(0,2, "28");
+//
+//        table.set(1,0, "Avi");
+//        table.set(1,1, "Cohen");
+//        table.set(1,2, "59");
+//
+//        table.set(2,0, "Michelle");
+//        table.set(2,1, "Bar");
+//        table.set(2,2, "2");
+
+        Step step = new CsvExporterStep(new RelationType(table));
+        step.execute();
+        System.out.println("returned from CSV Exporter, logs:");
+        System.out.println(step.getLogsAsString());
+        System.out.println("result CSV string:");
+        System.out.println(step.getOutputs().get(0).getPresentableString());
+    }
+
+    public static void filesRenamerTest()
+    {
+        ArrayList<DataType> filesList = new ArrayList<DataType>();
+
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\renameMe.txt")));
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\twoSuffixes.hello.txt")));
+        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\dir.dir")));
+        ListType filesListType = new ListType(filesList);
+        Step step = new FilesRenamer(filesListType, new StringType("1"), new StringType("2"));
+        step.execute();
+
+        System.out.println("FilesRenamer done. logs:");
+        System.out.println(step.getLogsAsString());
+        System.out.println("summaryLine: " + step.getSummaryLine());
+        System.out.println("Status: " + step.getStatus());
     }
 
     public static void filesDumperTest(){
