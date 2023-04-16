@@ -32,10 +32,11 @@ public class CsvExporterStep extends Step {
         addColumnNames();
         if(table.isEmpty())
             setStatusAndLog(Status.Warning, "CSV exporter was called with an empty table...","CSV exporter was called with an empty table...");
-        else
+        else {
             addDataFromTable();
+            setStatus(Status.Success);
+        }
         outputs.add(new StringType(resultString));
-        setStatus(Status.Success);
     }
 
     private void addColumnNames() {
