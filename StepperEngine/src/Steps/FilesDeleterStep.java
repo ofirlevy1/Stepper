@@ -12,6 +12,10 @@ public class FilesDeleterStep extends Step{
         this.filesList = filesList;
         this.filesList.setMandatory(true);
     }
+
+    public FilesDeleterStep(){
+        super("FILES_DELETER", false);
+    }
     @Override
     public void execute() {
         try {
@@ -62,6 +66,13 @@ public class FilesDeleterStep extends Step{
 
 
     }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        this.filesList=(ListType) inputs.get(0);
+        this.filesList.setMandatory(true);
+    }
+
     public class EmptyFileListException extends Exception{
         public EmptyFileListException(String str){
             super(str);

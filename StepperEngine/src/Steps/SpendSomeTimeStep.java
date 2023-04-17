@@ -15,6 +15,11 @@ public class SpendSomeTimeStep extends Step{
         this.secondsToSpend = secondsToSpend;
         this.secondsToSpend.setMandatory(true);
     }
+
+    public SpendSomeTimeStep(){
+        super("TIME_TO_SPEND", true);
+    }
+
     @Override
     public void execute(){
         try {
@@ -36,6 +41,14 @@ public class SpendSomeTimeStep extends Step{
         this.setSummaryLine("Time spent: "+sleepAmount);
         this.setStatus(Status.Success);
     }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        this.secondsToSpend=(NumberType) inputs.get(0);
+        this.secondsToSpend.setMandatory(true);
+    }
+
+
     // Not sure about this. maybe it's better to return an empty List<DataType>,
     // or do something else. overriding this and returning NULL might smell a bit.
     @Override

@@ -1,8 +1,10 @@
 package Steps;
 
+import DataTypes.DataType;
 import DataTypes.StringType;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class FileDumperStep extends  Step{
 
@@ -46,5 +48,20 @@ public class FileDumperStep extends  Step{
         }
 
         this.outputs.add(new StringType("Success"));
+    }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        for(DataType dataType:inputs){
+            String str=(String) dataType.getData();
+            if(str.charAt(1)==':'){
+                this.fileName=(StringType) dataType.getData();
+                this.fileName.setMandatory(true);
+            }
+            else {
+                this.content=(StringType) dataType.getData();
+                this.content.setMandatory(true);
+            }
+        }
     }
 }

@@ -15,6 +15,10 @@ public class PropertiesExporterStep extends Step{
         this.source.setMandatory(true);
     }
 
+    public PropertiesExporterStep(){
+        super("PROPERTIES_EXPORTER", true);
+    }
+
     @Override
     public void execute() {
         try{
@@ -47,6 +51,13 @@ public class PropertiesExporterStep extends Step{
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.outputs.add(new StringType(properties.substring(0,properties.length()-1)));//getting rid of unnecessary new line at end of string
+    }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        this.source=(RelationType) inputs.get(0);
+        this.source.setMandatory(true);
+
     }
 
     public class EmptyPropertiesRelationException extends Exception{

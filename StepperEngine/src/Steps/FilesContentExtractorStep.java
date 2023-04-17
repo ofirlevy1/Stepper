@@ -18,6 +18,10 @@ public class FilesContentExtractorStep extends Step {
         this.lineNumber.setMandatory(true);
     }
 
+    public FilesContentExtractorStep(){
+        super("FILES_CONTENT_EXTRACTOR", true);
+    }
+
     @Override
     public void execute() {
         try{
@@ -75,6 +79,20 @@ public class FilesContentExtractorStep extends Step {
         this.outputs.add(new RelationType(relation));
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
+    }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        for(DataType dataType:inputs){
+            if(dataType instanceof NumberType){
+                this.lineNumber=(NumberType) dataType.getData();
+                this.lineNumber.setMandatory(true);
+            }
+            else {
+                this.filesList=(ListType) dataType.getData();
+                this.filesList.setMandatory(true);
+            }
+        }
     }
 
     public class EmptyFileListException extends Exception{

@@ -58,6 +58,17 @@ public class FilesRenamer extends Step {
         writeSummaryLine();
     }
 
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        for(DataType dataType:inputs){
+            if(dataType instanceof ListType){
+                this.filesToRename=(ListType) dataType.getData();
+                this.filesToRename.setMandatory(true);
+            }
+        }
+        this.filesToRename= (ListType) inputs.stream().filter(dataType -> dataType instanceof ListType);
+    }
+
     private void setOutput() {
         Relation output = new Relation(renamedFilesNewNames.size(), 3, "Serial Number", "Original File Name", "New File Name");
         for(int i = 0; i < renamedFilesNewNames.size(); i++) {

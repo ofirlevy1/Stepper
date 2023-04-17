@@ -1,8 +1,11 @@
 package Steps;
 
+import DataTypes.DataType;
 import DataTypes.Relation;
 import DataTypes.RelationType;
 import DataTypes.StringType;
+
+import java.util.ArrayList;
 
 public class CsvExporterStep extends Step {
     private RelationType source;
@@ -38,6 +41,13 @@ public class CsvExporterStep extends Step {
             setStatus(Status.Success);
         }
         outputs.add(new StringType(resultString));
+    }
+
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        this.source=(RelationType) inputs.get(0);
+        this.table=source.getData();
+        this.source.setMandatory(true);
     }
 
     private void addColumnNames() {

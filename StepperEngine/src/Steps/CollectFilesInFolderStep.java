@@ -58,6 +58,21 @@ public class CollectFilesInFolderStep extends Step{
         setStatus(Status.Success);
     }
 
+    @Override
+    public void setInputs(ArrayList<DataType> inputs) {
+        for(DataType dataType:inputs){
+            String str=(String) dataType.getData();
+            if(str.charAt(1)==':'){
+                this.folderName=(StringType) dataType.getData();
+                this.folderName.setMandatory(true);
+            }
+            else {
+                this.filter=(StringType) dataType.getData();
+                this.filter.setMandatory(false);
+            }
+        }
+    }
+
     int addMatchingFilesToOutput(File[] files)
     {
         ListType matchingFiles = new ListType(new ArrayList<DataType>());

@@ -11,7 +11,12 @@ public class Main {
     public static void main(String[] args)
     {
 
-        csvExporterTest();
+        //csvExporterTest();
+        Step st =new FilesContentExtractorStep();
+        ArrayList<DataType> arr=new ArrayList<>();
+        arr.add(new NumberType(5));
+        st.setInputs(arr);
+
     }
 
     public static void csvExporterTest() {
