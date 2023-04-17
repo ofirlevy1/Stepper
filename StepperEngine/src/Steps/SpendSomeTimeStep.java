@@ -13,6 +13,7 @@ public class SpendSomeTimeStep extends Step{
     public SpendSomeTimeStep(NumberType secondsToSpend) {
         super("TIME_TO_SPEND", true);
         this.secondsToSpend = secondsToSpend;
+        this.secondsToSpend.setMandatory(true);
     }
     @Override
     public void execute(){

@@ -13,11 +13,13 @@ public class CollectFilesInFolderStep extends Step{
     public CollectFilesInFolderStep(StringType folderName) {
         super("Collect Files In Folder", true);
         this.folderName = folderName;
+        this.folderName.setMandatory(true);
     }
 
     public CollectFilesInFolderStep(StringType folderName, StringType filter) {
         this(folderName);
         this.filter = filter;
+        this.filter.setMandatory(false);
     }
 
     @Override

@@ -10,6 +10,7 @@ public class FilesDeleterStep extends Step{
     public FilesDeleterStep(ListType filesList) {
         super("FILES_DELETER", false);
         this.filesList = filesList;
+        this.filesList.setMandatory(true);
     }
     @Override
     public void execute() {

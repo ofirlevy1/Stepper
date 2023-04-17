@@ -12,6 +12,7 @@ public class PropertiesExporterStep extends Step{
     public PropertiesExporterStep(RelationType source) {
         super("PROPERTIES_EXPORTER", true);
         this.source = source;
+        this.source.setMandatory(true);
     }
 
     @Override

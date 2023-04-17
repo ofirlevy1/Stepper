@@ -14,6 +14,8 @@ public class FilesContentExtractorStep extends Step {
         super("FILES_CONTENT_EXTRACTOR", true);
         this.filesList = filesList;
         this.lineNumber = lineNumber;
+        this.filesList.setMandatory(true);
+        this.lineNumber.setMandatory(true);
     }
 
     @Override

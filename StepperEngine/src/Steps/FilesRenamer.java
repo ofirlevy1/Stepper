@@ -27,6 +27,9 @@ public class FilesRenamer extends Step {
         failedFiles = new ArrayList<>();
         renamedFilesOldNames = new ArrayList<>();
         renamedFilesNewNames = new ArrayList<>();
+        this.filesToRename.setMandatory(true);
+        this.prefix.setMandatory(false);
+        this.suffix.setMandatory(false);
     }
 
     @Override

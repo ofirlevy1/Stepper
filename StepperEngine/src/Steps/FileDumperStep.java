@@ -13,6 +13,8 @@ public class FileDumperStep extends  Step{
         super("FILE_DUMPER", true);
         this.content=content;
         this.fileName=fileName;
+        this.content.setMandatory(true);
+        this.fileName.setMandatory(true);
     }
     @Override
     public void execute() {

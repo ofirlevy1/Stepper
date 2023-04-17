@@ -12,6 +12,7 @@ public class CsvExporterStep extends Step {
     public CsvExporterStep(RelationType source) {
         super("CSV Exporter", true);
         this.source = source;
+        this.source.setMandatory(true);
         this.table = source.getData();
         this.resultString = "";
     }
