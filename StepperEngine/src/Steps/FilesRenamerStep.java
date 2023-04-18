@@ -7,19 +7,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class FilesRenamer extends Step {
+public class FilesRenamerStep extends Step {
     private ListType filesToRename;
     private StringType prefix;
     private StringType suffix;
     private ArrayList<String> failedFiles;
 
-    // These are used to fill the Relation result output at the end of the step (because
+    // These are used to fill the Relation result output at the end of the step because
     // Relation is not dynamic - it can be created only at the end of the step
     // when we know what it's dimensions should be.
     private ArrayList<String> renamedFilesOldNames;
     private ArrayList<String> renamedFilesNewNames;
 
-    public FilesRenamer(ListType filesToRename, StringType prefix, StringType suffix) {
+    public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
         super("Files Renamer", false);
         this.filesToRename = filesToRename;
         this.prefix = prefix;
@@ -30,6 +30,13 @@ public class FilesRenamer extends Step {
         this.filesToRename.setMandatory(true);
         this.prefix.setMandatory(false);
         this.suffix.setMandatory(false);
+    }
+
+    public FilesRenamerStep(){
+        super("Files Renamer", false);
+        failedFiles=new ArrayList<>();
+        renamedFilesOldNames=new ArrayList<>();
+        renamedFilesOldNames=new ArrayList<>();
     }
 
     @Override
@@ -44,7 +51,7 @@ public class FilesRenamer extends Step {
 
     @Override
     protected void runStepFlow() throws Exception {
-        addLog("About to start rename " + filesToRename.getData().size() + " files. Adding prefix: " + prefix + "; adding suffix: " + suffix);
+        addLog("About to start rename " + filesToRename.getData().size() + " files. Adding prefix: " + prefix.getData() + "; adding suffix: " + suffix.getData());
         File currentFile;
         for(DataType dataType : filesToRename.getData()) {
             currentFile = (File) dataType.getData(); // This conversion is not ideal - maybe there's a way to avoid it (redesign to FileType?)
@@ -59,14 +66,21 @@ public class FilesRenamer extends Step {
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        for(DataType dataType:inputs){
-            if(dataType instanceof ListType){
-                this.filesToRename=(ListType) dataType.getData();
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FilesList.toString())) {
+                this.filesToRename = (ListType) input;
                 this.filesToRename.setMandatory(true);
             }
+            if(input.getName().equals(StepInputNameEnum.SuffixString.toString())) {
+                this.suffix = (StringType) input;
+                this.suffix.setMandatory(false);
+            }
+            if(input.getName().equals(StepInputNameEnum.PrefixString.toString())) {
+                this.prefix = (StringType) input;
+                this.prefix.setMandatory(false);
+            }
         }
-        this.filesToRename= (ListType) inputs.stream().filter(dataType -> dataType instanceof ListType);
     }
 
     private void setOutput() {
@@ -86,7 +100,7 @@ public class FilesRenamer extends Step {
         // building the new full file name, first the root: (C:\ for example)
         String newFileFullPath = path.getRoot().toString();
 
-        // then all the path parts exept the last one (which is the actual name)
+        // then all the path parts except the last one (which is the actual name)
         for(int i = 0; i < path.getNameCount() - 1; i++) {
             newFileFullPath += path.getName(i) + "\\";
         }

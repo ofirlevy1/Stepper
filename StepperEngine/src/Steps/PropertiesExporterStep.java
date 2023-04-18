@@ -1,11 +1,6 @@
 package Steps;
 
-import DataTypes.DataType;
-import DataTypes.Relation;
-import DataTypes.RelationType;
-import DataTypes.StringType;
-
-import java.util.ArrayList;
+import DataTypes.*;
 
 public class PropertiesExporterStep extends Step{
     private RelationType source;
@@ -54,10 +49,13 @@ public class PropertiesExporterStep extends Step{
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        this.source=(RelationType) inputs.get(0);
-        this.source.setMandatory(true);
-
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.SourceRelation.toString())) {
+                this.source = (RelationType) input;
+                this.source.setMandatory(true);
+            }
+        }
     }
 
     public class EmptyPropertiesRelationException extends Exception{

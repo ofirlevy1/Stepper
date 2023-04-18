@@ -68,9 +68,14 @@ public class FilesDeleterStep extends Step{
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        this.filesList=(ListType) inputs.get(0);
-        this.filesList.setMandatory(true);
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FilesList.toString())) {
+                this.filesList = (ListType) input;
+                this.filesList.setMandatory(true);
+            }
+
+        }
     }
 
     public class EmptyFileListException extends Exception{

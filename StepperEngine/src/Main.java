@@ -5,35 +5,31 @@ import Steps.*;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args)
     {
 
-        //csvExporterTest();
-        Step st =new FilesContentExtractorStep();
-        ArrayList<DataType> arr=new ArrayList<>();
-        arr.add(new NumberType(5));
-        st.setInputs(arr);
-
+        //filesRenamerTest();
+        filesDumperTest();
     }
 
     public static void csvExporterTest() {
         Relation table = new Relation(3,3, "First Name", "Family Name", "Age");
-//        table.set(0,0, "Ofir");
-//        table.set(0,1, "Levy");
-//        table.set(0,2, "28");
-//
-//        table.set(1,0, "Avi");
-//        table.set(1,1, "Cohen");
-//        table.set(1,2, "59");
-//
-//        table.set(2,0, "Michelle");
-//        table.set(2,1, "Bar");
-//        table.set(2,2, "2");
+        table.set(0,0, "Ofir");
+        table.set(0,1, "Levy");
+        table.set(0,2, "28");
 
-        Step step = new CsvExporterStep(new RelationType(table));
+        table.set(1,0, "Avi");
+        table.set(1,1, "Cohen");
+        table.set(1,2, "59");
+
+        table.set(2,0, "Michelle");
+        table.set(2,1, "Bar");
+        table.set(2,2, "2");
+
+        Step step = new CsvExporterStep();
+        step.setInputs(new RelationType(table,StepInputNameEnum.SourceRelation.toString()));
         step.execute();
         System.out.println("returned from CSV Exporter, logs:");
         System.out.println(step.getLogsAsString());
@@ -45,11 +41,12 @@ public class Main {
     {
         ArrayList<DataType> filesList = new ArrayList<DataType>();
 
-        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\renameMe.txt")));
-        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\twoSuffixes.hello.txt")));
-        filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\dir.dir")));
-        ListType filesListType = new ListType(filesList);
-        Step step = new FilesRenamer(filesListType, new StringType("1"), new StringType("2"));
+//       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\renameMe.txt")));
+//       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\twoSuffixes.hello.txt")));
+//       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\dir.dir")));
+        ListType filesListType = new ListType(filesList,StepInputNameEnum.FilesList.toString());
+        Step step = new FilesRenamerStep();
+        step.setInputs(filesListType, new StringType("1",StepInputNameEnum.SuffixString.toString()), new StringType("2",StepInputNameEnum.PrefixString.toString()));
         step.execute();
 
         System.out.println("FilesRenamer done. logs:");
@@ -59,7 +56,8 @@ public class Main {
     }
 
     public static void filesDumperTest(){
-        Step filesDumper=new FileDumperStep(new StringType("some line \n and new line"), new StringType("D:\\tasks\\text1.txt"));
+        Step filesDumper=new FileDumperStep();
+        filesDumper.setInputs(new StringType("some line and new line",StepInputNameEnum.ContentString.toString()), new StringType("D:\\tasks\\text1.txt",StepInputNameEnum.FileNameString.toString()));
         filesDumper.execute();
         System.out.println(filesDumper.getSummaryLine());
         System.out.println(filesDumper.getLogsAsString());

@@ -1,11 +1,9 @@
 package Steps;
 
 import DataTypes.*;
-import Steps.Step;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FilesContentExtractorStep extends Step {
     private ListType filesList;
@@ -17,7 +15,6 @@ public class FilesContentExtractorStep extends Step {
         this.filesList.setMandatory(true);
         this.lineNumber.setMandatory(true);
     }
-
     public FilesContentExtractorStep(){
         super("FILES_CONTENT_EXTRACTOR", true);
     }
@@ -82,15 +79,15 @@ public class FilesContentExtractorStep extends Step {
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        for(DataType dataType:inputs){
-            if(dataType instanceof NumberType){
-                this.lineNumber=(NumberType) dataType.getData();
-                this.lineNumber.setMandatory(true);
-            }
-            else {
-                this.filesList=(ListType) dataType.getData();
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FilesList.toString())) {
+                this.filesList = (ListType) input;
                 this.filesList.setMandatory(true);
+            }
+            if(input.getName().equals(StepInputNameEnum.LineNumber.toString())) {
+                this.lineNumber = (NumberType) input;
+                this.lineNumber.setMandatory(true);
             }
         }
     }

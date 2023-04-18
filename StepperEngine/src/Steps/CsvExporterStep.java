@@ -5,8 +5,6 @@ import DataTypes.Relation;
 import DataTypes.RelationType;
 import DataTypes.StringType;
 
-import java.util.ArrayList;
-
 public class CsvExporterStep extends Step {
     private RelationType source;
     private Relation table;
@@ -18,6 +16,11 @@ public class CsvExporterStep extends Step {
         this.source.setMandatory(true);
         this.table = source.getData();
         this.resultString = "";
+    }
+
+    public CsvExporterStep(){
+        super("CSV Exporter", true);
+        this.resultString="";
     }
 
     @Override
@@ -44,10 +47,14 @@ public class CsvExporterStep extends Step {
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        this.source=(RelationType) inputs.get(0);
-        this.table=source.getData();
-        this.source.setMandatory(true);
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.SourceRelation.toString())) {
+                this.source = (RelationType) input;
+                this.source.setMandatory(true);
+                this.table=(Relation) this.source.getData();
+            }
+        }
     }
 
     private void addColumnNames() {

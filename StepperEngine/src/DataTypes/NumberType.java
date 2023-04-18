@@ -6,6 +6,10 @@ public class NumberType extends DataType<Integer> {
         super("Number", "Number", true, num);
     }
 
+    public NumberType(Integer num, String name) {
+        super(name, name, true, num);
+    }
+
     @Override
     public String getPresentableString() {
         return data.toString();

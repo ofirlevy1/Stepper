@@ -1,9 +1,9 @@
 package Steps;
 
 import DataTypes.DataType;
+import DataTypes.ListType;
 import DataTypes.NumberType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,9 +43,13 @@ public class SpendSomeTimeStep extends Step{
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        this.secondsToSpend=(NumberType) inputs.get(0);
-        this.secondsToSpend.setMandatory(true);
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.TimeToSpendNumber.toString())) {
+                this.secondsToSpend = (NumberType) input;
+                this.secondsToSpend.setMandatory(true);
+            }
+        }
     }
 
 

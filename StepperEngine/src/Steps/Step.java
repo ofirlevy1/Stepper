@@ -38,7 +38,7 @@ public abstract class  Step {
 
     protected abstract void runStepFlow() throws Exception;
 
-    public abstract void setInputs(ArrayList<DataType> inputs);
+    public abstract void setInputs(DataType ... inputs);
 
     public String getLogsAsString(){
         String logsString="";

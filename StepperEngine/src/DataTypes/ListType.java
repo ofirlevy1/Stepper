@@ -6,6 +6,8 @@ public class ListType extends  DataType<ArrayList<DataType>>{
 
     public ListType(ArrayList<DataType> list){super("List", "List", false, list);}
 
+    public ListType(ArrayList<DataType> list, String name){super(name, name, false, list);}
+
     /**
      * returns a string in the format:
      * 1:'first element', 2:'second element', 3:'third element', .........

@@ -22,6 +22,10 @@ public class CollectFilesInFolderStep extends Step{
         this.filter.setMandatory(false);
     }
 
+    public CollectFilesInFolderStep(){
+        super("Collect Files In Folder", true);
+    }
+
     @Override
     public void execute() {
         try{
@@ -59,16 +63,15 @@ public class CollectFilesInFolderStep extends Step{
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        for(DataType dataType:inputs){
-            String str=(String) dataType.getData();
-            if(str.charAt(1)==':'){
-                this.folderName=(StringType) dataType.getData();
-                this.folderName.setMandatory(true);
-            }
-            else {
-                this.filter=(StringType) dataType.getData();
+    public void setInputs(DataType... inputs) {
+        for(DataType input :inputs){
+            if(input.getName().equals(StepInputNameEnum.FilterString.toString())) {
+                this.filter = (StringType) input;
                 this.filter.setMandatory(false);
+            }
+            else if(input.getName().equals(StepInputNameEnum.FolderNameString.toString())) {
+                this.folderName = (StringType) input;
+                this.folderName.setMandatory(true);
             }
         }
     }

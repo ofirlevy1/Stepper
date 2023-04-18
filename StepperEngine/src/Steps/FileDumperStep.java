@@ -1,10 +1,10 @@
 package Steps;
 
 import DataTypes.DataType;
+import DataTypes.RelationType;
 import DataTypes.StringType;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class FileDumperStep extends  Step{
 
@@ -17,6 +17,10 @@ public class FileDumperStep extends  Step{
         this.fileName=fileName;
         this.content.setMandatory(true);
         this.fileName.setMandatory(true);
+    }
+
+    public FileDumperStep(){
+        super("FILE_DUMPER", true);
     }
     @Override
     public void execute() {
@@ -51,17 +55,17 @@ public class FileDumperStep extends  Step{
     }
 
     @Override
-    public void setInputs(ArrayList<DataType> inputs) {
-        for(DataType dataType:inputs){
-            String str=(String) dataType.getData();
-            if(str.charAt(1)==':'){
-                this.fileName=(StringType) dataType.getData();
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FileNameString.toString())) {
+                this.fileName = (StringType) input;
                 this.fileName.setMandatory(true);
             }
-            else {
-                this.content=(StringType) dataType.getData();
+            if(input.getName().equals(StepInputNameEnum.ContentString.toString())) {
+                this.content = (StringType) input;
                 this.content.setMandatory(true);
             }
         }
     }
+
 }
