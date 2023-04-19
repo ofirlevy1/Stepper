@@ -1,9 +1,9 @@
 package Steps;
 
 import DataTypes.DataType;
+import DataTypes.ListType;
 import DataTypes.NumberType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,7 +13,13 @@ public class SpendSomeTimeStep extends Step{
     public SpendSomeTimeStep(NumberType secondsToSpend) {
         super("TIME_TO_SPEND", true);
         this.secondsToSpend = secondsToSpend;
+        this.secondsToSpend.setMandatory(true);
     }
+
+    public SpendSomeTimeStep(){
+        super("TIME_TO_SPEND", true);
+    }
+
     @Override
     public void execute(){
         try {
@@ -35,6 +41,18 @@ public class SpendSomeTimeStep extends Step{
         this.setSummaryLine("Time spent: "+sleepAmount);
         this.setStatus(Status.Success);
     }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.TIME_TO_SPEND.toString())) {
+                this.secondsToSpend = (NumberType) input;
+                this.secondsToSpend.setMandatory(true);
+            }
+        }
+    }
+
+
     // Not sure about this. maybe it's better to return an empty List<DataType>,
     // or do something else. overriding this and returning NULL might smell a bit.
     @Override

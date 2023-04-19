@@ -8,6 +8,7 @@ public abstract class DataType<T> {
     private String alias;
     private String userFriendlyName;
     private boolean hasAlias;
+    boolean isMandatory;
     protected T data;
 
     public DataType(String name, String userFriendlyName, boolean userFriendly, T data) {
@@ -16,6 +17,14 @@ public abstract class DataType<T> {
         this.name = name;
         hasAlias = false;
         this.data = data;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        isMandatory = mandatory;
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
     }
 
     public abstract String getPresentableString();

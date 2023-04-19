@@ -1,17 +1,17 @@
 package Steps;
 
-import DataTypes.DataType;
-import DataTypes.Relation;
-import DataTypes.RelationType;
-import DataTypes.StringType;
-
-import java.util.ArrayList;
+import DataTypes.*;
 
 public class PropertiesExporterStep extends Step{
     private RelationType source;
     public PropertiesExporterStep(RelationType source) {
         super("PROPERTIES_EXPORTER", true);
         this.source = source;
+        this.source.setMandatory(true);
+    }
+
+    public PropertiesExporterStep(){
+        super("PROPERTIES_EXPORTER", true);
     }
 
     @Override
@@ -46,6 +46,16 @@ public class PropertiesExporterStep extends Step{
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.outputs.add(new StringType(properties.substring(0,properties.length()-1)));//getting rid of unnecessary new line at end of string
+    }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
+                this.source = (RelationType) input;
+                this.source.setMandatory(true);
+            }
+        }
     }
 
     public class EmptyPropertiesRelationException extends Exception{

@@ -14,7 +14,7 @@ public abstract class  Step {
 
     private ArrayList<StepLog> logs;
     private String summaryLine;
-    // Not sure this is the best way to do this. not all steps have outputs (but only one doesn't);
+    // Not sure if this is the best way to do this. not all steps have outputs (but only one doesn't);
     protected ArrayList<DataType> outputs;
 
     public enum Status {
@@ -37,6 +37,8 @@ public abstract class  Step {
     public abstract void execute();
 
     protected abstract void runStepFlow() throws Exception;
+
+    public abstract void setInputs(DataType ... inputs);
 
     public String getLogsAsString(){
         String logsString="";

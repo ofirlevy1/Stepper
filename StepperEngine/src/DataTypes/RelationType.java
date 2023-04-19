@@ -6,6 +6,10 @@ public class RelationType extends DataType<Relation> {
         super("Relation", "Relation", false, relation);
     }
 
+    public RelationType(Relation relation, String name) {
+        super(name, name, false, relation);
+    }
+
 
     /**
      * This returns a presentable string of the format:

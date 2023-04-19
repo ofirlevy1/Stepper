@@ -1,5 +1,6 @@
 package Steps;
 
+import DataTypes.DataType;
 import DataTypes.Relation;
 import DataTypes.RelationType;
 import DataTypes.StringType;
@@ -12,8 +13,14 @@ public class CsvExporterStep extends Step {
     public CsvExporterStep(RelationType source) {
         super("CSV Exporter", true);
         this.source = source;
+        this.source.setMandatory(true);
         this.table = source.getData();
         this.resultString = "";
+    }
+
+    public CsvExporterStep(){
+        super("CSV Exporter", true);
+        this.resultString="";
     }
 
     @Override
@@ -37,6 +44,17 @@ public class CsvExporterStep extends Step {
             setStatus(Status.Success);
         }
         outputs.add(new StringType(resultString));
+    }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
+                this.source = (RelationType) input;
+                this.source.setMandatory(true);
+                this.table=(Relation) this.source.getData();
+            }
+        }
     }
 
     private void addColumnNames() {

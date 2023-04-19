@@ -1,11 +1,9 @@
 package Steps;
 
 import DataTypes.*;
-import Steps.Step;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FilesContentExtractorStep extends Step {
     private ListType filesList;
@@ -14,6 +12,11 @@ public class FilesContentExtractorStep extends Step {
         super("FILES_CONTENT_EXTRACTOR", true);
         this.filesList = filesList;
         this.lineNumber = lineNumber;
+        this.filesList.setMandatory(true);
+        this.lineNumber.setMandatory(true);
+    }
+    public FilesContentExtractorStep(){
+        super("FILES_CONTENT_EXTRACTOR", true);
     }
 
     @Override
@@ -73,6 +76,20 @@ public class FilesContentExtractorStep extends Step {
         this.outputs.add(new RelationType(relation));
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
+    }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FILES_LIST.toString())) {
+                this.filesList = (ListType) input;
+                this.filesList.setMandatory(true);
+            }
+            if(input.getName().equals(StepInputNameEnum.LINE.toString())) {
+                this.lineNumber = (NumberType) input;
+                this.lineNumber.setMandatory(true);
+            }
+        }
     }
 
     public class EmptyFileListException extends Exception{

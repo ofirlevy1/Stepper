@@ -13,11 +13,17 @@ public class CollectFilesInFolderStep extends Step{
     public CollectFilesInFolderStep(StringType folderName) {
         super("Collect Files In Folder", true);
         this.folderName = folderName;
+        this.folderName.setMandatory(true);
     }
 
     public CollectFilesInFolderStep(StringType folderName, StringType filter) {
         this(folderName);
         this.filter = filter;
+        this.filter.setMandatory(false);
+    }
+
+    public CollectFilesInFolderStep(){
+        super("Collect Files In Folder", true);
     }
 
     @Override
@@ -54,6 +60,20 @@ public class CollectFilesInFolderStep extends Step{
         outputs.add(new NumberType(matchingFiles));
         addLog("Found " + matchingFiles + " files in folder matching the filter");
         setStatus(Status.Success);
+    }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input :inputs){
+            if(input.getName().equals(StepInputNameEnum.FILTER.toString())) {
+                this.filter = (StringType) input;
+                this.filter.setMandatory(false);
+            }
+            else if(input.getName().equals(StepInputNameEnum.FOLDER_NAME.toString())) {
+                this.folderName = (StringType) input;
+                this.folderName.setMandatory(true);
+            }
+        }
     }
 
     int addMatchingFilesToOutput(File[] files)

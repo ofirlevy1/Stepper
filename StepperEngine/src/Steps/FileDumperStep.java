@@ -1,5 +1,7 @@
 package Steps;
 
+import DataTypes.DataType;
+import DataTypes.RelationType;
 import DataTypes.StringType;
 
 import java.io.*;
@@ -13,6 +15,12 @@ public class FileDumperStep extends  Step{
         super("FILE_DUMPER", true);
         this.content=content;
         this.fileName=fileName;
+        this.content.setMandatory(true);
+        this.fileName.setMandatory(true);
+    }
+
+    public FileDumperStep(){
+        super("FILE_DUMPER", true);
     }
     @Override
     public void execute() {
@@ -45,4 +53,19 @@ public class FileDumperStep extends  Step{
 
         this.outputs.add(new StringType("Success"));
     }
+
+    @Override
+    public void setInputs(DataType... inputs) {
+        for(DataType input: inputs){
+            if(input.getName().equals(StepInputNameEnum.FILE_NAME.toString())) {
+                this.fileName = (StringType) input;
+                this.fileName.setMandatory(true);
+            }
+            if(input.getName().equals(StepInputNameEnum.CONTENT.toString())) {
+                this.content = (StringType) input;
+                this.content.setMandatory(true);
+            }
+        }
+    }
+
 }
