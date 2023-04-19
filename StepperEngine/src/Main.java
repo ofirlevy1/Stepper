@@ -29,7 +29,7 @@ public class Main {
         table.set(2,2, "2");
 
         Step step = new CsvExporterStep();
-        step.setInputs(new RelationType(table,StepInputNameEnum.SourceRelation.toString()));
+        step.setInputs(new RelationType(table,StepInputNameEnum.SOURCE.toString()));
         step.execute();
         System.out.println("returned from CSV Exporter, logs:");
         System.out.println(step.getLogsAsString());
@@ -44,9 +44,9 @@ public class Main {
 //       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\renameMe.txt")));
 //       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\twoSuffixes.hello.txt")));
 //       filesList.add(new FileType(new File("C:\\Users\\Ofir\\Desktop\\temp\\testJava\\filesToRename\\dir.dir")));
-        ListType filesListType = new ListType(filesList,StepInputNameEnum.FilesList.toString());
+        ListType filesListType = new ListType(filesList,StepInputNameEnum.FILES_TO_RENAME.toString());
         Step step = new FilesRenamerStep();
-        step.setInputs(filesListType, new StringType("1",StepInputNameEnum.SuffixString.toString()), new StringType("2",StepInputNameEnum.PrefixString.toString()));
+        step.setInputs(filesListType, new StringType("1",StepInputNameEnum.SUFFIX.toString()), new StringType("2",StepInputNameEnum.PREFIX.toString()));
         step.execute();
 
         System.out.println("FilesRenamer done. logs:");
@@ -57,7 +57,7 @@ public class Main {
 
     public static void filesDumperTest(){
         Step filesDumper=new FileDumperStep();
-        filesDumper.setInputs(new StringType("some line and new line",StepInputNameEnum.ContentString.toString()), new StringType("D:\\tasks\\text1.txt",StepInputNameEnum.FileNameString.toString()));
+        filesDumper.setInputs(new StringType("some line and new line",StepInputNameEnum.CONTENT.toString()), new StringType("D:\\tasks\\text1.txt",StepInputNameEnum.FILE_NAME.toString()));
         filesDumper.execute();
         System.out.println(filesDumper.getSummaryLine());
         System.out.println(filesDumper.getLogsAsString());

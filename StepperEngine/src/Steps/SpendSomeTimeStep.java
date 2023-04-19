@@ -45,7 +45,7 @@ public class SpendSomeTimeStep extends Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.TimeToSpendNumber.toString())) {
+            if(input.getName().equals(StepInputNameEnum.TIME_TO_SPEND.toString())) {
                 this.secondsToSpend = (NumberType) input;
                 this.secondsToSpend.setMandatory(true);
             }

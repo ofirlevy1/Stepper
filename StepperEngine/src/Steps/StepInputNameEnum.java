@@ -1,14 +1,15 @@
 package Steps;
 
 public enum StepInputNameEnum {
-    TimeToSpendNumber,
-    FolderNameString,
-    FilterString,
-    FilesList,
-    PrefixString,
-    SuffixString,
-    LineNumber,
-    SourceRelation,
-    ContentString,
-    FileNameString
+    TIME_TO_SPEND,
+    FOLDER_NAME,
+    FILTER,
+    FILES_LIST,
+    FILES_TO_RENAME,
+    PREFIX,
+    SUFFIX,
+    LINE,
+    SOURCE,
+    CONTENT,
+    FILE_NAME
 }

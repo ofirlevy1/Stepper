@@ -51,7 +51,7 @@ public class PropertiesExporterStep extends Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.SourceRelation.toString())) {
+            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
                 this.source = (RelationType) input;
                 this.source.setMandatory(true);
             }
