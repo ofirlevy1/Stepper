@@ -4,6 +4,7 @@ import DataTypes.DataType;
 import DataTypes.ListType;
 import DataTypes.NumberType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,6 +51,11 @@ public class SpendSomeTimeStep extends Step{
                 this.secondsToSpend.setMandatory(true);
             }
         }
+    }
+
+    @Override
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        return null;
     }
 
 
