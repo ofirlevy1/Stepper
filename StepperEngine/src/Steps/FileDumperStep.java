@@ -57,11 +57,11 @@ public class FileDumperStep extends  Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.FILE_NAME.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.FILE_NAME.toString())) {
                 this.fileName = (StringType) input;
                 this.fileName.setMandatory(true);
             }
-            if(input.getName().equals(StepInputNameEnum.CONTENT.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.CONTENT.toString())) {
                 this.content = (StringType) input;
                 this.content.setMandatory(true);
             }

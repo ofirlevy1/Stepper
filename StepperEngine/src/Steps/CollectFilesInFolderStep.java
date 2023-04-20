@@ -65,11 +65,11 @@ public class CollectFilesInFolderStep extends Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input :inputs){
-            if(input.getName().equals(StepInputNameEnum.FILTER.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.FILTER.toString())) {
                 this.filter = (StringType) input;
                 this.filter.setMandatory(false);
             }
-            else if(input.getName().equals(StepInputNameEnum.FOLDER_NAME.toString())) {
+            else if(input.getEffectiveName().equals(StepInputNameEnum.FOLDER_NAME.toString())) {
                 this.folderName = (StringType) input;
                 this.folderName.setMandatory(true);
             }

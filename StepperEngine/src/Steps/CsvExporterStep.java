@@ -49,7 +49,7 @@ public class CsvExporterStep extends Step {
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.SOURCE.toString())) {
                 this.source = (RelationType) input;
                 this.source.setMandatory(true);
                 this.table=(Relation) this.source.getData();

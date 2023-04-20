@@ -45,7 +45,7 @@ public class SpendSomeTimeStep extends Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.TIME_TO_SPEND.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.TIME_TO_SPEND.toString())) {
                 this.secondsToSpend = (NumberType) input;
                 this.secondsToSpend.setMandatory(true);
             }
@@ -55,10 +55,10 @@ public class SpendSomeTimeStep extends Step{
 
     // Not sure about this. maybe it's better to return an empty List<DataType>,
     // or do something else. overriding this and returning NULL might smell a bit.
-    @Override
-    public List<DataType> getOutputs() {
-        return null;
-    }
+ //   @Override
+ //   public List<DataType> getOutputs() {
+ //       return null;
+ //   }
 
     public class NumberZeroOrBelowException extends Exception{
         public NumberZeroOrBelowException(String str){
