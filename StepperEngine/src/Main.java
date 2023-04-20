@@ -1,17 +1,35 @@
 
 import DataTypes.*;
 
+import Flow.Flow;
+import Generated.STStepper;
 import Steps.*;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws FileNotFoundException, JAXBException {
+//        Step step = new StepFactory().createStep("Collect Files In Folder");
 
-        //filesRenamerTest();
-        filesDumperTest();
+//        System.out.println(step.getName());
+//
+
+        String xmlPath = "C:\\Users\\Ofir\\Downloads\\ex1.xml";
+        STStepper stepper = deserializeFrom(new FileInputStream(new File(xmlPath)));
+
+        Flow flow = new Flow(stepper.getSTFlows().getSTFlow().get(0));
+    }
+
+    private static STStepper deserializeFrom(FileInputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance("Generated");
+        Unmarshaller u = jc.createUnmarshaller();
+        return (STStepper) u.unmarshal(in);
     }
 
     public static void csvExporterTest() {
