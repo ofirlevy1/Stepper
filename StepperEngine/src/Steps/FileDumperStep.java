@@ -5,6 +5,7 @@ import DataTypes.RelationType;
 import DataTypes.StringType;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class FileDumperStep extends  Step{
 
@@ -31,7 +32,7 @@ public class FileDumperStep extends  Step{
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.outputs.add(new StringType("Failure"));
+            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString());
         }
 
     }
@@ -53,8 +54,7 @@ public class FileDumperStep extends  Step{
             }
             out.write(content);
         }
-
-        this.outputs.add(new StringType("Success"));
+        this.result=new StringType("Success", StepOutputNameEnum.RESULT.toString());
     }
 
     @Override
@@ -69,6 +69,15 @@ public class FileDumperStep extends  Step{
                 this.content.setMandatory(true);
             }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.result.getEffectiveName().equals(outputName))
+                outputsArray.add(this.result);
+        }
+        return outputsArray;
     }
 
 }

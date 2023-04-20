@@ -57,12 +57,10 @@ public class CollectFilesInFolderStep extends Step{
             setStatusAndLog(Status.Warning,
                     "The FilesCollector finished with warning because the given folder is empty",
                     "The FilesCollector finished with warning because the given folder is empty");
-            outputs.add(new ListType(new ArrayList<DataType>()));
-            outputs.add(new NumberType(0));
             return;
         }
         int matchingFiles = addMatchingFilesToOutput(folder.listFiles());
-        outputs.add(new NumberType(matchingFiles));
+        this.totalFound=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString());
         addLog("Found " + matchingFiles + " files in folder matching the filter");
         setStatus(Status.Success);
     }
@@ -81,16 +79,28 @@ public class CollectFilesInFolderStep extends Step{
         }
     }
 
+    @Override
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.totalFound.getEffectiveName().equals(outputName))
+                outputsArray.add(this.totalFound);
+            if(this.filesList.getEffectiveName().equals(outputName))
+                outputsArray.add(filesList);
+        }
+        return outputsArray;
+    }
+
     int addMatchingFilesToOutput(File[] files)
     {
-        ListType matchingFiles = new ListType(new ArrayList<DataType>());
+        ListType matchingFiles = new ListType(new ArrayList<DataType>(), StepOutputNameEnum.FILES_LIST.toString());
         for(File file : files)
         {
             if(filter == null || file.getName().endsWith(filter.getData()))
                 if(!file.isDirectory())
                     matchingFiles.getData().add(new FileType(file));
         }
-        outputs.add(matchingFiles);
+        this.filesList=matchingFiles;
         return matchingFiles.getData().size();
     }
 

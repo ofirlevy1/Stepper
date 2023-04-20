@@ -29,7 +29,7 @@ public class FilesDeleterStep extends Step{
         catch (EmptyFileListException e){
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
-            this.outputs.add(new MappingType(new Mapping(new NumberType(0),new NumberType(0))));
+            this.deletionStats=new MappingType(new Mapping(new NumberType(0),new NumberType(0)), StepOutputNameEnum.DELETION_STATS.toString());
 
         } catch (EveryFileFailedToDeleteException e) {
             this.setSummaryLine(e.getMessage());
@@ -61,12 +61,11 @@ public class FilesDeleterStep extends Step{
                 this.addLog("Failed to delete file "+file.getName());
             }
         }
-
-        this.outputs.add(new ListType(filesNotDeletedList));
+        this.deletedList=new ListType(filesNotDeletedList, StepOutputNameEnum.DELETED_LIST.toString());
         this.setStatus(Status.Success);
         this.setSummaryLine("Successfully deleted "+(existingFilesCount-filesNotDeletedList.size())+" out of "+files.size()+" files");
         if(files.isEmpty())throw new EmptyFileListException("File list is empty");
-        this.outputs.add(new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size()),new NumberType(filesNotDeletedList.size()))));
+        this.deletionStats=new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size()),new NumberType(filesNotDeletedList.size())), StepOutputNameEnum.DELETION_STATS.toString());
         if(filesNotDeletedList.size()==files.size())throw  new EveryFileFailedToDeleteException("Every file in the list has failed to be deleted");
 
 
@@ -81,6 +80,17 @@ public class FilesDeleterStep extends Step{
             }
 
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.deletedList.getEffectiveName().equals(outputName))
+                outputsArray.add(this.deletedList);
+            if(this.deletionStats.getEffectiveName().equals(outputName))
+                outputsArray.add(deletionStats);
+        }
+        return outputsArray;
     }
 
     public class EmptyFileListException extends Exception{

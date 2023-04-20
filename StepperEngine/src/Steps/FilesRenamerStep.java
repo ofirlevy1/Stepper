@@ -82,6 +82,15 @@ public class FilesRenamerStep extends Step {
         }
     }
 
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.renameResult.getEffectiveName().equals(outputName))
+                outputsArray.add(this.renameResult);
+        }
+        return outputsArray;
+    }
+
     private void setOutput() {
         Relation output = new Relation(renamedFilesNewNames.size(), 3, "Serial Number", "Original File Name", "New File Name");
         for(int i = 0; i < renamedFilesNewNames.size(); i++) {
@@ -89,7 +98,7 @@ public class FilesRenamerStep extends Step {
             output.set(i, 1, renamedFilesOldNames.get(i));
             output.set(i, 2, renamedFilesNewNames.get(i));
         }
-        outputs.add(new RelationType(output));
+        this.renameResult=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString());
     }
 
     private boolean tryRenamingFile(File file) {

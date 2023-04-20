@@ -2,6 +2,8 @@ package Steps;
 
 import DataTypes.*;
 
+import java.util.ArrayList;
+
 public class PropertiesExporterStep extends Step{
     private RelationType source;
     private StringType result;
@@ -22,7 +24,7 @@ public class PropertiesExporterStep extends Step{
         try{
             this.runStepFlow();
         } catch (EmptyPropertiesRelationException e) {
-            this.outputs.add(new StringType(""));
+            this.result=new StringType("", StepOutputNameEnum.RESULT.toString());
             this.setStatus(Status.Warning);
             this.setSummaryLine(e.getMessage());
             this.addLog(e.getMessage());
@@ -48,7 +50,7 @@ public class PropertiesExporterStep extends Step{
         this.setStatus(Status.Success);
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
-        this.outputs.add(new StringType(properties.substring(0,properties.length()-1)));//getting rid of unnecessary new line at end of string
+        this.result=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString());//getting rid of unnecessary new line at end of string
     }
 
     @Override
@@ -59,6 +61,15 @@ public class PropertiesExporterStep extends Step{
                 this.source.setMandatory(true);
             }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.result.getEffectiveName().equals(outputName))
+                outputsArray.add(this.result);
+        }
+        return outputsArray;
     }
 
     public class EmptyPropertiesRelationException extends Exception{

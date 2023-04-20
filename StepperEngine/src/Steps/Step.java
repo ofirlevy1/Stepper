@@ -57,16 +57,7 @@ public abstract class  Step {
 
     //Methods that were made automatically, might be deleted later
 
-    public ArrayList<DataType> getOutputs(String... outputNames){
-        ArrayList<DataType> outputsFound =new ArrayList<>();
-        for(String outputName:outputNames){
-            for(DataType output:outputs){
-                if(output.getEffectiveName().equals(outputName))
-                    outputsFound.add(output);
-            }
-        }
-        return outputsFound;
-    }
+    public abstract ArrayList<DataType> getOutputs(String... outputNames);
 
     public String getSummaryLine() {
         return summaryLine;

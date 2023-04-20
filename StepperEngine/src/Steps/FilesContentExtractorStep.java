@@ -34,7 +34,7 @@ public class FilesContentExtractorStep extends Step {
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
             this.addLog(e.getMessage());
-            this.outputs.add(new RelationType(new Relation(0,0)));
+            this.data=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString());
         }
         catch (Exception e){
             this.setSummaryLine("Exception: " + e.getMessage());
@@ -79,7 +79,7 @@ public class FilesContentExtractorStep extends Step {
 
         }
 
-        this.outputs.add(new RelationType(relation));
+        this.data=new RelationType(relation, StepOutputNameEnum.DATA.toString());
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
     }
@@ -91,11 +91,18 @@ public class FilesContentExtractorStep extends Step {
                 this.filesList = (ListType) input;
                 this.filesList.setMandatory(true);
             }
-            if(input.getEffectiveName().equals(StepInputNameEnum.LINE.toString())) {
-                this.lineNumber = (NumberType) input;
-                this.lineNumber.setMandatory(true);
-            }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.data.getEffectiveName().equals(outputName))
+                outputsArray.add(this.data);
+            if(this.filesList.getEffectiveName().equals(outputName))
+                outputsArray.add(filesList);
+        }
+        return outputsArray;
     }
 
     public class EmptyFileListException extends Exception{
