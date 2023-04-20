@@ -2,8 +2,8 @@ package DataTypes;
 
 public class RelationType extends DataType<Relation> {
 
-    public RelationType() {
-        super("Relation", "Relation", false);
+    public RelationType(String name) {
+        super(name, "Relation", false);
     }
     public RelationType(Relation relation) {
         super("Relation", "Relation", false, relation);

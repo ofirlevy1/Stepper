@@ -2,8 +2,8 @@ package DataTypes;
 
 public class MappingType extends DataType<Mapping>{
 
-    public MappingType() {
-        super("Mapping", "Mapping", false);
+    public MappingType(String name) {
+        super(name, "Mapping", false);
     }
 
     public MappingType(Mapping mapping){super("Mapping", "Mapping", false, mapping);}

@@ -20,6 +20,8 @@ public class FilesDeleterStep extends Step{
         super("Files Deleter", false);
         this.deletedList=new ListType(new ArrayList<>(), StepOutputNameEnum.DELETED_LIST.toString());
         this.deletionStats=new MappingType(new Mapping(), StepOutputNameEnum.DELETION_STATS.toString());
+
+        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString());
     }
     @Override
     public void execute() {

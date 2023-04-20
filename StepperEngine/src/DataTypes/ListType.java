@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class ListType extends  DataType<ArrayList<DataType>>{
 
-    public ListType() {
-        super("List", "List", false);
+    public ListType(String name) {
+        super(name, "List", false);
     }
     public ListType(ArrayList<DataType> list){super("List", "List", false, list);}
 

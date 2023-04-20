@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public class StepFactory {
 
-    public Step createStep(String stepName) {
+    public static Step createStep(String stepName) {
         switch (stepName.toLowerCase()) {
             case "collect files in folder":
                 return new CollectFilesInFolderStep();

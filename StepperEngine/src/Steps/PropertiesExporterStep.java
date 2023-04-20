@@ -11,6 +11,8 @@ public class PropertiesExporterStep extends Step{
     public PropertiesExporterStep(){
         super("Properties Exporter", true);
         this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+
+        this.source = new RelationType(StepInputNameEnum.SOURCE.toString());
     }
 
     public PropertiesExporterStep(RelationType source) {

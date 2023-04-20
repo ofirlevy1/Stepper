@@ -13,12 +13,15 @@ public class SpendSomeTimeStep extends Step{
 
     public SpendSomeTimeStep(){
         super("Spend Some Time", true);
+
+        this.secondsToSpend = new NumberType(StepInputNameEnum.TIME_TO_SPEND.toString());
     }
 
     public SpendSomeTimeStep(NumberType secondsToSpend) {
         this();
         this.secondsToSpend = secondsToSpend;
         this.secondsToSpend.setMandatory(true);
+
     }
 
     @Override

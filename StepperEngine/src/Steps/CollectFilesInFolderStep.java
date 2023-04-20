@@ -29,6 +29,8 @@ public class CollectFilesInFolderStep extends Step{
         super("Collect Files In Folder", true);
         this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString());
         this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString());
+        this.folderName = new StringType(StepInputNameEnum.FOLDER_NAME.toString());
+        this.filter = new StringType(StepInputNameEnum.FILTER.toString());
     }
 
     @Override

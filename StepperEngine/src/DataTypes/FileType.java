@@ -4,8 +4,8 @@ package DataTypes;
 import java.io.File;
 
 public class FileType extends DataType<File>{
-    public FileType() {
-        super("File", "File", false);
+    public FileType(String name) {
+        super(name, "File", false);
     }
     public FileType(File file){super("File", "File", false, file);}
 

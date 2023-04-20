@@ -26,6 +26,10 @@ public class FilesRenamerStep extends Step {
         renamedFilesOldNames=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
         this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString());
+
+        this.filesToRename = new ListType(StepInputNameEnum.FILES_TO_RENAME.toString());
+        this.prefix = new StringType(StepInputNameEnum.PREFIX.toString());
+        this.suffix = new StringType(StepInputNameEnum.SUFFIX.toString());
     }
 
     public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {

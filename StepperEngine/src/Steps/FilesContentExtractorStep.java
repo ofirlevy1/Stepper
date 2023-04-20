@@ -13,6 +13,9 @@ public class FilesContentExtractorStep extends Step {
     public FilesContentExtractorStep() {
         super("Files Content Extractor", true);
         this.data = new RelationType(new Relation(1, 1, "something to fill"), StepOutputNameEnum.DATA.toString());
+
+        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString());
+        this.lineNumber = new NumberType(StepInputNameEnum.LINE.toString());
     }
 
     public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {
