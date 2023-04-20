@@ -16,6 +16,8 @@ public abstract class  Step {
     // Not sure if this is the best way to do this. not all steps have outputs (but only one doesn't);
     protected ArrayList<DataType> outputs;
 
+    private boolean isBlocking;
+
     public enum Status {
         Success,
         Warning,
@@ -112,5 +114,13 @@ public abstract class  Step {
         this.status = status;
         setSummaryLine(summaryLine);
         addLog(log);
+    }
+
+    public boolean isBlocking() {
+        return isBlocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        isBlocking = blocking;
     }
 }
