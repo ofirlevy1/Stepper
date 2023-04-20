@@ -2,6 +2,9 @@ package DataTypes;
 
 public class NumberType extends DataType<Integer> {
 
+    public NumberType() {
+        super("Number", "Number", true);
+    }
     public NumberType(Integer num) {
         super("Number", "Number", true, num);
     }

@@ -11,11 +11,16 @@ public abstract class DataType<T> {
     boolean isMandatory;
     protected T data;
 
-    public DataType(String name, String userFriendlyName, boolean userFriendly, T data) {
+
+    public DataType(String name, String userFriendlyName, boolean userFriendly) {
         this.userFriendly = userFriendly;
         this.userFriendlyName = userFriendlyName;
         this.name = name;
         hasAlias = false;
+    }
+
+    public DataType(String name, String userFriendlyName, boolean userFriendly, T data) {
+        this(name, userFriendlyName, userFriendly);
         this.data = data;
     }
 

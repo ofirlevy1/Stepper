@@ -1,7 +1,9 @@
 package DataTypes;
 
 public class DoubleType extends DataType<Double> {
-
+    public DoubleType() {
+        super("Double", "Double", true);
+    }
     public DoubleType(Double num) {
         super("Double", "Double", true, num);
     }
