@@ -2,7 +2,6 @@ package Steps;
 
 import DataTypes.DataType;
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class  Step {
     private String name;
@@ -58,7 +57,7 @@ public abstract class  Step {
 
     //Methods that were made automatically, might be deleted later
 
-    public List<DataType> getOutputs() { return outputs; }
+    public abstract ArrayList<DataType> getOutputs(String... outputNames);
 
     public String getSummaryLine() {
         return summaryLine;

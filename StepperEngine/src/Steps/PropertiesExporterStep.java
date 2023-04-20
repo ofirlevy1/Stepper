@@ -2,16 +2,21 @@ package Steps;
 
 import DataTypes.*;
 
+import java.util.ArrayList;
+
 public class PropertiesExporterStep extends Step{
     private RelationType source;
-    public PropertiesExporterStep(RelationType source) {
-        super("PROPERTIES_EXPORTER", true);
-        this.source = source;
-        this.source.setMandatory(true);
-    }
+    private StringType result;
 
     public PropertiesExporterStep(){
-        super("PROPERTIES_EXPORTER", true);
+        super("Properties Exporter", true);
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+    }
+
+    public PropertiesExporterStep(RelationType source) {
+        this();
+        this.source = source;
+        this.source.setMandatory(true);
     }
 
     @Override
@@ -19,7 +24,7 @@ public class PropertiesExporterStep extends Step{
         try{
             this.runStepFlow();
         } catch (EmptyPropertiesRelationException e) {
-            this.outputs.add(new StringType(""));
+            this.result=new StringType("", StepOutputNameEnum.RESULT.toString());
             this.setStatus(Status.Warning);
             this.setSummaryLine(e.getMessage());
             this.addLog(e.getMessage());
@@ -45,17 +50,26 @@ public class PropertiesExporterStep extends Step{
         this.setStatus(Status.Success);
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
-        this.outputs.add(new StringType(properties.substring(0,properties.length()-1)));//getting rid of unnecessary new line at end of string
+        this.result=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString());//getting rid of unnecessary new line at end of string
     }
 
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.SOURCE.toString())) {
                 this.source = (RelationType) input;
                 this.source.setMandatory(true);
             }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.result.getEffectiveName().equals(outputName))
+                outputsArray.add(this.result);
+        }
+        return outputsArray;
     }
 
     public class EmptyPropertiesRelationException extends Exception{

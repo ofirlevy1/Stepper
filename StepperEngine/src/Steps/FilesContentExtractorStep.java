@@ -8,16 +8,22 @@ import java.util.ArrayList;
 public class FilesContentExtractorStep extends Step {
     private ListType filesList;
     private NumberType lineNumber;
+    private RelationType data;
+
+    public FilesContentExtractorStep() {
+        super("Files Content Extractor", true);
+        this.data = new RelationType(new Relation(1, 1, "something to fill"), StepOutputNameEnum.DATA.toString());
+    }
+
     public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {
-        super("FILES_CONTENT_EXTRACTOR", true);
+        this();
         this.filesList = filesList;
         this.lineNumber = lineNumber;
         this.filesList.setMandatory(true);
         this.lineNumber.setMandatory(true);
     }
-    public FilesContentExtractorStep(){
-        super("FILES_CONTENT_EXTRACTOR", true);
-    }
+
+
 
     @Override
     public void execute() {
@@ -28,7 +34,7 @@ public class FilesContentExtractorStep extends Step {
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
             this.addLog(e.getMessage());
-            this.outputs.add(new RelationType(new Relation(0,0)));
+            this.data=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString());
         }
         catch (Exception e){
             this.setSummaryLine("Exception: " + e.getMessage());
@@ -73,7 +79,7 @@ public class FilesContentExtractorStep extends Step {
 
         }
 
-        this.outputs.add(new RelationType(relation));
+        this.data=new RelationType(relation, StepOutputNameEnum.DATA.toString());
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
     }
@@ -81,15 +87,22 @@ public class FilesContentExtractorStep extends Step {
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.FILES_LIST.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.FILES_LIST.toString())) {
                 this.filesList = (ListType) input;
                 this.filesList.setMandatory(true);
             }
-            if(input.getName().equals(StepInputNameEnum.LINE.toString())) {
-                this.lineNumber = (NumberType) input;
-                this.lineNumber.setMandatory(true);
-            }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.data.getEffectiveName().equals(outputName))
+                outputsArray.add(this.data);
+            if(this.filesList.getEffectiveName().equals(outputName))
+                outputsArray.add(filesList);
+        }
+        return outputsArray;
     }
 
     public class EmptyFileListException extends Exception{

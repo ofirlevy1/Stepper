@@ -5,22 +5,24 @@ import DataTypes.Relation;
 import DataTypes.RelationType;
 import DataTypes.StringType;
 
+import java.util.ArrayList;
+
 public class CsvExporterStep extends Step {
     private RelationType source;
     private Relation table;
     private String resultString;
-
-    public CsvExporterStep(RelationType source) {
-        super("CSV Exporter", true);
-        this.source = source;
-        this.source.setMandatory(true);
-        this.table = source.getData();
-        this.resultString = "";
-    }
+    private StringType result;
 
     public CsvExporterStep(){
         super("CSV Exporter", true);
-        this.resultString="";
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+    }
+
+    public CsvExporterStep(RelationType source) {
+        this();
+        this.source = source;
+        this.source.setMandatory(true);
+        this.table = source.getData();
     }
 
     @Override
@@ -29,7 +31,7 @@ public class CsvExporterStep extends Step {
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.outputs.add(new StringType("Failure"));
+            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString());
         }
     }
 
@@ -43,18 +45,27 @@ public class CsvExporterStep extends Step {
             addDataFromTable();
             setStatus(Status.Success);
         }
-        outputs.add(new StringType(resultString));
+        this.result=new StringType(resultString, StepOutputNameEnum.RESULT.toString());
     }
 
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.SOURCE.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.SOURCE.toString())) {
                 this.source = (RelationType) input;
                 this.source.setMandatory(true);
                 this.table=(Relation) this.source.getData();
             }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.result.getEffectiveName().equals(outputName))
+                outputsArray.add(this.result);
+        }
+        return outputsArray;
     }
 
     private void addColumnNames() {

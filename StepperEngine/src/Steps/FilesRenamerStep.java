@@ -11,6 +11,7 @@ public class FilesRenamerStep extends Step {
     private ListType filesToRename;
     private StringType prefix;
     private StringType suffix;
+    private RelationType renameResult;
     private ArrayList<String> failedFiles;
 
     // These are used to fill the Relation result output at the end of the step because
@@ -19,24 +20,22 @@ public class FilesRenamerStep extends Step {
     private ArrayList<String> renamedFilesOldNames;
     private ArrayList<String> renamedFilesNewNames;
 
-    public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
-        super("Files Renamer", false);
-        this.filesToRename = filesToRename;
-        this.prefix = prefix;
-        this.suffix = suffix;
-        failedFiles = new ArrayList<>();
-        renamedFilesOldNames = new ArrayList<>();
-        renamedFilesNewNames = new ArrayList<>();
-        this.filesToRename.setMandatory(true);
-        this.prefix.setMandatory(false);
-        this.suffix.setMandatory(false);
-    }
-
     public FilesRenamerStep(){
         super("Files Renamer", false);
         failedFiles=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
+        this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString());
+    }
+
+    public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
+        this();
+        this.filesToRename = filesToRename;
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.filesToRename.setMandatory(true);
+        this.prefix.setMandatory(false);
+        this.suffix.setMandatory(false);
     }
 
     @Override
@@ -68,19 +67,28 @@ public class FilesRenamerStep extends Step {
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getName().equals(StepInputNameEnum.FILES_TO_RENAME.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.FILES_TO_RENAME.toString())) {
                 this.filesToRename = (ListType) input;
                 this.filesToRename.setMandatory(true);
             }
-            if(input.getName().equals(StepInputNameEnum.SUFFIX.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.SUFFIX.toString())) {
                 this.suffix = (StringType) input;
                 this.suffix.setMandatory(false);
             }
-            if(input.getName().equals(StepInputNameEnum.PREFIX.toString())) {
+            if(input.getEffectiveName().equals(StepInputNameEnum.PREFIX.toString())) {
                 this.prefix = (StringType) input;
                 this.prefix.setMandatory(false);
             }
         }
+    }
+
+    public ArrayList<DataType> getOutputs(String... outputNames) {
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.renameResult.getEffectiveName().equals(outputName))
+                outputsArray.add(this.renameResult);
+        }
+        return outputsArray;
     }
 
     private void setOutput() {
@@ -90,7 +98,7 @@ public class FilesRenamerStep extends Step {
             output.set(i, 1, renamedFilesOldNames.get(i));
             output.set(i, 2, renamedFilesNewNames.get(i));
         }
-        outputs.add(new RelationType(output));
+        this.renameResult=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString());
     }
 
     private boolean tryRenamingFile(File file) {
