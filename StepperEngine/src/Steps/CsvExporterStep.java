@@ -9,18 +9,18 @@ public class CsvExporterStep extends Step {
     private RelationType source;
     private Relation table;
     private String resultString;
-
-    public CsvExporterStep(RelationType source) {
-        super("CSV Exporter", true);
-        this.source = source;
-        this.source.setMandatory(true);
-        this.table = source.getData();
-        this.resultString = "";
-    }
+    private StringType result;
 
     public CsvExporterStep(){
         super("CSV Exporter", true);
-        this.resultString="";
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+    }
+
+    public CsvExporterStep(RelationType source) {
+        this();
+        this.source = source;
+        this.source.setMandatory(true);
+        this.table = source.getData();
     }
 
     @Override

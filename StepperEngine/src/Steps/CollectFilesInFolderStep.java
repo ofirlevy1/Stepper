@@ -7,13 +7,16 @@ import java.util.ArrayList;
 
 public class CollectFilesInFolderStep extends Step{
     private StringType folderName;
-
     private StringType filter;
+    private ListType filesList;
+    private NumberType totalFound;
 
     public CollectFilesInFolderStep(StringType folderName) {
         super("Collect Files In Folder", true);
         this.folderName = folderName;
         this.folderName.setMandatory(true);
+        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString());
+        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString());
     }
 
     public CollectFilesInFolderStep(StringType folderName, StringType filter) {
@@ -24,6 +27,8 @@ public class CollectFilesInFolderStep extends Step{
 
     public CollectFilesInFolderStep(){
         super("Collect Files In Folder", true);
+        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString());
+        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString());
     }
 
     @Override

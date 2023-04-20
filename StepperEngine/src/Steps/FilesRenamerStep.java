@@ -11,6 +11,7 @@ public class FilesRenamerStep extends Step {
     private ListType filesToRename;
     private StringType prefix;
     private StringType suffix;
+    private RelationType renameResult;
     private ArrayList<String> failedFiles;
 
     // These are used to fill the Relation result output at the end of the step because
@@ -19,24 +20,22 @@ public class FilesRenamerStep extends Step {
     private ArrayList<String> renamedFilesOldNames;
     private ArrayList<String> renamedFilesNewNames;
 
-    public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
-        super("Files Renamer", false);
-        this.filesToRename = filesToRename;
-        this.prefix = prefix;
-        this.suffix = suffix;
-        failedFiles = new ArrayList<>();
-        renamedFilesOldNames = new ArrayList<>();
-        renamedFilesNewNames = new ArrayList<>();
-        this.filesToRename.setMandatory(true);
-        this.prefix.setMandatory(false);
-        this.suffix.setMandatory(false);
-    }
-
     public FilesRenamerStep(){
         super("Files Renamer", false);
         failedFiles=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
+        this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString());
+    }
+
+    public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
+        this();
+        this.filesToRename = filesToRename;
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.filesToRename.setMandatory(true);
+        this.prefix.setMandatory(false);
+        this.suffix.setMandatory(false);
     }
 
     @Override

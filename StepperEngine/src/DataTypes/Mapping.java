@@ -9,6 +9,8 @@ public class Mapping {
         this.cdr=cdr;
     }
 
+    public Mapping(){}
+
     public DataType getCar() {
         return car;
     }

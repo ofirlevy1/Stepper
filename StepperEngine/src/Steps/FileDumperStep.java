@@ -10,18 +10,21 @@ public class FileDumperStep extends  Step{
 
     private StringType content;
     private StringType fileName;
+    private StringType result;
+
+    public FileDumperStep(){
+        super("File dumper", true);
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+    }
 
     public FileDumperStep(StringType content, StringType fileName){
-        super("FILE_DUMPER", true);
+        this();
         this.content=content;
         this.fileName=fileName;
         this.content.setMandatory(true);
         this.fileName.setMandatory(true);
     }
 
-    public FileDumperStep(){
-        super("FILE_DUMPER", true);
-    }
     @Override
     public void execute() {
         try {

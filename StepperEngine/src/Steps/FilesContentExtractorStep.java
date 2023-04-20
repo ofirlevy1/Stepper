@@ -8,16 +8,22 @@ import java.util.ArrayList;
 public class FilesContentExtractorStep extends Step {
     private ListType filesList;
     private NumberType lineNumber;
+    private RelationType data;
+
+    public FilesContentExtractorStep() {
+        super("Files Content Extractor", true);
+        this.data = new RelationType(new Relation(1, 1, "something to fill"), StepOutputNameEnum.DATA.toString());
+    }
+
     public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {
-        super("FILES_CONTENT_EXTRACTOR", true);
+        this();
         this.filesList = filesList;
         this.lineNumber = lineNumber;
         this.filesList.setMandatory(true);
         this.lineNumber.setMandatory(true);
     }
-    public FilesContentExtractorStep(){
-        super("FILES_CONTENT_EXTRACTOR", true);
-    }
+
+
 
     @Override
     public void execute() {

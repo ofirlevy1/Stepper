@@ -7,14 +7,19 @@ import java.util.ArrayList;
 
 public class FilesDeleterStep extends Step{
     private ListType filesList;
+    private ListType deletedList;
+    private MappingType deletionStats;
+
     public FilesDeleterStep(ListType filesList) {
-        super("FILES_DELETER", false);
+        this();
         this.filesList = filesList;
         this.filesList.setMandatory(true);
     }
 
     public FilesDeleterStep(){
-        super("FILES_DELETER", false);
+        super("Files Deleter", false);
+        this.deletedList=new ListType(new ArrayList<>(), StepOutputNameEnum.DELETED_LIST.toString());
+        this.deletionStats=new MappingType(new Mapping(), StepOutputNameEnum.DELETION_STATS.toString());
     }
     @Override
     public void execute() {

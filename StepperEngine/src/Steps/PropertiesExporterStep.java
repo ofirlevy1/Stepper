@@ -4,14 +4,17 @@ import DataTypes.*;
 
 public class PropertiesExporterStep extends Step{
     private RelationType source;
-    public PropertiesExporterStep(RelationType source) {
-        super("PROPERTIES_EXPORTER", true);
-        this.source = source;
-        this.source.setMandatory(true);
-    }
+    private StringType result;
 
     public PropertiesExporterStep(){
-        super("PROPERTIES_EXPORTER", true);
+        super("Properties Exporter", true);
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
+    }
+
+    public PropertiesExporterStep(RelationType source) {
+        this();
+        this.source = source;
+        this.source.setMandatory(true);
     }
 
     @Override

@@ -10,14 +10,14 @@ import java.util.List;
 public class SpendSomeTimeStep extends Step{
     private NumberType secondsToSpend;
 
-    public SpendSomeTimeStep(NumberType secondsToSpend) {
-        super("TIME_TO_SPEND", true);
-        this.secondsToSpend = secondsToSpend;
-        this.secondsToSpend.setMandatory(true);
+    public SpendSomeTimeStep(){
+        super("Spend Some Time", true);
     }
 
-    public SpendSomeTimeStep(){
-        super("TIME_TO_SPEND", true);
+    public SpendSomeTimeStep(NumberType secondsToSpend) {
+        this();
+        this.secondsToSpend = secondsToSpend;
+        this.secondsToSpend.setMandatory(true);
     }
 
     @Override
