@@ -97,6 +97,7 @@ public class FilesContentExtractorStep extends Step {
         }
     }
 
+    @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
         ArrayList<DataType> outputsArray=new ArrayList<>();
         for(String outputName: outputNames){
@@ -106,6 +107,15 @@ public class FilesContentExtractorStep extends Step {
                 outputsArray.add(filesList);
         }
         return outputsArray;
+    }
+
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.filesList);
+        allData.add(this.data);
+        allData.add(this.lineNumber);
+        return  allData;
     }
 
     public class EmptyFileListException extends Exception{

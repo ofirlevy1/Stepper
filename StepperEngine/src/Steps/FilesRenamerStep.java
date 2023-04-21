@@ -86,6 +86,7 @@ public class FilesRenamerStep extends Step {
         }
     }
 
+    @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
         ArrayList<DataType> outputsArray=new ArrayList<>();
         for(String outputName: outputNames){
@@ -93,6 +94,16 @@ public class FilesRenamerStep extends Step {
                 outputsArray.add(this.renameResult);
         }
         return outputsArray;
+    }
+
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.renameResult);
+        allData.add(this.filesToRename);
+        allData.add(this.prefix);
+        allData.add(this.suffix);
+        return  allData;
     }
 
     private void setOutput() {
