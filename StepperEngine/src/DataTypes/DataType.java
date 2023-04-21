@@ -2,7 +2,7 @@ package DataTypes;
 
 public abstract class DataType<T> {
 
-    // user friendly means it can be given by the user.
+    // user-friendly means it can be given by the user.
     private boolean userFriendly;
     private String name;
     private String alias;
@@ -11,16 +11,22 @@ public abstract class DataType<T> {
     boolean isMandatory;
     protected T data;
 
+    public enum Type{
+        DOUBLE, FILE, LIST, MAPPING, NUMBER, RELATION, STRING
+    }
 
-    public DataType(String name, String userFriendlyName, boolean userFriendly) {
+    private Type type;
+
+
+    public DataType(String name, String userFriendlyName, boolean userFriendly,Type type) {
         this.userFriendly = userFriendly;
         this.userFriendlyName = userFriendlyName;
         this.name = name;
         hasAlias = false;
     }
 
-    public DataType(String name, String userFriendlyName, boolean userFriendly, T data) {
-        this(name, userFriendlyName, userFriendly);
+    public DataType(String name, String userFriendlyName, boolean userFriendly, T data, Type type) {
+        this(name, userFriendlyName, userFriendly, type);
         this.data = data;
     }
 
@@ -30,6 +36,14 @@ public abstract class DataType<T> {
 
     public boolean isMandatory() {
         return isMandatory;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public abstract String getPresentableString();

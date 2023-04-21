@@ -84,6 +84,7 @@ public class FilesDeleterStep extends Step{
         }
     }
 
+    @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
         ArrayList<DataType> outputsArray=new ArrayList<>();
         for(String outputName: outputNames){
@@ -93,6 +94,15 @@ public class FilesDeleterStep extends Step{
                 outputsArray.add(deletionStats);
         }
         return outputsArray;
+    }
+
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.filesList);
+        allData.add(this.deletedList);
+        allData.add(this.deletionStats);
+        return  allData;
     }
 
     public class EmptyFileListException extends Exception{

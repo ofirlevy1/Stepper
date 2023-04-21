@@ -3,14 +3,14 @@ package DataTypes;
 public class RelationType extends DataType<Relation> {
 
     public RelationType(String name) {
-        super(name, "Relation", false);
+        super(name, name.toLowerCase().replace('_',' '), false, Type.RELATION);
     }
     public RelationType(Relation relation) {
-        super("Relation", "Relation", false, relation);
+        super("Relation", "Relation", false, relation, Type.RELATION);
     }
 
     public RelationType(Relation relation, String name) {
-        super(name, name, false, relation);
+        super(name, name.toLowerCase().replace('_',' '), false, relation, Type.RELATION);
     }
 
 
