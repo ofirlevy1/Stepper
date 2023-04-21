@@ -12,10 +12,10 @@ public class FilesContentExtractorStep extends Step {
 
     public FilesContentExtractorStep() {
         super("Files Content Extractor", true);
-        this.data = new RelationType(new Relation(1, 1, "something to fill"), StepOutputNameEnum.DATA.toString());
+        this.data = new RelationType(new Relation(1, 1, "something to fill"), StepOutputNameEnum.DATA.toString(), false);
 
-        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString());
-        this.lineNumber = new NumberType(StepInputNameEnum.LINE.toString());
+        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString(), true);
+        this.lineNumber = new NumberType(StepInputNameEnum.LINE.toString(), true);
     }
 
     public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {
@@ -37,7 +37,7 @@ public class FilesContentExtractorStep extends Step {
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
             this.addLog(e.getMessage());
-            this.data=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString());
+            this.data=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString(), false);
         }
         catch (Exception e){
             this.setSummaryLine("Exception: " + e.getMessage());
@@ -82,7 +82,7 @@ public class FilesContentExtractorStep extends Step {
 
         }
 
-        this.data=new RelationType(relation, StepOutputNameEnum.DATA.toString());
+        this.data=new RelationType(relation, StepOutputNameEnum.DATA.toString(), false);
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
     }

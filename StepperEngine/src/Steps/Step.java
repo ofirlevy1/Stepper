@@ -2,6 +2,9 @@ package Steps;
 
 import DataTypes.DataType;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class  Step {
     private String name;
@@ -62,6 +65,17 @@ public abstract class  Step {
     public abstract ArrayList<DataType> getOutputs(String... outputNames);
 
     public  abstract ArrayList<DataType> getAllData();
+
+    public boolean trySetDataAlias(String name, String alias) {
+        ArrayList<DataType> data = getAllData();
+        List<DataType> matchedDataMembers = data.stream().filter(d -> d.getName().equals(name)).collect(Collectors.toList());
+        if(matchedDataMembers.isEmpty())
+            return false;
+        matchedDataMembers.get(0).setAlias(alias);
+        return true;
+    }
+
+    public boolean getDataM
 
     public String getSummaryLine() {
         return summaryLine;

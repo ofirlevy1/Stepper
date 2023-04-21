@@ -25,11 +25,11 @@ public class FilesRenamerStep extends Step {
         failedFiles=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
-        this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString());
+        this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString(), false);
 
-        this.filesToRename = new ListType(StepInputNameEnum.FILES_TO_RENAME.toString());
-        this.prefix = new StringType(StepInputNameEnum.PREFIX.toString());
-        this.suffix = new StringType(StepInputNameEnum.SUFFIX.toString());
+        this.filesToRename = new ListType(StepInputNameEnum.FILES_TO_RENAME.toString(), true);
+        this.prefix = new StringType(StepInputNameEnum.PREFIX.toString(), true);
+        this.suffix = new StringType(StepInputNameEnum.SUFFIX.toString(), true);
     }
 
     public FilesRenamerStep(ListType filesToRename, StringType prefix, StringType suffix) {
@@ -48,7 +48,7 @@ public class FilesRenamerStep extends Step {
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.outputs.add(new StringType("Failure"));
+            this.outputs.add(new StringType("Failure", false));
         }
     }
 
@@ -113,7 +113,7 @@ public class FilesRenamerStep extends Step {
             output.set(i, 1, renamedFilesOldNames.get(i));
             output.set(i, 2, renamedFilesNewNames.get(i));
         }
-        this.renameResult=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString());
+        this.renameResult=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString(), false);
     }
 
     private boolean tryRenamingFile(File file) {

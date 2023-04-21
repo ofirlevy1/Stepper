@@ -15,8 +15,8 @@ public class CsvExporterStep extends Step {
 
     public CsvExporterStep(){
         super("CSV Exporter", true);
-        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString());
-        this.source = new RelationType(StepInputNameEnum.SOURCE.toString());
+        this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString(), false);
+        this.source = new RelationType(StepInputNameEnum.SOURCE.toString(), true);
     }
 
     public CsvExporterStep(RelationType source) {
@@ -32,7 +32,7 @@ public class CsvExporterStep extends Step {
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString());
+            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
         }
     }
 
@@ -46,7 +46,7 @@ public class CsvExporterStep extends Step {
             addDataFromTable();
             setStatus(Status.Success);
         }
-        this.result=new StringType(resultString, StepOutputNameEnum.RESULT.toString());
+        this.result=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
     }
 
     @Override

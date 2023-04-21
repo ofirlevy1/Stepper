@@ -18,10 +18,10 @@ public class FilesDeleterStep extends Step{
 
     public FilesDeleterStep(){
         super("Files Deleter", false);
-        this.deletedList=new ListType(new ArrayList<>(), StepOutputNameEnum.DELETED_LIST.toString());
-        this.deletionStats=new MappingType(new Mapping(), StepOutputNameEnum.DELETION_STATS.toString());
+        this.deletedList=new ListType(new ArrayList<>(), StepOutputNameEnum.DELETED_LIST.toString(), false);
+        this.deletionStats=new MappingType(new Mapping(), StepOutputNameEnum.DELETION_STATS.toString(), false);
 
-        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString());
+        this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString(), true);
     }
     @Override
     public void execute() {
@@ -31,7 +31,7 @@ public class FilesDeleterStep extends Step{
         catch (EmptyFileListException e){
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
-            this.deletionStats=new MappingType(new Mapping(new NumberType(0),new NumberType(0)), StepOutputNameEnum.DELETION_STATS.toString());
+            this.deletionStats=new MappingType(new Mapping(new NumberType(0, false),new NumberType(0, false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
 
         } catch (EveryFileFailedToDeleteException e) {
             this.setSummaryLine(e.getMessage());
@@ -59,15 +59,15 @@ public class FilesDeleterStep extends Step{
             file.delete();
             if(file.exists())
             {
-                filesNotDeletedList.add(new StringType(file.getAbsolutePath()));
+                filesNotDeletedList.add(new StringType(file.getAbsolutePath(), false));
                 this.addLog("Failed to delete file "+file.getName());
             }
         }
-        this.deletedList=new ListType(filesNotDeletedList, StepOutputNameEnum.DELETED_LIST.toString());
+        this.deletedList=new ListType(filesNotDeletedList, StepOutputNameEnum.DELETED_LIST.toString(), false);
         this.setStatus(Status.Success);
         this.setSummaryLine("Successfully deleted "+(existingFilesCount-filesNotDeletedList.size())+" out of "+files.size()+" files");
         if(files.isEmpty())throw new EmptyFileListException("File list is empty");
-        this.deletionStats=new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size()),new NumberType(filesNotDeletedList.size())), StepOutputNameEnum.DELETION_STATS.toString());
+        this.deletionStats=new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size(), false),new NumberType(filesNotDeletedList.size(), false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
         if(filesNotDeletedList.size()==files.size())throw  new EveryFileFailedToDeleteException("Every file in the list has failed to be deleted");
 
 

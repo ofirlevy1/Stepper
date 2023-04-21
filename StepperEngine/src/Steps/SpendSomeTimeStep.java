@@ -14,7 +14,7 @@ public class SpendSomeTimeStep extends Step{
     public SpendSomeTimeStep(){
         super("Spend Some Time", true);
 
-        this.secondsToSpend = new NumberType(StepInputNameEnum.TIME_TO_SPEND.toString());
+        this.secondsToSpend = new NumberType(StepInputNameEnum.TIME_TO_SPEND.toString(), true);
     }
 
     public SpendSomeTimeStep(NumberType secondsToSpend) {

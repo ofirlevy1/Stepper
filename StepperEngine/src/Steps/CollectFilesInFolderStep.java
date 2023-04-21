@@ -15,8 +15,8 @@ public class CollectFilesInFolderStep extends Step{
         super("Collect Files In Folder", true);
         this.folderName = folderName;
         this.folderName.setMandatory(true);
-        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString());
-        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString());
+        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString(), false);
+        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString(), false);
     }
 
     public CollectFilesInFolderStep(StringType folderName, StringType filter) {
@@ -27,10 +27,10 @@ public class CollectFilesInFolderStep extends Step{
 
     public CollectFilesInFolderStep(){
         super("Collect Files In Folder", true);
-        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString());
-        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString());
-        this.folderName = new StringType(StepInputNameEnum.FOLDER_NAME.toString());
-        this.filter = new StringType(StepInputNameEnum.FILTER.toString());
+        this.filesList=new ListType(new ArrayList<>(),StepOutputNameEnum.FILES_LIST.toString(), false);
+        this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString(), false);
+        this.folderName = new StringType(StepInputNameEnum.FOLDER_NAME.toString(), true);
+        this.filter = new StringType(StepInputNameEnum.FILTER.toString(), true);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CollectFilesInFolderStep extends Step{
             return;
         }
         int matchingFiles = addMatchingFilesToOutput(folder.listFiles());
-        this.totalFound=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString());
+        this.totalFound=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString(), false);
         addLog("Found " + matchingFiles + " files in folder matching the filter");
         setStatus(Status.Success);
     }
@@ -105,12 +105,12 @@ public class CollectFilesInFolderStep extends Step{
 
     int addMatchingFilesToOutput(File[] files)
     {
-        ListType matchingFiles = new ListType(new ArrayList<DataType>(), StepOutputNameEnum.FILES_LIST.toString());
+        ListType matchingFiles = new ListType(new ArrayList<DataType>(), StepOutputNameEnum.FILES_LIST.toString(), false);
         for(File file : files)
         {
             if(filter == null || file.getName().endsWith(filter.getData()))
                 if(!file.isDirectory())
-                    matchingFiles.getData().add(new FileType(file));
+                    matchingFiles.getData().add(new FileType(file, false));
         }
         this.filesList=matchingFiles;
         return matchingFiles.getData().size();
