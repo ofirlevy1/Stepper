@@ -112,4 +112,8 @@ public abstract class DataType<T> {
     public void setAssigned(boolean assigned) {
         isAssigned = assigned;
     }
+
+    public boolean isInput() {
+        return isInput;
+    }
 }

@@ -67,15 +67,28 @@ public abstract class  Step {
     public  abstract ArrayList<DataType> getAllData();
 
     public boolean trySetDataAlias(String name, String alias) {
-        ArrayList<DataType> data = getAllData();
-        List<DataType> matchedDataMembers = data.stream().filter(d -> d.getName().equals(name)).collect(Collectors.toList());
+        List<DataType> matchedDataMembers = getDataMembersByName(name);
         if(matchedDataMembers.isEmpty())
             return false;
         matchedDataMembers.get(0).setAlias(alias);
         return true;
     }
 
-    public boolean getDataM
+    private List<DataType> getDataMembersByName(String name) {
+        return getAllData().stream().filter(d -> d.getEffectiveName().equals(name)).collect(Collectors.toList());
+    }
+
+    public List<DataType> getAllOutputs() {
+        return getAllData().stream().filter(d -> !d.isInput()).collect(Collectors.toList());
+    }
+
+    public boolean tryAssignDataTypeByName(String name) {
+        List<DataType> matchedDataMembers = getDataMembersByName(name);
+        if(matchedDataMembers.isEmpty())
+            return false;
+        matchedDataMembers.get(0).setAssigned(true);
+        return true;
+    }
 
     public String getSummaryLine() {
         return summaryLine;
