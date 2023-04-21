@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 public class ListType extends  DataType<ArrayList<DataType>>{
 
-    public ListType(String name) {
-        super(name, "List", false);
-    }
-    public ListType(ArrayList<DataType> list){super("List", "List", false, list);}
+    public ListType(String name) {super(name, "List", false, Type.LIST);}
+    public ListType(ArrayList<DataType> list){super("List", "List", false, list, Type.LIST);}
 
-    public ListType(ArrayList<DataType> list, String name){super(name, name, false, list);}
+    public ListType(ArrayList<DataType> list, String name){super(name, name, false, list, Type.LIST);}
 
     /**
      * returns a string in the format:
