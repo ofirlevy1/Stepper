@@ -73,6 +73,7 @@ public class FileDumperStep extends  Step{
         }
     }
 
+    @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
         ArrayList<DataType> outputsArray=new ArrayList<>();
         for(String outputName: outputNames){
@@ -80,6 +81,15 @@ public class FileDumperStep extends  Step{
                 outputsArray.add(this.result);
         }
         return outputsArray;
+    }
+
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.result);
+        allData.add(this.fileName);
+        allData.add(this.content);
+        return  allData;
     }
 
 }

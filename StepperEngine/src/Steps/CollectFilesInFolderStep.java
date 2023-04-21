@@ -93,6 +93,16 @@ public class CollectFilesInFolderStep extends Step{
         return outputsArray;
     }
 
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.filesList);
+        allData.add(this.totalFound);
+        allData.add(this.folderName);
+        allData.add(this.filter);
+        return  allData;
+    }
+
     int addMatchingFilesToOutput(File[] files)
     {
         ListType matchingFiles = new ListType(new ArrayList<DataType>(), StepOutputNameEnum.FILES_LIST.toString());

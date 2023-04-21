@@ -61,6 +61,13 @@ public class SpendSomeTimeStep extends Step{
         return null;
     }
 
+    @Override
+    public ArrayList<DataType> getAllData() {
+        ArrayList<DataType> allData=new ArrayList<>();
+        allData.add(this.secondsToSpend);
+        return  allData;
+    }
+
 
     // Not sure about this. maybe it's better to return an empty List<DataType>,
     // or do something else. overriding this and returning NULL might smell a bit.

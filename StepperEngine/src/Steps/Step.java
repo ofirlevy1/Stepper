@@ -61,6 +61,8 @@ public abstract class  Step {
 
     public abstract ArrayList<DataType> getOutputs(String... outputNames);
 
+    public  abstract ArrayList<DataType> getAllData();
+
     public String getSummaryLine() {
         return summaryLine;
     }
