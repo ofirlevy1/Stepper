@@ -3,7 +3,6 @@ package Steps;
 import DataTypes.DataType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class  Step {
@@ -76,6 +75,18 @@ public abstract class  Step {
 
     private List<DataType> getDataMembersByName(String name) {
         return getAllData().stream().filter(d -> d.getEffectiveName().equals(name)).collect(Collectors.toList());
+    }
+
+    public boolean containsDataMember(String name){
+        return !getDataMembersByName(name).isEmpty();
+    }
+
+    public boolean checkIfDataMemberIsAssigned(String name){
+        return  getDataMembersByName(name).get(0).isAssigned();
+    }
+
+    public boolean IsDataMemberIsInput(String name){
+        return  getDataMembersByName(name).get(0).isInput();
     }
 
     public List<DataType> getAllOutputs() {
