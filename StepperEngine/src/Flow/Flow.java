@@ -55,8 +55,9 @@ public class Flow {
 
         loadSteps(flow.getSTStepsInFlow().getSTStepInFlow());
         setFlowLevelAliases(flow.getSTFlowLevelAliasing().getSTFlowLevelAlias());
-
         setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
+
+        findFreeInputs();
 
         setIsReadOnly();
 
@@ -75,10 +76,15 @@ public class Flow {
     // outputs with the same name
     private void setFlowLevelAliases(List<STFlowLevelAlias> aliases) {
         for(STFlowLevelAlias alias : aliases) {
-            Step current = getStepByFinalName(alias.getStep());
+            Step current = getStepByFinalName(alias.getStep(),"flow level aliasing");
             if(current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))throw new RuntimeException("In flow level aliasing:"+alias.getSourceDataName()+" does not exist");
         }
-        //checking if there are outputs with the same effective name
+
+        setFlowLevelAliasesValidation();
+    }
+
+    //checking if there are outputs with the same effective name
+    private void setFlowLevelAliasesValidation(){
         HashSet<String> outputsSet= new HashSet<>();
         for(Step step:steps) {
             List<DataType> dataMembers = step.getAllData();
@@ -90,13 +96,13 @@ public class Flow {
         }
     }
 
-    private Step getStepByFinalName(String name) {
+    private Step getStepByFinalName(String name, String exceptionString) {
         for(Step step : steps) {
             if(step.getFinalName().equals(name)) {
                 return step;
             }
         }
-        throw new RuntimeException("In flow level aliasing: " + name + " does not exist");
+        throw new RuntimeException("In "+exceptionString+": " + name + " does not exist");
     }
 
     // Input validation to do:
@@ -141,8 +147,31 @@ public class Flow {
     public void addCustomMappings(List<STCustomMapping> customMappings) {
         for(STCustomMapping mapping : customMappings) {
             map.addMapping(new StepMap(mapping.getSourceStep(), mapping.getSourceData(), mapping.getTargetStep(), mapping.getTargetData()));
-            getStepByFinalName(mapping.getTargetStep()).tryAssignDataTypeByName(mapping.getTargetData());
+            addCustomMappingsValidation(mapping);
+            getStepByFinalName(mapping.getTargetStep(),"").tryAssignDataTypeByName(mapping.getTargetData());
         }
+    }
+
+    /*
+    validation the following in custom mapping:
+    1.source step exists
+    2.target step exists
+    3.source data exists
+    4.target data exists
+    5.if trying to assign two or more outputs to an input
+    6.if trying to assign a source step that is located after the target step(like a loop)
+    7.the source data is actually in input
+    8.the target data is actually an output
+     */
+    private void addCustomMappingsValidation(STCustomMapping mapping){
+        Step sourceStep=getStepByFinalName(mapping.getSourceStep(),"custom mapping");
+        Step targetStep = getStepByFinalName(mapping.getTargetStep(),"custom mapping");
+        if(!sourceStep.containsDataMember(mapping.getSourceData()))throw new RuntimeException("In custom mapping:"+mapping.getSourceData()+" does not exist");
+        if(!targetStep.containsDataMember(mapping.getTargetData()))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" does not exist");
+        if(targetStep.checkIfDataMemberIsAssigned(mapping.getTargetData()))throw new RuntimeException("In custom mapping, two outputs are assigned to:"+mapping.getTargetData());
+        if(steps.indexOf(sourceStep)>=steps.indexOf(targetStep))throw new RuntimeException("in custom mapping: trying to assign source step "+ sourceStep.getFinalName()+" that is after target step "+targetStep.getFinalName());
+        if(sourceStep.IsDataMemberIsInput(mapping.getSourceData()))throw new RuntimeException("In custom mapping:"+mapping.getSourceData()+" is an input, but referred as output");
+        if(!targetStep.IsDataMemberIsInput(mapping.getTargetData()))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" is an output, but referred as input");
     }
 
     // loop one steps - by order
@@ -153,19 +182,11 @@ public class Flow {
     //
     //scan all inputs and check if they are free
     public void addAutomaticMappings() {
-
-
         for(int i = 0; i < steps.size(); i++) {
             List<DataType> currentStepOutputs = steps.get(i).getAllOutputs();
             addOutputs(currentStepOutputs);
             assignStepOutputsToMatchingInputs(currentStepOutputs, i);
         }
-
-//        for(Step step : steps) {
-//
-//        }
-
-
     }
 
     // gets a steps output and its index, goes through all the inputs of the steps that
@@ -191,6 +212,24 @@ public class Flow {
                 }
             }
         }
+    }
+
+    private void findFreeInputs(){
+        for(Step step:steps){
+            for(DataType dataMember:step.getAllData()){
+                if(dataMember.isInput() && !dataMember.isAssigned()) {
+                    if(!dataMember.isUserFriendly())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
+                    addFreeInput(dataMember);
+                }
+            }
+        }
+    }
+
+    public void addFreeInput(DataType input){
+        if(!freeInputs.containsKey(input.getEffectiveName())){
+            freeInputs.put(input.getEffectiveName(), new HashSet<DataType>());
+        }
+        freeInputs.get(input.getEffectiveName()).add(input);
     }
 
 
