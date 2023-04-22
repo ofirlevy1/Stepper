@@ -36,7 +36,6 @@ public class Flow {
     private boolean isReadOnly;
     private HashMap<String, HashSet<DataType>> freeInputs;
     private HashSet<String> freeInputsNames;
-
     private Flow.Status status;
 
     private static double durationAvgInMs = 0.0;
@@ -242,4 +241,30 @@ public class Flow {
     public String getName() {
         return name;
     }
+
+    public void execution(ArrayList<DataType> inputs){
+        //might need to allocate to the inputs within the steps
+        for(DataType input:inputs){
+            for(DataType freeInput:freeInputs.get(input.getEffectiveName()))
+                freeInput.setData(input);
+        }
+
+        try {
+            for (Step step : steps) {
+                step.execute();
+                if (step.getStatus() == Step.Status.Failure)
+                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
+                for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
+                    getStepByFinalName(mapping.getTargetStepName(), "").setInputs(step.getOutputs(mapping.getSourceDataName()).get(0));
+            }
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        }
+
+
+
 }
