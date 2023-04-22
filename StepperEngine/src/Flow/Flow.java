@@ -71,12 +71,22 @@ public class Flow {
     }
 
     // Input validation to do:
-    // Non existent steps/data types
+    // Non-existent steps/data types
     // outputs with the same name
     private void setFlowLevelAliases(List<STFlowLevelAlias> aliases) {
         for(STFlowLevelAlias alias : aliases) {
             Step current = getStepByFinalName(alias.getStep());
-            current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias());
+            if(current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))throw new RuntimeException("In flow level aliasing:"+alias.getSourceDataName()+" does not exist");
+        }
+        //checking if there are outputs with the same effective name
+        HashSet<String> outputsSet= new HashSet<>();
+        for(Step step:steps) {
+            List<DataType> dataMembers = step.getAllData();
+            for(DataType dataMember:dataMembers) {
+                if(!dataMember.isInput())
+                    if (!outputsSet.add(dataMember.getEffectiveName()))
+                        throw new RuntimeException("In flow level aliasing: there more than one output named:"+dataMember.getEffectiveName()+" after aliasing");
+            }
         }
     }
 
@@ -94,12 +104,17 @@ public class Flow {
     private void loadSteps(List<STStepInFlow> stSteps) {
         for(STStepInFlow stStep : stSteps) {
             Step current = StepFactory.createStep(stStep.getName());
+            if(current==null) throw  new RuntimeException("In step creation:"+stStep.getName()+" does not exist");
             if(stStep.getAlias() != null)
                 current.setAlias(stStep.getAlias());
             if(stStep.isContinueIfFailing() != null)
                 current.setBlocking(!stStep.isContinueIfFailing());
             steps.add(current);
         }
+        //checking if there are steps with the same final name
+        HashSet<String> stepsSet= new HashSet<>();
+        for(Step step:steps)
+            if(!stepsSet.add(step.getFinalName()))throw new RuntimeException("In step creation: there more than one step named:"+step.getFinalName()+" after aliasing");
     }
 
 
