@@ -76,8 +76,8 @@ public class FilesDeleterStep extends Step{
     @Override
     public void setInputs(DataType... inputs) {
         for(DataType input: inputs){
-            if(input.getEffectiveName().equals(StepInputNameEnum.FILES_LIST.toString())) {
-                this.filesList = (ListType) input;
+            if(input.getEffectiveName().equals(filesList.getEffectiveName())) {
+                this.filesList.setData((ArrayList<DataType>) input.getData());
                 this.filesList.setMandatory(true);
             }
 
