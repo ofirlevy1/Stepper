@@ -54,9 +54,12 @@ public class Flow {
         formalOutputsNames = new HashSet<>(Arrays.asList(flow.getSTFlowOutput().split(",")));
 
         loadSteps(flow.getSTStepsInFlow().getSTStepInFlow());
-        setFlowLevelAliases(flow.getSTFlowLevelAliasing().getSTFlowLevelAlias());
 
-        setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
+        if(flow.getSTFlowLevelAliasing() != null && flow.getSTFlowLevelAliasing().getSTFlowLevelAlias() != null)
+            setFlowLevelAliases(flow.getSTFlowLevelAliasing().getSTFlowLevelAlias());
+
+        if(flow.getSTCustomMappings() != null && flow.getSTCustomMappings().getSTCustomMapping() != null)
+            setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
 
         setIsReadOnly();
 
