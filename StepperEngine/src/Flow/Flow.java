@@ -184,4 +184,8 @@ public class Flow {
             outputs.put(outputToAdd.getEffectiveName(), outputToAdd);
         }
     }
+
+    public String getName() {
+        return name;
+    }
 }
