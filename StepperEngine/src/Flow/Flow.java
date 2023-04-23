@@ -76,7 +76,7 @@ public class Flow {
     private void setFlowLevelAliases(List<STFlowLevelAlias> aliases) {
         for(STFlowLevelAlias alias : aliases) {
             Step current = getStepByFinalName(alias.getStep(),"flow level aliasing");
-            if(current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))throw new RuntimeException("In flow level aliasing:"+alias.getSourceDataName()+" does not exist");
+            if(!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))throw new RuntimeException("In flow level aliasing:"+alias.getSourceDataName()+" does not exist");
         }
 
         setFlowLevelAliasesValidation();
