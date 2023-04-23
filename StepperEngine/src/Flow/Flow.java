@@ -56,7 +56,7 @@ public class Flow {
         setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
 
         findFreeInputs();
-
+        formalOutputsValidation();
         setIsReadOnly();
 
     }
@@ -165,6 +165,7 @@ public class Flow {
     6.if trying to assign a source step that is located after the target step(like a loop)
     7.the source data is actually in input
     8.the target data is actually an output
+    9.source data and target data are the same type
      */
     private void addCustomMappingsValidation(STCustomMapping mapping){
         Step sourceStep=getStepByFinalName(mapping.getSourceStep(),"custom mapping");
@@ -175,6 +176,7 @@ public class Flow {
         if(steps.indexOf(sourceStep)>=steps.indexOf(targetStep))throw new RuntimeException("in custom mapping: trying to assign source step "+ sourceStep.getFinalName()+" that is after target step "+targetStep.getFinalName());
         if(sourceStep.IsDataMemberIsInput(mapping.getSourceData()))throw new RuntimeException("In custom mapping:"+mapping.getSourceData()+" is an input, but referred as output");
         if(!targetStep.IsDataMemberIsInput(mapping.getTargetData()))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" is an output, but referred as input");
+        if(!targetStep.getTypeOfDataMember(mapping.getTargetData()).equals(sourceStep.getTypeOfDataMember(mapping.getSourceData())))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" and "+mapping.getSourceData()+" are not the same type");
     }
 
     // loop one steps - by order
@@ -217,15 +219,23 @@ public class Flow {
         }
     }
 
+    private void formalOutputsValidation(){
+        for(String formalOutput:formalOutputsNames){
+            if(outputs.get(formalOutput)==null)throw new RuntimeException("Formal output:"+formalOutput+" does not exist");
+        }
+    }
+
     private void findFreeInputs(){
         for(Step step:steps){
             for(DataType dataMember:step.getAllData()){
                 if(dataMember.isInput() && !dataMember.isAssigned()) {
-                    if(!dataMember.isUserFriendly())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
+                    if(!dataMember.isUserFriendly() && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
                     addFreeInput(dataMember);
                 }
             }
         }
+
+        freeInputsValidation();
     }
 
     public void addFreeInput(DataType input){
@@ -233,6 +243,15 @@ public class Flow {
             freeInputs.put(input.getEffectiveName(), new HashSet<DataType>());
         }
         freeInputs.get(input.getEffectiveName()).add(input);
+    }
+
+    void freeInputsValidation(){
+        HashSet<String> inputTypeset=new HashSet<>();
+        for(String freeInputsSetName:freeInputsNames){
+            for(DataType freeInputByName :freeInputs.get(freeInputsSetName)){
+                if(!inputTypeset.add(freeInputByName.getType().toString()))throw new RuntimeException("Free inputs by the name "+freeInputByName.getEffectiveName()+" have different data types");
+            }
+        }
     }
 
 

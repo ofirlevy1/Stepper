@@ -89,6 +89,10 @@ public abstract class  Step {
         return  getDataMembersByName(name).get(0).isInput();
     }
 
+    public String getTypeOfDataMember(String name){
+        return  getDataMembersByName(name).get(0).getType().toString();
+    }
+
     public List<DataType> getAllOutputs() {
         return getAllData().stream().filter(d -> !d.isInput()).collect(Collectors.toList());
     }
