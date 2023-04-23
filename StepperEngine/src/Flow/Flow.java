@@ -51,7 +51,6 @@ public class Flow {
         name = flow.getName();
         description = flow.getSTFlowDescription();
         formalOutputsNames = new HashSet<>(Arrays.asList(flow.getSTFlowOutput().split(",")));
-
         loadSteps(flow.getSTStepsInFlow().getSTStepInFlow());
         setFlowLevelAliases(flow.getSTFlowLevelAliasing().getSTFlowLevelAlias());
         setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
@@ -74,9 +73,12 @@ public class Flow {
     // Non-existent steps/data types
     // outputs with the same name
     private void setFlowLevelAliases(List<STFlowLevelAlias> aliases) {
-        for(STFlowLevelAlias alias : aliases) {
-            Step current = getStepByFinalName(alias.getStep(),"flow level aliasing");
-            if(!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))throw new RuntimeException("In flow level aliasing:"+alias.getSourceDataName()+" does not exist");
+        if(!aliases.isEmpty()) {
+            for (STFlowLevelAlias alias : aliases) {
+                Step current = getStepByFinalName(alias.getStep(), "flow level aliasing");
+                if (!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))
+                    throw new RuntimeException("In flow level aliasing:" + alias.getSourceDataName() + " does not exist");
+            }
         }
 
         setFlowLevelAliasesValidation();
@@ -107,6 +109,7 @@ public class Flow {
     // Input validation to do:
     // non existent steps
     private void loadSteps(List<STStepInFlow> stSteps) {
+        if(stSteps.isEmpty())throw new RuntimeException("No steps provided");
         for(STStepInFlow stStep : stSteps) {
             Step current = StepFactory.createStep(stStep.getName());
             if(current==null) throw  new RuntimeException("In step creation:"+stStep.getName()+" does not exist");
@@ -139,7 +142,8 @@ public class Flow {
 
 
     private void setFlowMap(List<STCustomMapping> customMappings) {
-        addCustomMappings(customMappings);
+        if(!customMappings.isEmpty())
+            addCustomMappings(customMappings);
         addAutomaticMappings();
     }
 
