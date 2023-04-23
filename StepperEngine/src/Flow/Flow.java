@@ -52,9 +52,11 @@ public class Flow {
         description = flow.getSTFlowDescription();
         formalOutputsNames = new HashSet<>(Arrays.asList(flow.getSTFlowOutput().split(",")));
 
+
         loadSteps(flow.getSTStepsInFlow());
         setFlowLevelAliases(flow.getSTFlowLevelAliasing());
         setFlowMap(flow.getSTCustomMappings());
+
 
         findFreeInputs();
         formalOutputsValidation();
