@@ -51,9 +51,10 @@ public class Flow {
         name = flow.getName();
         description = flow.getSTFlowDescription();
         formalOutputsNames = new HashSet<>(Arrays.asList(flow.getSTFlowOutput().split(",")));
-        loadSteps(flow.getSTStepsInFlow().getSTStepInFlow());
-        setFlowLevelAliases(flow.getSTFlowLevelAliasing().getSTFlowLevelAlias());
-        setFlowMap(flow.getSTCustomMappings().getSTCustomMapping());
+
+        loadSteps(flow.getSTStepsInFlow());
+        setFlowLevelAliases(flow.getSTFlowLevelAliasing());
+        setFlowMap(flow.getSTCustomMappings());
 
         findFreeInputs();
         formalOutputsValidation();
@@ -72,9 +73,9 @@ public class Flow {
     // Input validation to do:
     // Non-existent steps/data types
     // outputs with the same name
-    private void setFlowLevelAliases(List<STFlowLevelAlias> aliases) {
-        if(!aliases.isEmpty()) {
-            for (STFlowLevelAlias alias : aliases) {
+    private void setFlowLevelAliases(STFlowLevelAliasing aliases) {
+        if(aliases!=null&&aliases.getSTFlowLevelAlias()!=null) {
+            for (STFlowLevelAlias alias : aliases.getSTFlowLevelAlias()) {
                 Step current = getStepByFinalName(alias.getStep(), "flow level aliasing");
                 if (!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))
                     throw new RuntimeException("In flow level aliasing:" + alias.getSourceDataName() + " does not exist");
@@ -108,9 +109,9 @@ public class Flow {
 
     // Input validation to do:
     // non existent steps
-    private void loadSteps(List<STStepInFlow> stSteps) {
-        if(stSteps.isEmpty())throw new RuntimeException("No steps provided");
-        for(STStepInFlow stStep : stSteps) {
+    private void loadSteps(STStepsInFlow stSteps) {
+        if(stSteps==null||stSteps.getSTStepInFlow()==null)throw new RuntimeException("No steps provided");
+        for(STStepInFlow stStep : stSteps.getSTStepInFlow()) {
             Step current = StepFactory.createStep(stStep.getName());
             if(current==null) throw  new RuntimeException("In step creation:"+stStep.getName()+" does not exist");
             if(stStep.getAlias() != null)
@@ -141,9 +142,9 @@ public class Flow {
     }
 
 
-    private void setFlowMap(List<STCustomMapping> customMappings) {
-        if(!customMappings.isEmpty())
-            addCustomMappings(customMappings);
+    private void setFlowMap(STCustomMappings customMappings) {
+        if(customMappings!=null&&customMappings.getSTCustomMapping()!=null)
+            addCustomMappings(customMappings.getSTCustomMapping());
         addAutomaticMappings();
     }
 
