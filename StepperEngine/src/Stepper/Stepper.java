@@ -24,12 +24,20 @@ import java.util.HashSet;
 public class Stepper {
 
     HashSet<Flow> flows;
+    String exceptionString;
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(STStepper stStepper) {
         flows = new HashSet<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
-            flows.add(new Flow(stFlow));
+            try {
+                flows.add(new Flow(stFlow));
+            }
+            // input validation exception
+            catch (RuntimeException e){
+                exceptionString=e.getMessage();
+            }
+
         }
     }
 
