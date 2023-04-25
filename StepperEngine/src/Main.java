@@ -24,15 +24,26 @@ public class Main {
         String xmlPath = "C:\\Users\\Ofir\\Downloads\\ex1.xml";
         STStepper stepper = deserializeFrom(new FileInputStream(new File(xmlPath)));
         Flow flow = new Flow(stepper.getSTFlows().getSTFlow().get(0));
-
-
-
     }
 
     private static STStepper deserializeFrom(FileInputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance("Generated");
         Unmarshaller u = jc.createUnmarshaller();
         return (STStepper) u.unmarshal(in);
+    }
+
+    public static void flowTest() throws FileNotFoundException, JAXBException {
+        String xmlPath = "C:\\Users\\igal6\\Downloads\\ex1.xml";
+        STStepper stepper = deserializeFrom(new FileInputStream(new File(xmlPath)));
+        Flow flow = new Flow(stepper.getSTFlows().getSTFlow().get(1));
+        ArrayList<DataType> arr=new ArrayList<>();
+        DataType<Integer> number=new NumberType(3,"TIME_TO_SPEND",true);
+        DataType<String> filter=new StringType(".txt","FILTER",true);
+        DataType<String> folder=new StringType("C:\\Users\\igal6\\Downloads\\folder test","FOLDER_NAME",true);
+        arr.add(number);
+        arr.add(filter);
+        arr.add(folder);
+        flow.execution(arr);
     }
 
     public static void csvExporterTest() {
