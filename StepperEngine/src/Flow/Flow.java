@@ -1,6 +1,7 @@
 package Flow;
 
 import DataTypes.DataType;
+import DataTypes.UserFriendly;
 import Generated.*;
 import Steps.Step;
 import Steps.StepDescriptor;
@@ -242,7 +243,7 @@ public class Flow {
         for(Step step:steps){
             for(DataType dataMember:step.getAllData()){
                 if(dataMember.isInput() && !dataMember.isAssigned()) {
-                    if(!dataMember.isUserFriendly() && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
+                    if(!(dataMember instanceof UserFriendly) && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
                     addFreeInput(dataMember);
                     addFreeInputInformationToFreeInputDescriptorsArray(dataMember, step);
                 }
@@ -279,15 +280,11 @@ public class Flow {
         return name;
     }
 
-    public void execution(ArrayList<DataType> inputs){
-        Instant start=Instant.now();
-        //might need to allocate to the inputs within the steps
+    public void execute(){
+        if(!areAllMandatoryFreeInputsSet())
+            throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
 
-        // fill the free inputs data
-        for(DataType input:inputs){
-            for(DataType freeInput:freeInputs.get(input.getEffectiveName()))
-                freeInput.setData(input.getData());
-        }
+        Instant start=Instant.now();
 
         try {
             for (Step step : steps) {
@@ -303,6 +300,7 @@ public class Flow {
             flowRunsummery="flow execution ended successfully";
         } catch (RuntimeException e) {
             flowRunsummery=e.getMessage();
+            throw e;
         }
 
         Instant finish=Instant.now();
@@ -366,7 +364,7 @@ public class Flow {
     private void addFreeInputInformationToFreeInputDescriptorsArray(DataType freeInput, Step targetStep) {
         int freeInputDescriptorIndex = getIndexOfFreeInputInFreeInputDescriptorsArray(freeInput);
         if (freeInputDescriptorIndex == -1) {
-            freeInputsDescriptors.add(new FreeInputDescriptor(freeInput.getEffectiveName(), freeInput.getType(), freeInput.isMandatory()));
+            freeInputsDescriptors.add(new FreeInputDescriptor(freeInput.getEffectiveName(), freeInput.getUserFriendlyName(), freeInput.getType(), freeInput.isMandatory()));
             freeInputDescriptorIndex = freeInputsDescriptors.size() - 1;
         }
         addTargetStepToFreeInputDescriptor(freeInputDescriptorIndex, targetStep);
@@ -384,7 +382,27 @@ public class Flow {
         freeInputsDescriptors.get(freeInputDescriptorIndex).getAssociatedSteps().add(targetStep.getFinalName());
     }
 
+    public ArrayList<FreeInputDescriptor> getFreeInputsDescriptors() {
+        return freeInputsDescriptors;
+    }
 
+    public void setFreeInput(String inputEffectiveName, String dataStr) {
+        if(!freeInputs.keySet().contains(inputEffectiveName))
+            throw new RuntimeException("input '" + inputEffectiveName + " was not found in the Flow's free inputs");
+        for(DataType freeInput : freeInputs.get(inputEffectiveName)) {
+            if(!(freeInput instanceof UserFriendly))
+                throw new RuntimeException("An attempt was made to set a NONE user-friendly data type with a string");
+            ((UserFriendly) freeInput).setData(dataStr);
+        }
+    }
 
-
+    public boolean areAllMandatoryFreeInputsSet()
+    {
+        for(String freeInputName : freeInputs.keySet())
+            for(DataType freeInput : freeInputs.get(freeInputName)) {
+                if(!freeInput.isDataSet() && freeInput.isMandatory())
+                    return false;
+            }
+        return true;
+    }
 }

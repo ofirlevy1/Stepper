@@ -10,8 +10,7 @@ Things To Consider:
  */
 
 
-import Flow.Flow;
-import Flow.FlowDescriptor;
+import Flow.*;
 import Generated.STFlow;
 import Generated.STStepper;
 
@@ -69,5 +68,21 @@ public class Stepper {
         for(Flow flow : flows)
             flowNames.add(flow.getName());
         return flowNames;
+    }
+
+    public ArrayList<FreeInputDescriptor> getFreeInputDescriptorsByFlow(String flowName) {
+        return getFlowByName(flowName).getFreeInputsDescriptors();
+    }
+
+    public void setFreeInput(String flowName, String freeInputEffectiveName, String dataStr) {
+        getFlowByName(flowName).setFreeInput(freeInputEffectiveName, dataStr);
+    }
+
+    public boolean areAllMandatoryFreeInputsSet(String flowName) {
+        return getFlowByName(flowName).areAllMandatoryFreeInputsSet();
+    }
+
+    public void runFlow(String flowName) {
+        getFlowByName(flowName).execute();
     }
 }
