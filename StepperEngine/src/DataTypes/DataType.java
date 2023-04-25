@@ -1,9 +1,6 @@
 package DataTypes;
 
 public abstract class DataType<T> {
-
-    // user-friendly means it can be given by the user.
-    private boolean userFriendly;
     private String name;
     private String alias;
     private String userFriendlyName;
@@ -24,8 +21,7 @@ public abstract class DataType<T> {
     private Type type;
 
 
-    public DataType(String name, String userFriendlyName, boolean userFriendly,Type type, boolean isInput) {
-        this.userFriendly = userFriendly;
+    public DataType(String name, String userFriendlyName, Type type, boolean isInput) {
         this.userFriendlyName = userFriendlyName;
         this.name = name;
         hasAlias = false;
@@ -34,8 +30,8 @@ public abstract class DataType<T> {
         this.type=type;
     }
 
-    public DataType(String name, String userFriendlyName, boolean userFriendly, T data, Type type, boolean isInput) {
-        this(name, userFriendlyName, userFriendly, type, isInput);
+    public DataType(String name, String userFriendlyName, T data, Type type, boolean isInput) {
+        this(name, userFriendlyName, type, isInput);
         this.data = data;
     }
 
@@ -67,10 +63,6 @@ public abstract class DataType<T> {
 
     public String getEffectiveName() {
         return hasAlias ? alias : name;
-    }
-
-    public boolean isUserFriendly() {
-        return userFriendly;
     }
 
     public String getName() {
@@ -117,4 +109,5 @@ public abstract class DataType<T> {
     public boolean isInput() {
         return isInput;
     }
+
 }
