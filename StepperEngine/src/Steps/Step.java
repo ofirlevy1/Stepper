@@ -167,4 +167,8 @@ public abstract class  Step {
     public void setBlocking(boolean blocking) {
         isBlocking = blocking;
     }
+
+    public StepDescriptor getStepDescriptor() {
+        return new StepDescriptor(name, alias, hasAlias, isReadOnly);
+    }
 }

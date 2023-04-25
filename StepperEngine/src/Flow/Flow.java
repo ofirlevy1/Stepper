@@ -3,6 +3,7 @@ package Flow;
 import DataTypes.DataType;
 import Generated.*;
 import Steps.Step;
+import Steps.StepDescriptor;
 import Steps.StepFactory;
 
 import java.time.Duration;
@@ -47,6 +48,9 @@ public class Flow {
 
     FlowMap map;
 
+    ArrayList<FreeInputDescriptor> freeInputsDescriptors;
+    ArrayList<StepOutputDescriptor> outputDescriptors;
+
 
     public Flow(STFlow flow)
     {
@@ -54,9 +58,11 @@ public class Flow {
         name = flow.getName();
         description = flow.getSTFlowDescription();
         formalOutputsNames = new HashSet<>(Arrays.asList(flow.getSTFlowOutput().split(",")));
-
+        freeInputsDescriptors = new ArrayList<FreeInputDescriptor>();
+        outputDescriptors = new ArrayList<StepOutputDescriptor>();
 
         loadSteps(flow.getSTStepsInFlow());
+        fillOutputsDescriptorsArray();
         setFlowLevelAliases(flow.getSTFlowLevelAliasing());
         setFlowMap(flow.getSTCustomMappings());
 
@@ -238,6 +244,7 @@ public class Flow {
                 if(dataMember.isInput() && !dataMember.isAssigned()) {
                     if(!dataMember.isUserFriendly() && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
                     addFreeInput(dataMember);
+                    addFreeInputInformationToFreeInputDescriptorsArray(dataMember, step);
                 }
             }
         }
@@ -275,6 +282,8 @@ public class Flow {
     public void execution(ArrayList<DataType> inputs){
         Instant start=Instant.now();
         //might need to allocate to the inputs within the steps
+
+        // fill the free inputs data
         for(DataType input:inputs){
             for(DataType freeInput:freeInputs.get(input.getEffectiveName()))
                 freeInput.setData(input.getData());
@@ -299,30 +308,83 @@ public class Flow {
         Instant finish=Instant.now();
         runTime= Duration.between(start,finish).toMillis();
         createFlowLog();
+    }
+
+    private void setFlowStatus(Step step){
+        if(step.getStatus()== Step.Status.Success)
+            status=Status.SUCCESS;
+        else if(step.getStatus()== Step.Status.Warning)
+            status=Status.WARNING;
+        else
+            status=Status.FAILURE;
+    }
+
+    private void createFlowLog(){
+        flowLog=new FlowLog();
+        for(Step step:steps){
+            flowLog.addStepLogs(step.getLogsAsString());
+            if(step.getStatus()== Step.Status.Failure&&step.isBlocking()) break;
         }
 
-        private void setFlowStatus(Step step){
-            if(step.getStatus()== Step.Status.Success)
-                status=Status.SUCCESS;
-            else if(step.getStatus()== Step.Status.Warning)
-                status=Status.WARNING;
-            else
-                status=Status.FAILURE;
+        flowLog.setFlowName(name);
+        flowLog.setStatus(status);
+        flowLog.setTotalRuntimeInMs(runTime);
+        //check
+    }
+
+    public FlowDescriptor getFlowDescriptor() {
+        FlowDescriptor descriptor = new FlowDescriptor();
+        descriptor.setFlowName(name);
+        descriptor.setFlowDescription(description);
+        descriptor.setFormalOutputNames((HashSet<String>) formalOutputsNames.clone());
+        descriptor.setReadonly(isReadOnly);
+        descriptor.setStepDescriptors(getStepDescriptors());
+        descriptor.setFreeInputs(freeInputsDescriptors);
+        descriptor.setOutputs(outputDescriptors);
+        return descriptor;
+    }
+
+    private void fillOutputsDescriptorsArray() {
+        for(Step step : steps)
+            addStepsOutputsToDescriptors(step);
+    }
+
+    private void addStepsOutputsToDescriptors(Step step) {
+        for(DataType output : step.getAllOutputs()) {
+            outputDescriptors.add(new StepOutputDescriptor(output.getEffectiveName(), output.getType(), step.getFinalName()));
         }
+    }
 
-        private void createFlowLog(){
-            flowLog=new FlowLog();
-            for(Step step:steps){
-                flowLog.addStepLogs(step.getLogsAsString());
-                if(step.getStatus()== Step.Status.Failure&&step.isBlocking()) break;
-            }
-
-            flowLog.setFlowName(name);
-            flowLog.setStatus(status);
-            flowLog.setTotalRuntimeInMs(runTime);
-            //check
-
+    private ArrayList<StepDescriptor> getStepDescriptors() {
+        ArrayList<StepDescriptor> descriptors = new ArrayList<>();
+        for(Step step : steps) {
+            descriptors.add(step.getStepDescriptor());
         }
+        return descriptors;
+    }
+
+    private void addFreeInputInformationToFreeInputDescriptorsArray(DataType freeInput, Step targetStep) {
+        int freeInputDescriptorIndex = getIndexOfFreeInputInFreeInputDescriptorsArray(freeInput);
+        if (freeInputDescriptorIndex == -1) {
+            freeInputsDescriptors.add(new FreeInputDescriptor(freeInput.getEffectiveName(), freeInput.getType(), freeInput.isMandatory()));
+            freeInputDescriptorIndex = freeInputsDescriptors.size() - 1;
+        }
+        addTargetStepToFreeInputDescriptor(freeInputDescriptorIndex, targetStep);
+    }
+
+    private int getIndexOfFreeInputInFreeInputDescriptorsArray(DataType freeInput) {
+        for(int i = 0; i < freeInputsDescriptors.size(); i++) {
+            if(freeInputsDescriptors.get(i).getInputEffectiveName().equals(freeInput.getEffectiveName()))
+                return i;
+        }
+        return -1;
+    }
+
+    private void addTargetStepToFreeInputDescriptor(int freeInputDescriptorIndex, Step targetStep) {
+        freeInputsDescriptors.get(freeInputDescriptorIndex).getAssociatedSteps().add(targetStep.getFinalName());
+    }
+
+
 
 
 }

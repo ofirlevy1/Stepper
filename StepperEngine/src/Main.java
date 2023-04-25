@@ -2,7 +2,9 @@
 import DataTypes.*;
 
 import Flow.Flow;
+import Flow.FlowDescriptor;
 import Generated.STStepper;
+import Stepper.StepperUIManager;
 import Steps.*;
 
 import javax.xml.bind.JAXBContext;
@@ -14,16 +16,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-//        Step step = new StepFactory().createStep("Collect Files In Folder");
-
-//        System.out.println(step.getName());
-//
-
-        String xmlPath = "C:\\Users\\Ofir\\Downloads\\ex1.xml";
-        STStepper stepper = deserializeFrom(new FileInputStream(new File(xmlPath)));
-        Flow flow = new Flow(stepper.getSTFlows().getSTFlow().get(0));
+        StepperUIManager uiManager = new StepperUIManager();
+        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml");
+        System.out.println(uiManager.getFlowNames());
+        FlowDescriptor flowDescriptor = uiManager.getFlowDescriptor("Rename Files");
     }
 
     private static STStepper deserializeFrom(FileInputStream in) throws JAXBException {
