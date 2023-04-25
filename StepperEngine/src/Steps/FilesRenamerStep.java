@@ -28,6 +28,7 @@ public class FilesRenamerStep extends Step {
         this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString(), false);
 
         this.filesToRename = new ListType(StepInputNameEnum.FILES_TO_RENAME.toString(), true);
+        this.filesToRename.setMandatory(true);
         this.prefix = new StringType(StepInputNameEnum.PREFIX.toString(), true);
         this.suffix = new StringType(StepInputNameEnum.SUFFIX.toString(), true);
     }

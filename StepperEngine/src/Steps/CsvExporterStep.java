@@ -17,6 +17,7 @@ public class CsvExporterStep extends Step {
         super("CSV Exporter", true);
         this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString(), false);
         this.source = new RelationType(StepInputNameEnum.SOURCE.toString(), true);
+        this.source.setMandatory(true);
     }
 
     public CsvExporterStep(RelationType source) {

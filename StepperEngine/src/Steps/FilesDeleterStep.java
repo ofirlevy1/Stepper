@@ -22,6 +22,7 @@ public class FilesDeleterStep extends Step{
         this.deletionStats=new MappingType(new Mapping(), StepOutputNameEnum.DELETION_STATS.toString(), false);
 
         this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString(), true);
+        this.filesList.setMandatory(true);
     }
     @Override
     public void execute() {
