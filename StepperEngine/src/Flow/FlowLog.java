@@ -14,7 +14,7 @@ public class FlowLog {
     private String formalOutputsPresentation;
     private HashMap<String,String> formalOutputs;
     private String timeStamp;
-    private int totalRuntimeInMs;
+    private long totalRuntimeInMs;
     private ArrayList<String> inputsPresentation;
     private ArrayList<String> outputsPresentation;
 
@@ -57,5 +57,13 @@ public class FlowLog {
 
     public String getFormalOutputsPresentation() {
         return formalOutputsPresentation;
+    }
+
+    public long getTotalRuntimeInMs() {
+        return totalRuntimeInMs;
+    }
+
+    public void setTotalRuntimeInMs(long totalRuntimeInMs) {
+        this.totalRuntimeInMs = totalRuntimeInMs;
     }
 }

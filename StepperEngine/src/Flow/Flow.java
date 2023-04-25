@@ -5,6 +5,8 @@ import Generated.*;
 import Steps.Step;
 import Steps.StepFactory;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 
@@ -37,10 +39,11 @@ public class Flow {
     private HashMap<String, HashSet<DataType>> freeInputs;
     private HashSet<String> freeInputsNames;
     private Flow.Status status;
-
+    private String flowRunsummery;
     private static double durationAvgInMs = 0.0;
+    private static long runTime=0;
     private static int flowRunsCounter = 0;
-    // FlowLog flowLog; // This should have a unique ID, time stamps...
+    FlowLog flowLog;
 
     FlowMap map;
 
@@ -70,6 +73,7 @@ public class Flow {
         this.freeInputs = new HashMap<>();
         this.freeInputsNames = new HashSet<>();
         this.map = new FlowMap();
+        this.flowLog=new FlowLog();
     }
 
     // Input validation to do:
@@ -269,6 +273,7 @@ public class Flow {
     }
 
     public void execution(ArrayList<DataType> inputs){
+        Instant start=Instant.now();
         //might need to allocate to the inputs within the steps
         for(DataType input:inputs){
             for(DataType freeInput:freeInputs.get(input.getEffectiveName()))
@@ -278,19 +283,44 @@ public class Flow {
         try {
             for (Step step : steps) {
                 step.execute();
-                if (step.getStatus() == Step.Status.Failure)
+                setFlowStatus(step);
+                if (step.getStatus() == Step.Status.Failure && step.isBlocking())
                     throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
                 for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
                     getStepByFinalName(mapping.getTargetStepName(), "").setInputs(step.getOutputs(mapping.getSourceDataName()).get(0));
             }
-
+            flowRunsummery="flow execution ended successfully";
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            flowRunsummery=e.getMessage();
         }
 
-
+        Instant finish=Instant.now();
+        runTime= Duration.between(start,finish).toMillis();
+        createFlowLog();
         }
 
+        private void setFlowStatus(Step step){
+            if(step.getStatus()== Step.Status.Success)
+                status=Status.SUCCESS;
+            else if(step.getStatus()== Step.Status.Warning)
+                status=Status.WARNING;
+            else
+                status=Status.FAILURE;
+        }
+
+        private void createFlowLog(){
+            flowLog=new FlowLog();
+            for(Step step:steps){
+                flowLog.addStepLogs(step.getLogsAsString());
+                if(step.getStatus()== Step.Status.Failure&&step.isBlocking()) break;
+            }
+
+            flowLog.setFlowName(name);
+            flowLog.setStatus(status);
+            flowLog.setTotalRuntimeInMs(runTime);
+            //check
+
+        }
 
 
 }
