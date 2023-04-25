@@ -31,6 +31,7 @@ public abstract class DataType<T> {
         hasAlias = false;
         isAssigned = false;
         this.isInput = isInput;
+        this.type=type;
     }
 
     public DataType(String name, String userFriendlyName, boolean userFriendly, T data, Type type, boolean isInput) {
