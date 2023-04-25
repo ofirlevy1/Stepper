@@ -277,7 +277,7 @@ public class Flow {
         //might need to allocate to the inputs within the steps
         for(DataType input:inputs){
             for(DataType freeInput:freeInputs.get(input.getEffectiveName()))
-                freeInput.setData(input);
+                freeInput.setData(input.getData());
         }
 
         try {
@@ -286,8 +286,10 @@ public class Flow {
                 setFlowStatus(step);
                 if (step.getStatus() == Step.Status.Failure && step.isBlocking())
                     throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
-                for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
-                    getStepByFinalName(mapping.getTargetStepName(), "").setInputs(step.getOutputs(mapping.getSourceDataName()).get(0));
+                if(map.getMappingsByStep(step.getFinalName())!=null) {
+                    for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
+                        getStepByFinalName(mapping.getTargetStepName(), "").setInputs(step.getOutputs(mapping.getSourceDataName()).get(0));
+                }
             }
             flowRunsummery="flow execution ended successfully";
         } catch (RuntimeException e) {
