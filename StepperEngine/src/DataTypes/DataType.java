@@ -9,10 +9,12 @@ public abstract class DataType<T> {
 
     boolean isInput;
 
-    protected T data;
+    private T data;
 
     // important for input datatype since only 1 output can be assigned to them.
     boolean isAssigned;
+
+    boolean isDataSet;    // true if the "Data" member is set (not null...);
 
     public enum Type{
         DOUBLE, FILE, LIST, MAPPING, NUMBER, RELATION, STRING
@@ -32,7 +34,7 @@ public abstract class DataType<T> {
 
     public DataType(String name, String userFriendlyName, T data, Type type, boolean isInput) {
         this(name, userFriendlyName, type, isInput);
-        this.data = data;
+        setData(data);
     }
 
     public void setMandatory(boolean mandatory) {
@@ -57,8 +59,13 @@ public abstract class DataType<T> {
         return data;
     }
 
+    public boolean isDataSet() {
+        return isDataSet;
+    }
+
     public void setData(T data) {
         this.data = data;
+        isDataSet = true;
     }
 
     public String getEffectiveName() {

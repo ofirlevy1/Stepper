@@ -15,11 +15,11 @@ public class NumberType extends DataType<Integer> implements UserFriendly{
 
     @Override
     public String getPresentableString() {
-        return data.toString();
+        return getData().toString();
     }
 
     @Override
     public void setData(String dataStr) {
-        this.data = Integer.parseInt(dataStr);
+        setData(Integer.parseInt(dataStr));
     }
 }

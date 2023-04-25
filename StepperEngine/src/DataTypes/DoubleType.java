@@ -12,11 +12,11 @@ public class DoubleType extends DataType<Double> implements UserFriendly{
 
     @Override
     public String getPresentableString() {
-        return data.toString();
+        return getData().toString();
     }
 
     @Override
     public void setData(String dataStr) {
-        this.data = Double.parseDouble(dataStr);
+        setData(Double.parseDouble(dataStr));
     }
 }

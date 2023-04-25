@@ -13,7 +13,7 @@ public class FileType extends DataType<File>{
 
     @Override
     public String getPresentableString() {
-        return data.getAbsolutePath();
+        return getData().getAbsolutePath();
     }
 
 }

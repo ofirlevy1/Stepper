@@ -21,8 +21,8 @@ public class RelationType extends DataType<Relation> {
      */
     @Override
     public String getPresentableString() {
-        String result = data.getRows() + " rows: ";
-        String[] colNames = data.getColumnNames();
+        String result = getData().getRows() + " rows: ";
+        String[] colNames = getData().getColumnNames();
         for (String columName : colNames)
             result += columName + ", ";
         return result;

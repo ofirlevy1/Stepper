@@ -10,11 +10,11 @@ public class StringType extends DataType<String> implements UserFriendly{
 
     @Override
     public String getPresentableString() {
-        return data;
+        return getData();
     }
 
     @Override
     public void setData(String dataStr) {
-        this.data = dataStr;
+        super.setData(dataStr);
     }
 }

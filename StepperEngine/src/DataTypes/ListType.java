@@ -17,11 +17,11 @@ public class ListType extends  DataType<ArrayList<DataType>>{
     @Override
     public String getPresentableString() {
         String prestableString="";
-        if(data.isEmpty())
+        if(getData().isEmpty())
             return "The list is empty";
-        for(int i=0;i<data.size();i++)
+        for(int i=0;i<getData().size();i++)
         {
-            prestableString+=(i+1)+":"+data.get(i).getPresentableString()+", ";
+            prestableString+=(i+1)+":"+getData().get(i).getPresentableString()+", ";
         }
         return prestableString.substring(0,prestableString.length()-2);
     }
