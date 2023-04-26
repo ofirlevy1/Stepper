@@ -89,18 +89,12 @@ public class FilesRenamerStep extends Step {
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(filesToRename.getEffectiveName())) {
+        if(inputName.equals(filesToRename.getEffectiveName()))
             this.filesToRename.setData((ArrayList<DataType>) input.getData());
-            this.filesToRename.setMandatory(true);
-        }
-        if(inputName.equals(suffix.getEffectiveName())) {
+        if(inputName.equals(suffix.getEffectiveName()))
             this.suffix.setData((String) input.getData());
-            this.suffix.setMandatory(false);
-        }
-        if(inputName.equals(prefix.getEffectiveName())) {
+        if(inputName.equals(prefix.getEffectiveName()))
             this.prefix.setData((String) input.getData());
-            this.prefix.setMandatory(false);
-        }
     }
 
     @Override

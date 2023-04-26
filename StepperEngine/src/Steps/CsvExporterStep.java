@@ -66,7 +66,6 @@ public class CsvExporterStep extends Step {
     public void setInputByName(DataType input, String inputName) {
         if(inputName.equals(source.getEffectiveName())) {
             this.source.setData((Relation) input.getData());
-            this.source.setMandatory(true);
             this.table=(Relation) this.source.getData();
         }
     }

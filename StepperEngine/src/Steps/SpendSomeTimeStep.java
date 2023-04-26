@@ -58,10 +58,8 @@ public class SpendSomeTimeStep extends Step{
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(secondsToSpend.getEffectiveName())) {
+        if(inputName.equals(secondsToSpend.getEffectiveName()))
             this.secondsToSpend.setData((Integer) input.getData());
-            this.secondsToSpend.setMandatory(true);
-        }
     }
 
     @Override

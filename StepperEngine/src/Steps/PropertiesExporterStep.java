@@ -69,10 +69,8 @@ public class PropertiesExporterStep extends Step{
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(source.getEffectiveName())) {
+        if(inputName.equals(source.getEffectiveName()))
             this.source.setData((Relation) input.getData());
-            this.source.setMandatory(true);
-        }
     }
 
     @Override
