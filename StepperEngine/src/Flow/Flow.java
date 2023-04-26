@@ -294,7 +294,7 @@ public class Flow {
                     throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
                 if(map.getMappingsByStep(step.getFinalName())!=null) {
                     for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
-                        getStepByFinalName(mapping.getTargetStepName(), "").setInputs(step.getOutputs(mapping.getSourceDataName()).get(0));
+                        getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
                 }
             }
             flowRunsummery="flow execution ended successfully";
