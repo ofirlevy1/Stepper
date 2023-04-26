@@ -25,7 +25,7 @@ public class FilesDeleterStep extends Step{
         this.filesList.setMandatory(true);
     }
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try {
             this.runStepFlow();
         }

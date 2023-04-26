@@ -25,7 +25,7 @@ public class SpendSomeTimeStep extends Step{
     }
 
     @Override
-    public void execute(){
+    protected void outerRunStepFlow(){
         try {
             this.runStepFlow();
         } catch (Exception e) {

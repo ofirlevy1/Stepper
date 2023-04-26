@@ -28,7 +28,7 @@ public class CsvExporterStep extends Step {
     }
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try {
             runStepFlow();
         } catch (Exception e) {

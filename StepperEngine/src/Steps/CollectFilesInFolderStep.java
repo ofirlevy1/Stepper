@@ -3,6 +3,8 @@ package Steps;
 import DataTypes.*;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class CollectFilesInFolderStep extends Step{
@@ -36,7 +38,7 @@ public class CollectFilesInFolderStep extends Step{
     }
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow() {
         try{
             this.runStepFlow();
         }

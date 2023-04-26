@@ -23,7 +23,7 @@ public class PropertiesExporterStep extends Step{
     }
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try{
             this.runStepFlow();
         } catch (EmptyPropertiesRelationException e) {

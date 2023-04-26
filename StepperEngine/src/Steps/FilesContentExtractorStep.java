@@ -31,7 +31,7 @@ public class FilesContentExtractorStep extends Step {
 
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try{
             this.runStepFlow();
         }
