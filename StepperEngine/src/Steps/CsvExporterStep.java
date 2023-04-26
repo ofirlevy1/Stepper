@@ -40,6 +40,7 @@ public class CsvExporterStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         addLog("About to process " + table.getRows() + " lines of data");
+        resultString="";
         addColumnNames();
         if(table.isEmpty())
             setStatusAndLog(Status.Warning, "CSV exporter was called with an empty table...","CSV exporter was called with an empty table...");

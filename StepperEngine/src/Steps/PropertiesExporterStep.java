@@ -46,8 +46,9 @@ public class PropertiesExporterStep extends Step{
         if(relation.getRows()==0&&relation.getCols()==0) throw new EmptyPropertiesRelationException("Properties Relation is empty");
         for(int i=0;i<relation.getRows();i++){
             for(int j=0;j< relation.getCols();j++){
-                properties+="row-"+(i+1)+"."+relation.getColumnNames()[j]+"="+relation.get(i,j)+"\n";
+                properties+="row-"+(i+1)+"."+relation.getColumnNames()[j]+"="+relation.get(i,j)+" ";
             }
+            properties+="\n";
         }
 
         this.setStatus(Status.Success);
