@@ -33,13 +33,14 @@ public class CsvExporterStep extends Step {
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
+            this.result.setData("Failure");//=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
         }
     }
 
     @Override
     protected void runStepFlow() throws Exception {
         addLog("About to process " + table.getRows() + " lines of data");
+        resultString="";
         addColumnNames();
         if(table.isEmpty())
             setStatusAndLog(Status.Warning, "CSV exporter was called with an empty table...","CSV exporter was called with an empty table...");
@@ -47,7 +48,7 @@ public class CsvExporterStep extends Step {
             addDataFromTable();
             setStatus(Status.Success);
         }
-        this.result=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
+        this.result.setData(resultString);//=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
     }
 
     @Override
@@ -58,6 +59,15 @@ public class CsvExporterStep extends Step {
                 this.source.setMandatory(true);
                 this.table=(Relation) this.source.getData();
             }
+        }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(source.getEffectiveName())) {
+            this.source.setData((Relation) input.getData());
+            this.source.setMandatory(true);
+            this.table=(Relation) this.source.getData();
         }
     }
 

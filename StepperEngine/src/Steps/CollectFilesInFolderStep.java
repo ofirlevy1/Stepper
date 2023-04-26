@@ -48,7 +48,7 @@ public class CollectFilesInFolderStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
-        addLog("Reading folder " + folderName.getPresentableString() + " content with filter " + (filter == null ? "null (no filter)" : filter));
+        addLog("Reading folder " + folderName.getPresentableString() + " content with filter " + (filter.isDataSet() ? filter.getPresentableString(): "null (no filter)" ));
         File folder = new File(folderName.getData());
         if (!folder.exists() || !folder.isDirectory()) {
             setStatusAndLog(Status.Failure,
@@ -64,7 +64,7 @@ public class CollectFilesInFolderStep extends Step{
             return;
         }
         int matchingFiles = addMatchingFilesToOutput(folder.listFiles());
-        this.totalFound=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString(), false);
+        this.totalFound.setData(matchingFiles);//;=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString(), false);
         addLog("Found " + matchingFiles + " files in folder matching the filter");
         setStatus(Status.Success);
     }
@@ -81,6 +81,19 @@ public class CollectFilesInFolderStep extends Step{
                 this.folderName.setMandatory(true);
             }
         }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(filter.getEffectiveName())) {
+            this.filter.setData((String) input.getData());
+            this.filter.setMandatory(false);
+        }
+        else if(inputName.equals(folderName.getEffectiveName())) {
+            this.folderName.setData((String) input.getData());
+            this.folderName.setMandatory(true);
+        }
+
     }
 
     @Override
@@ -114,7 +127,7 @@ public class CollectFilesInFolderStep extends Step{
                 if(!file.isDirectory())
                     matchingFiles.getData().add(new FileType(file, false));
         }
-        this.filesList=matchingFiles;
+        this.filesList.setData(matchingFiles.getData());//=matchingFiles;
         return matchingFiles.getData().size();
     }
 

@@ -27,7 +27,7 @@ public class PropertiesExporterStep extends Step{
         try{
             this.runStepFlow();
         } catch (EmptyPropertiesRelationException e) {
-            this.result=new StringType("", StepOutputNameEnum.RESULT.toString(), false);
+            this.result.setData("");//=new StringType("", StepOutputNameEnum.RESULT.toString(), false);
             this.setStatus(Status.Warning);
             this.setSummaryLine(e.getMessage());
             this.addLog(e.getMessage());
@@ -46,14 +46,15 @@ public class PropertiesExporterStep extends Step{
         if(relation.getRows()==0&&relation.getCols()==0) throw new EmptyPropertiesRelationException("Properties Relation is empty");
         for(int i=0;i<relation.getRows();i++){
             for(int j=0;j< relation.getCols();j++){
-                properties+="row-"+(i+1)+"."+relation.getColumnNames()[j]+"="+relation.get(i,j)+"\n";
+                properties+="row-"+(i+1)+"."+relation.getColumnNames()[j]+"="+relation.get(i,j)+" ";
             }
+            properties+="\n";
         }
 
         this.setStatus(Status.Success);
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
-        this.result=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString(), false);//getting rid of unnecessary new line at end of string
+        this.result.setData(properties.substring(0,properties.length()-1));//=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString(), false);//getting rid of unnecessary new line at end of string
     }
 
     @Override
@@ -63,6 +64,14 @@ public class PropertiesExporterStep extends Step{
                 this.source.setData((Relation) input.getData());
                 this.source.setMandatory(true);
             }
+        }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(source.getEffectiveName())) {
+            this.source.setData((Relation) input.getData());
+            this.source.setMandatory(true);
         }
     }
 

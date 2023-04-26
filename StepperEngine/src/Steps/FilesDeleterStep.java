@@ -32,7 +32,7 @@ public class FilesDeleterStep extends Step{
         catch (EmptyFileListException e){
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
-            this.deletionStats=new MappingType(new Mapping(new NumberType(0, false),new NumberType(0, false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
+            this.deletionStats.setData(new Mapping(new NumberType(0, false),new NumberType(0, false)));//=new MappingType(new Mapping(new NumberType(0, false),new NumberType(0, false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
 
         } catch (EveryFileFailedToDeleteException e) {
             this.setSummaryLine(e.getMessage());
@@ -64,11 +64,11 @@ public class FilesDeleterStep extends Step{
                 this.addLog("Failed to delete file "+file.getName());
             }
         }
-        this.deletedList=new ListType(filesNotDeletedList, StepOutputNameEnum.DELETED_LIST.toString(), false);
+        this.deletedList.setData(filesNotDeletedList);//=new ListType(filesNotDeletedList, StepOutputNameEnum.DELETED_LIST.toString(), false);
         this.setStatus(Status.Success);
         this.setSummaryLine("Successfully deleted "+(existingFilesCount-filesNotDeletedList.size())+" out of "+files.size()+" files");
         if(files.isEmpty())throw new EmptyFileListException("File list is empty");
-        this.deletionStats=new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size(), false),new NumberType(filesNotDeletedList.size(), false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
+        this.deletionStats.setData(new Mapping(new NumberType(files.size()-filesNotDeletedList.size(), false),new NumberType(filesNotDeletedList.size(), false)));//=new MappingType(new Mapping(new NumberType(files.size()-filesNotDeletedList.size(), false),new NumberType(filesNotDeletedList.size(), false)), StepOutputNameEnum.DELETION_STATS.toString(), false);
         if(filesNotDeletedList.size()==files.size())throw  new EveryFileFailedToDeleteException("Every file in the list has failed to be deleted");
 
 
@@ -82,6 +82,14 @@ public class FilesDeleterStep extends Step{
                 this.filesList.setMandatory(true);
             }
 
+        }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(filesList.getEffectiveName())) {
+            this.filesList.setData((ArrayList<DataType>) input.getData());
+            this.filesList.setMandatory(true);
         }
     }
 
