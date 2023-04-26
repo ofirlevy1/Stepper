@@ -36,7 +36,7 @@ public class FileDumperStep extends  Step{
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
+            this.result.setData("Failure");//=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
         }
 
     }
@@ -58,7 +58,7 @@ public class FileDumperStep extends  Step{
             }
             out.write(content);
         }
-        this.result=new StringType("Success", StepOutputNameEnum.RESULT.toString(), false);
+        this.result.setData("Success");//;=new StringType("Success", StepOutputNameEnum.RESULT.toString(), false);
     }
 
     @Override

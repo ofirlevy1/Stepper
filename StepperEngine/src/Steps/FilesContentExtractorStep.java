@@ -39,7 +39,7 @@ public class FilesContentExtractorStep extends Step {
             this.setSummaryLine(e.getMessage());
             this.setStatus(Status.Success);
             this.addLog(e.getMessage());
-            this.data=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString(), false);
+            this.data.setData(new Relation(0, 0));//=new RelationType(new Relation(0,0), StepOutputNameEnum.DATA.toString(), false);
         }
         catch (Exception e){
             this.setSummaryLine("Exception: " + e.getMessage());
@@ -84,7 +84,7 @@ public class FilesContentExtractorStep extends Step {
 
         }
 
-        this.data=new RelationType(relation, StepOutputNameEnum.DATA.toString(), false);
+        this.data.setData(relation);//=new RelationType(relation, StepOutputNameEnum.DATA.toString(), false);
         this.setSummaryLine("Extracted lines from files");
         this.setStatus(Status.Success);
     }

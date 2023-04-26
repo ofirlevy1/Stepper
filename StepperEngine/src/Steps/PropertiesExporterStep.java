@@ -27,7 +27,7 @@ public class PropertiesExporterStep extends Step{
         try{
             this.runStepFlow();
         } catch (EmptyPropertiesRelationException e) {
-            this.result=new StringType("", StepOutputNameEnum.RESULT.toString(), false);
+            this.result.setData("");//=new StringType("", StepOutputNameEnum.RESULT.toString(), false);
             this.setStatus(Status.Warning);
             this.setSummaryLine(e.getMessage());
             this.addLog(e.getMessage());
@@ -53,7 +53,7 @@ public class PropertiesExporterStep extends Step{
         this.setStatus(Status.Success);
         this.addLog("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
         this.setSummaryLine("Extracted total of "+(relation.getRows()* relation.getCols())+" properties");
-        this.result=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString(), false);//getting rid of unnecessary new line at end of string
+        this.result.setData(properties.substring(0,properties.length()-1));//=new StringType(properties.substring(0,properties.length()-1), StepOutputNameEnum.RESULT.toString(), false);//getting rid of unnecessary new line at end of string
     }
 
     @Override

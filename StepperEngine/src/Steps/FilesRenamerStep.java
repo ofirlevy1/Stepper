@@ -130,7 +130,7 @@ public class FilesRenamerStep extends Step {
             output.set(i, 1, renamedFilesOldNames.get(i));
             output.set(i, 2, renamedFilesNewNames.get(i));
         }
-        this.renameResult=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString(), false);
+        this.renameResult.setData(output);//=new RelationType(output, StepOutputNameEnum.RENAME_RESULT.toString(), false);
     }
 
     private boolean tryRenamingFile(File file) {

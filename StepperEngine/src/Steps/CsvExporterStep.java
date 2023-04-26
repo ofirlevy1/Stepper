@@ -33,7 +33,7 @@ public class CsvExporterStep extends Step {
             runStepFlow();
         } catch (Exception e) {
             setStatusAndLog(Status.Failure, e.getMessage(), e.getMessage());
-            this.result=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
+            this.result.setData("Failure");//=new StringType("Failure", StepOutputNameEnum.RESULT.toString(), false);
         }
     }
 
@@ -47,7 +47,7 @@ public class CsvExporterStep extends Step {
             addDataFromTable();
             setStatus(Status.Success);
         }
-        this.result=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
+        this.result.setData(resultString);//=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
     }
 
     @Override
