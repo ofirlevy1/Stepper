@@ -48,7 +48,7 @@ public class CollectFilesInFolderStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
-        addLog("Reading folder " + folderName.getPresentableString() + " content with filter " + (filter == null ? "null (no filter)" : filter));
+        addLog("Reading folder " + folderName.getPresentableString() + " content with filter " + (filter.isDataSet() ? filter.getPresentableString(): "null (no filter)" ));
         File folder = new File(folderName.getData());
         if (!folder.exists() || !folder.isDirectory()) {
             setStatusAndLog(Status.Failure,
@@ -81,6 +81,19 @@ public class CollectFilesInFolderStep extends Step{
                 this.folderName.setMandatory(true);
             }
         }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(filter.getEffectiveName())) {
+            this.filter.setData((String) input.getData());
+            this.filter.setMandatory(false);
+        }
+        else if(inputName.equals(folderName.getEffectiveName())) {
+            this.folderName.setData((String) input.getData());
+            this.folderName.setMandatory(true);
+        }
+
     }
 
     @Override

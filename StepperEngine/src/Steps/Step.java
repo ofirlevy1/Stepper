@@ -44,6 +44,8 @@ public abstract class  Step {
 
     public abstract void setInputs(DataType ... inputs);
 
+    public abstract void setInputByName(DataType input, String inputName);
+
     public String getLogsAsString(){
         String logsString="";
         for(StepLog log : logs){

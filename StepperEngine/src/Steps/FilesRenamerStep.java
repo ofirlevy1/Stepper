@@ -24,7 +24,7 @@ public class FilesRenamerStep extends Step {
         super("Files Renamer", false);
         failedFiles=new ArrayList<>();
         renamedFilesOldNames=new ArrayList<>();
-        renamedFilesOldNames=new ArrayList<>();
+        renamedFilesNewNames=new ArrayList<>();
         this.renameResult=new RelationType(new Relation(1,1,"something to fill"), StepOutputNameEnum.RENAME_RESULT.toString(), false);
 
         this.filesToRename = new ListType(StepInputNameEnum.FILES_TO_RENAME.toString(), true);
@@ -55,7 +55,7 @@ public class FilesRenamerStep extends Step {
 
     @Override
     protected void runStepFlow() throws Exception {
-        addLog("About to start rename " + filesToRename.getData().size() + " files. Adding prefix: " + prefix.getData() + "; adding suffix: " + suffix.getData());
+        addLog("About to start rename " + filesToRename.getData().size() + " files. Adding prefix: " +(prefix.isDataSet()? prefix.getData():"no prefix" )+ "; adding suffix: " +(suffix.isDataSet()? suffix.getData():"no suffix"));
         File currentFile;
         for(DataType dataType : filesToRename.getData()) {
             currentFile = (File) dataType.getData(); // This conversion is not ideal - maybe there's a way to avoid it (redesign to FileType?)
@@ -84,6 +84,22 @@ public class FilesRenamerStep extends Step {
                 this.prefix.setData((String) input.getData());
                 this.prefix.setMandatory(false);
             }
+        }
+    }
+
+    @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(filesToRename.getEffectiveName())) {
+            this.filesToRename.setData((ArrayList<DataType>) input.getData());
+            this.filesToRename.setMandatory(true);
+        }
+        if(inputName.equals(suffix.getEffectiveName())) {
+            this.suffix.setData((String) input.getData());
+            this.suffix.setMandatory(false);
+        }
+        if(inputName.equals(prefix.getEffectiveName())) {
+            this.prefix.setData((String) input.getData());
+            this.prefix.setMandatory(false);
         }
     }
 
@@ -130,7 +146,7 @@ public class FilesRenamerStep extends Step {
         }
         
         // Then the file name with the added prefix and/or suffix
-        String newFileName = prefix.getData() + removeExtension(path.getFileName().toString()) + suffix.getData() + getExtension(path.getFileName().toString());
+        String newFileName = (prefix.isDataSet()? prefix.getData():"") + removeExtension(path.getFileName().toString()) + (suffix.isDataSet()? suffix.getData():"") + getExtension(path.getFileName().toString());
         newFileFullPath += newFileName;
         if (file.renameTo(new File(newFileFullPath)))
         {

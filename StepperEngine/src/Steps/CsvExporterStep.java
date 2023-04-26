@@ -62,6 +62,15 @@ public class CsvExporterStep extends Step {
     }
 
     @Override
+    public void setInputByName(DataType input, String inputName) {
+        if(inputName.equals(source.getEffectiveName())) {
+            this.source.setData((Relation) input.getData());
+            this.source.setMandatory(true);
+            this.table=(Relation) this.source.getData();
+        }
+    }
+
+    @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
         ArrayList<DataType> outputsArray=new ArrayList<>();
         for(String outputName: outputNames){
