@@ -6,11 +6,14 @@ import java.util.ArrayList;
 
 public class FreeInputDescriptor {
     private String inputEffectiveName;
+
+    private String inputUserFriendlyName;
     private DataType.Type inputType;
     private ArrayList<String> associatedSteps; //These are the EFFECTIVE names of the steps
     private boolean isMandatory;
 
-    public FreeInputDescriptor(String inputEffectiveName, DataType.Type inputType, boolean isMandatory) {
+    public FreeInputDescriptor(String inputEffectiveName, String inputUserFriendlyName, DataType.Type inputType, boolean isMandatory) {
+        this.inputUserFriendlyName = inputUserFriendlyName;
         this.inputEffectiveName = inputEffectiveName;
         this.inputType = inputType;
         this.associatedSteps = new ArrayList<>();

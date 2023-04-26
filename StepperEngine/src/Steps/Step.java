@@ -35,6 +35,7 @@ public abstract class  Step {
         this.hasAlias=false;
         this.status=Status.NotRunYet;
         outputs = new ArrayList<DataType>();
+        isBlocking = true;
     }
 
     public abstract void execute();

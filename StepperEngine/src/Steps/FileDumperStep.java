@@ -18,6 +18,8 @@ public class FileDumperStep extends  Step{
         this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString(), false);
         this.content = new StringType(StepInputNameEnum.CONTENT.toString(), true);
         this.fileName = new StringType(StepInputNameEnum.FILE_NAME.toString(), true);
+        this.content.setMandatory(true);
+        this.fileName.setMandatory(true);
     }
 
     public FileDumperStep(StringType content, StringType fileName){

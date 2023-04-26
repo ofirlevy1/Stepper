@@ -23,6 +23,7 @@ public class CollectFilesInFolderStep extends Step{
         this(folderName);
         this.filter = filter;
         this.filter.setMandatory(false);
+        this.folderName.setMandatory(true);
     }
 
     public CollectFilesInFolderStep(){
@@ -31,6 +32,7 @@ public class CollectFilesInFolderStep extends Step{
         this.totalFound=new NumberType(new Integer(0),StepOutputNameEnum.TOTAL_FOUND.toString(), false);
         this.folderName = new StringType(StepInputNameEnum.FOLDER_NAME.toString(), true);
         this.filter = new StringType(StepInputNameEnum.FILTER.toString(), true);
+        this.folderName.setMandatory(true);
     }
 
     @Override

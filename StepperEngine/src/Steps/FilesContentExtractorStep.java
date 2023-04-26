@@ -16,6 +16,8 @@ public class FilesContentExtractorStep extends Step {
 
         this.filesList = new ListType(StepInputNameEnum.FILES_LIST.toString(), true);
         this.lineNumber = new NumberType(StepInputNameEnum.LINE.toString(), true);
+        this.filesList.setMandatory(true);
+        this.lineNumber.setMandatory(true);
     }
 
     public FilesContentExtractorStep(ListType filesList, NumberType lineNumber) {

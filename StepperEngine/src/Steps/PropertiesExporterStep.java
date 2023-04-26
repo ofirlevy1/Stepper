@@ -13,6 +13,7 @@ public class PropertiesExporterStep extends Step{
         this.result=new StringType(new String(), StepOutputNameEnum.RESULT.toString(), false);
 
         this.source = new RelationType(StepInputNameEnum.SOURCE.toString(), true);
+        this.source.setMandatory(true);
     }
 
     public PropertiesExporterStep(RelationType source) {
