@@ -44,12 +44,12 @@ public class Flow {
     private static double durationAvgInMs = 0.0;
     private static long runTime=0;
     private static int flowRunsCounter = 0;
-    FlowLog flowLog;
+     private FlowLog flowLog;
 
-    FlowMap map;
+    private FlowMap map;
 
-    ArrayList<FreeInputDescriptor> freeInputsDescriptors;
-    ArrayList<StepOutputDescriptor> outputDescriptors;
+    private ArrayList<FreeInputDescriptor> freeInputsDescriptors;
+    private ArrayList<StepOutputDescriptor> outputDescriptors;
 
 
     public Flow(STFlow flow)
@@ -330,15 +330,14 @@ public class Flow {
 
     private void createFlowLog(){
         flowLog=new FlowLog();
-        for(Step step:steps){
-            flowLog.addStepLogs(step.getLogsAsString());
-            if(step.getStatus()== Step.Status.Failure&&step.isBlocking()) break;
-        }
-
         flowLog.setFlowName(name);
         flowLog.setStatus(status);
-        flowLog.setTotalRuntimeInMs(runTime);
-        //check
+        for(String formalOutputName:formalOutputsNames)
+            flowLog.addFormalOutputsPresentation(outputs.get(formalOutputName));
+    }
+
+    public FlowLog getFlowLog() {
+        return flowLog;
     }
 
     public FlowDescriptor getFlowDescriptor() {
