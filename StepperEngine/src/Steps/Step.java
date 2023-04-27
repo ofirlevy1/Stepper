@@ -191,4 +191,12 @@ public abstract class  Step {
     private void updateAverageRunTime(){
         durationAvgInMs=durationAvgInMs+((runTimeInMs-durationAvgInMs)/stepRunsCounter);
     }
+
+    public static double getDurationAvgInMs() {
+        return durationAvgInMs;
+    }
+
+    public static int getStepRunsCounter() {
+        return stepRunsCounter;
+    }
 }

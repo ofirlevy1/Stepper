@@ -1,16 +1,12 @@
 package Flow;
 
-import Steps.StepStatistics;
-
-import java.util.ArrayList;
-
 public class FlowStatistics {
-    private int startupCount;
+    private int startUpCount;
     private double avgDuration;
     private String flowName;
 
     public FlowStatistics(int startupCount, double avgDuration, String flowName) {
-        this.startupCount = startupCount;
+        this.startUpCount = startupCount;
         this.avgDuration = avgDuration;
         this.flowName = flowName;
     }
@@ -26,12 +22,12 @@ public class FlowStatistics {
     public FlowStatistics(){}
 
 
-    public int getStartupCount() {
-        return startupCount;
+    public int getStartUpCount() {
+        return startUpCount;
     }
 
-    public void setStartupCount(int startupCount) {
-        this.startupCount = startupCount;
+    public void setStartUpCount(int startUpCount) {
+        this.startUpCount = startUpCount;
     }
 
     public double getAvgDuration() {
@@ -43,6 +39,6 @@ public class FlowStatistics {
     }
 
     public String getFlowStatisticsAsString(){
-        return flowName+" has run: "+startupCount+" times. For the average run time: "+avgDuration;
+        return flowName+" has run: "+ startUpCount +" times. For the average run time: "+avgDuration;
     }
 }
