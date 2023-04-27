@@ -6,6 +6,7 @@ import Generated.*;
 import Steps.Step;
 import Steps.StepDescriptor;
 import Steps.StepFactory;
+import Steps.StepStatistics;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -281,6 +282,7 @@ public class Flow {
     }
 
     public void execute(){
+        flowRunsCounter++;
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
 
@@ -305,6 +307,7 @@ public class Flow {
 
         Instant finish=Instant.now();
         runTime= Duration.between(start,finish).toMillis();
+        calculateAvgRunTime();
         createFlowLog();
     }
 
@@ -404,5 +407,13 @@ public class Flow {
                     return false;
             }
         return true;
+    }
+
+    private void calculateAvgRunTime(){
+        durationAvgInMs=durationAvgInMs+((runTime-durationAvgInMs)/flowRunsCounter);
+    }
+
+    public FlowStatistics getFlowStatistics(){
+        return new FlowStatistics(flowRunsCounter, durationAvgInMs, name);
     }
 }
