@@ -40,7 +40,6 @@ public class Flow {
     private HashSet<String> formalOutputsNames;
     private boolean isReadOnly;
     private HashMap<String, HashSet<DataType>> freeInputs;
-    private HashSet<String> freeInputsNames;
     private Flow.Status status;
     private String flowRunsummery;
     private static double durationAvgInMs = 0.0;
@@ -79,7 +78,6 @@ public class Flow {
         this.steps = new ArrayList<>();
         this.outputs = new HashMap<>();
         this.freeInputs = new HashMap<>();
-        this.freeInputsNames = new HashSet<>();
         this.map = new FlowMap();
         this.flowLog=new FlowLog();
     }
@@ -263,7 +261,7 @@ public class Flow {
 
     void freeInputsValidation(){
         HashSet<String> inputTypeset=new HashSet<>();
-        for(String freeInputsSetName:freeInputsNames){
+        for(String freeInputsSetName:freeInputs.keySet()){
             for(DataType freeInputByName :freeInputs.get(freeInputsSetName)){
                 if(!inputTypeset.add(freeInputByName.getType().toString()))throw new RuntimeException("Free inputs by the name "+freeInputByName.getEffectiveName()+" have different data types");
             }
