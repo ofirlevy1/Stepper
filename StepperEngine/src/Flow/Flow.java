@@ -6,7 +6,6 @@ import Generated.*;
 import Steps.Step;
 import Steps.StepDescriptor;
 import Steps.StepFactory;
-import Steps.StepStatistics;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -260,11 +259,16 @@ public class Flow {
     }
 
     void freeInputsValidation(){
+        Boolean firstElementEntered =false;
         HashSet<String> inputTypeset=new HashSet<>();
         for(String freeInputsSetName:freeInputs.keySet()){
-            for(DataType freeInputByName :freeInputs.get(freeInputsSetName))
-                if(!inputTypeset.add(freeInputByName.getType().toString()))throw new RuntimeException("Free inputs by the name "+freeInputByName.getEffectiveName()+" have different data types");
+            for(DataType freeInputByName :freeInputs.get(freeInputsSetName)) {
+                if (inputTypeset.add(freeInputByName.getType().toString()) && firstElementEntered)
+                    throw new RuntimeException("Free inputs by the name " + freeInputByName.getEffectiveName() + " have different data types");
+                firstElementEntered =true;
+            }
             inputTypeset.clear();
+            firstElementEntered=false;
         }
     }
 
@@ -283,22 +287,22 @@ public class Flow {
         flowRunsCounter++;
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
-
         Instant start=Instant.now();
-
         try {
             for (Step step : steps) {
                 step.execute();
-                setFlowStatus(step);
                 if (step.getStatus() == Step.Status.Failure && step.isBlocking())
-                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
+                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure, source: "+step.getSummaryLine());
                 if(map.getMappingsByStep(step.getFinalName())!=null) {
                     for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
                         getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
                 }
             }
+
             flowRunsummery="flow execution ended successfully";
+            setFlowStatus();
         } catch (RuntimeException e) {
+            status=Status.FAILURE;
             flowRunsummery=e.getMessage();
             throw e;
         }
@@ -309,13 +313,19 @@ public class Flow {
         createFlowLog();
     }
 
-    private void setFlowStatus(Step step){
-        if(step.getStatus()== Step.Status.Success)
-            status=Status.SUCCESS;
-        else if(step.getStatus()== Step.Status.Warning)
-            status=Status.WARNING;
-        else
+    private void setFlowStatus(){
+        if(steps.get(steps.size()-1).getStatus()== Step.Status.Failure){
             status=Status.FAILURE;
+            return;
+        }
+
+        for(Step step:steps){
+            if(step.getStatus()== Step.Status.Warning){
+                status=Status.WARNING;
+                return;
+            }
+        }
+        status=Status.SUCCESS;
     }
 
     private void createFlowLog(){
