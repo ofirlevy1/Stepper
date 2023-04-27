@@ -12,6 +12,8 @@ public class FileDumperStep extends  Step{
     private StringType content;
     private StringType fileName;
     private StringType result;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FileDumperStep(){
         super("File dumper", true);
@@ -100,6 +102,20 @@ public class FileDumperStep extends  Step{
         allData.add(this.fileName);
         allData.add(this.content);
         return  allData;
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 
 }

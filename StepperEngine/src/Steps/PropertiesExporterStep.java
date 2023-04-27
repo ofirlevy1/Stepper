@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public class PropertiesExporterStep extends Step{
     private RelationType source;
     private StringType result;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public PropertiesExporterStep(){
         super("Properties Exporter", true);
@@ -95,5 +97,19 @@ public class PropertiesExporterStep extends Step{
         public EmptyPropertiesRelationException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

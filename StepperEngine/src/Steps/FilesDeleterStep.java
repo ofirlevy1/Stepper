@@ -9,6 +9,8 @@ public class FilesDeleterStep extends Step{
     private ListType filesList;
     private ListType deletedList;
     private MappingType deletionStats;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FilesDeleterStep(ListType filesList) {
         this();
@@ -122,5 +124,19 @@ public class FilesDeleterStep extends Step{
         public EveryFileFailedToDeleteException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

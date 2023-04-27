@@ -3,8 +3,6 @@ package Steps;
 import DataTypes.*;
 
 import java.io.File;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 
 public class CollectFilesInFolderStep extends Step{
@@ -12,6 +10,8 @@ public class CollectFilesInFolderStep extends Step{
     private StringType filter;
     private ListType filesList;
     private NumberType totalFound;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public CollectFilesInFolderStep(StringType folderName) {
         super("Collect Files In Folder", true);
@@ -47,6 +47,8 @@ public class CollectFilesInFolderStep extends Step{
             this.setStatus(Status.Failure);
         }
     }
+
+
 
     @Override
     protected void runStepFlow() throws Exception {
@@ -129,4 +131,17 @@ public class CollectFilesInFolderStep extends Step{
         return matchingFiles.getData().size();
     }
 
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
+    }
 }

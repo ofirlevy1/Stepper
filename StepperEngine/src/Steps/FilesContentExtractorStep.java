@@ -9,6 +9,8 @@ public class FilesContentExtractorStep extends Step {
     private ListType filesList;
     private NumberType lineNumber;
     private RelationType data;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FilesContentExtractorStep() {
         super("Files Content Extractor", true);
@@ -136,5 +138,19 @@ public class FilesContentExtractorStep extends Step {
         public NoSuchLineException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

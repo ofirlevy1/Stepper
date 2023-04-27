@@ -12,6 +12,8 @@ public class CsvExporterStep extends Step {
     private Relation table;
     private String resultString;
     private StringType result;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public CsvExporterStep(){
         super("CSV Exporter", true);
@@ -108,6 +110,20 @@ public class CsvExporterStep extends Step {
         }
         resultString += table.get(rowNumber, table.getCols() - 1);
         resultString += System.lineSeparator();
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 
 }

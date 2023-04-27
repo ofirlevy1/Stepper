@@ -10,6 +10,8 @@ import java.util.List;
 
 public class SpendSomeTimeStep extends Step{
     private NumberType secondsToSpend;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public SpendSomeTimeStep(){
         super("Spend Some Time", true);
@@ -86,5 +88,19 @@ public class SpendSomeTimeStep extends Step{
         public NumberZeroOrBelowException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }
