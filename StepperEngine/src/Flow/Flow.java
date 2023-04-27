@@ -262,9 +262,9 @@ public class Flow {
     void freeInputsValidation(){
         HashSet<String> inputTypeset=new HashSet<>();
         for(String freeInputsSetName:freeInputs.keySet()){
-            for(DataType freeInputByName :freeInputs.get(freeInputsSetName)){
+            for(DataType freeInputByName :freeInputs.get(freeInputsSetName))
                 if(!inputTypeset.add(freeInputByName.getType().toString()))throw new RuntimeException("Free inputs by the name "+freeInputByName.getEffectiveName()+" have different data types");
-            }
+            inputTypeset.clear();
         }
     }
 
