@@ -13,6 +13,7 @@ Things To Consider:
 import Flow.*;
 import Generated.STFlow;
 import Generated.STStepper;
+import Steps.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -76,6 +77,26 @@ public class Stepper {
 
     public void setFreeInput(String flowName, String freeInputEffectiveName, String dataStr) {
         getFlowByName(flowName).setFreeInput(freeInputEffectiveName, dataStr);
+    }
+
+    public ArrayList<FlowStatistics> getFlowStatistics(){
+        ArrayList<FlowStatistics> flowStatistics=new ArrayList<>();
+        for(Flow flow:flows)
+            flowStatistics.add(flow.getFlowStatistics());
+        return flowStatistics;
+    }
+
+    public ArrayList<StepStatistics> getStepsStatistics(){
+        ArrayList<StepStatistics> stepStatistics=new ArrayList<>();
+        stepStatistics.add(new StepStatistics(CollectFilesInFolderStep.getStepStartUpCount(), CollectFilesInFolderStep.getStepAvgDuration(), new CollectFilesInFolderStep().getName()));
+        stepStatistics.add(new StepStatistics(CsvExporterStep.getStepStartUpCount(), CsvExporterStep.getStepAvgDuration(), new CsvExporterStep().getName()));
+        stepStatistics.add(new StepStatistics(FilesDeleterStep.getStepStartUpCount(), FilesDeleterStep.getStepAvgDuration(), new FilesDeleterStep().getName()));
+        stepStatistics.add(new StepStatistics(FilesContentExtractorStep.getStepStartUpCount(), FilesContentExtractorStep.getStepAvgDuration(), new FilesContentExtractorStep().getName()));
+        stepStatistics.add(new StepStatistics(FileDumperStep.getStepStartUpCount(), FileDumperStep.getStepAvgDuration(), new FileDumperStep().getName()));
+        stepStatistics.add(new StepStatistics(FilesRenamerStep.getStepStartUpCount(), FilesRenamerStep.getStepAvgDuration(), new FilesRenamerStep().getName()));
+        stepStatistics.add(new StepStatistics(PropertiesExporterStep.getStepStartUpCount(), PropertiesExporterStep.getStepAvgDuration(), new PropertiesExporterStep().getName()));
+        stepStatistics.add(new StepStatistics(SpendSomeTimeStep.getStepStartUpCount(), SpendSomeTimeStep.getStepAvgDuration(), new SpendSomeTimeStep().getName()));
+        return  stepStatistics;
     }
 
     public boolean areAllMandatoryFreeInputsSet(String flowName) {
