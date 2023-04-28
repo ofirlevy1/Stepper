@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="StepperEngine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/StepperEngine_jar</output-path>
+    <root id="root">
+      <element id="archive" name="StepperEngine.jar">
+        <element id="module-output" name="StepperEngine" />
+      </element>
+    </root>
+  </artifact>
+</component>
