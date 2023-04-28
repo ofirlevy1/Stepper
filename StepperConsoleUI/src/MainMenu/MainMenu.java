@@ -96,25 +96,7 @@ public class MainMenu {
     }
 
     private void getUserChoice() {
-        System.out.println("Please enter the desired choice number(1-6): ");
-        boolean isInputValid = false;
-        int userInput = 0;
-        while(!isInputValid)
-        {
-            try {
-                userInput = consoleScanner.nextInt();
-            }
-            catch (InputMismatchException e) {
-                System.out.println("You have entered an invalid value! Please enter a number from 1 to 6: ");
-                consoleScanner.nextLine(); //clearing the buffer, since it's not cleared automatically in this case.
-                continue;
-            }
-            if(userInput < 1 || userInput > 6) {
-                System.out.println("The number must be from 1 to 6! please try again:");
-                continue;
-            }
-            isInputValid = true;
-        }
+        int userInput = getUserNumberChoiceWithinRange(1, 6);
         switch(userInput) {
             case 1:
                 chosenOption = Options.LoadSystemFromXML;
@@ -182,15 +164,15 @@ public class MainMenu {
     int getUserNumberChoiceWithinRange(int min, int max) {
         boolean isChoiceValid = false;
         int userInputAsInteger = -1;
-        consoleScanner.nextLine(); // clear buffer
 
         while(!isChoiceValid) {
             System.out.println("Enter a choice between " + min + " and " + max + ":");
             try {
                 userInputAsInteger = consoleScanner.nextInt();
             }
-            catch(NumberFormatException e){
+            catch(Exception e){
                 System.out.println("Invalid input!");
+                consoleScanner.nextLine(); // clearing the buffer manually since it's not cleared if the scanner fails.
                 continue;
             }
             if(userInputAsInteger < min || userInputAsInteger > max) {
