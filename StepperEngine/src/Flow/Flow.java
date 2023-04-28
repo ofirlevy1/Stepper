@@ -39,18 +39,17 @@ public class Flow {
     private HashSet<String> formalOutputsNames;
     private boolean isReadOnly;
     private HashMap<String, HashSet<DataType>> freeInputs;
-    private HashSet<String> freeInputsNames;
     private Flow.Status status;
     private String flowRunsummery;
     private static double durationAvgInMs = 0.0;
     private static long runTime=0;
     private static int flowRunsCounter = 0;
-    FlowLog flowLog;
+     private FlowLog flowLog;
 
-    FlowMap map;
+    private FlowMap map;
 
-    ArrayList<FreeInputDescriptor> freeInputsDescriptors;
-    ArrayList<StepOutputDescriptor> outputDescriptors;
+    private ArrayList<FreeInputDescriptor> freeInputsDescriptors;
+    private ArrayList<StepOutputDescriptor> outputDescriptors;
 
 
     public Flow(STFlow flow)
@@ -78,7 +77,6 @@ public class Flow {
         this.steps = new ArrayList<>();
         this.outputs = new HashMap<>();
         this.freeInputs = new HashMap<>();
-        this.freeInputsNames = new HashSet<>();
         this.map = new FlowMap();
         this.flowLog=new FlowLog();
     }
@@ -261,11 +259,16 @@ public class Flow {
     }
 
     void freeInputsValidation(){
+        Boolean firstElementEntered =false;
         HashSet<String> inputTypeset=new HashSet<>();
-        for(String freeInputsSetName:freeInputsNames){
-            for(DataType freeInputByName :freeInputs.get(freeInputsSetName)){
-                if(!inputTypeset.add(freeInputByName.getType().toString()))throw new RuntimeException("Free inputs by the name "+freeInputByName.getEffectiveName()+" have different data types");
+        for(String freeInputsSetName:freeInputs.keySet()){
+            for(DataType freeInputByName :freeInputs.get(freeInputsSetName)) {
+                if (inputTypeset.add(freeInputByName.getType().toString()) && firstElementEntered)
+                    throw new RuntimeException("Free inputs by the name " + freeInputByName.getEffectiveName() + " have different data types");
+                firstElementEntered =true;
             }
+            inputTypeset.clear();
+            firstElementEntered=false;
         }
     }
 
@@ -281,53 +284,60 @@ public class Flow {
     }
 
     public void execute(){
+        flowRunsCounter++;
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
-
         Instant start=Instant.now();
-
         try {
             for (Step step : steps) {
                 step.execute();
-                setFlowStatus(step);
                 if (step.getStatus() == Step.Status.Failure && step.isBlocking())
-                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure");
+                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure, source: "+step.getSummaryLine());
                 if(map.getMappingsByStep(step.getFinalName())!=null) {
                     for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
                         getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
                 }
             }
+
             flowRunsummery="flow execution ended successfully";
+            setFlowStatus();
         } catch (RuntimeException e) {
+            status=Status.FAILURE;
             flowRunsummery=e.getMessage();
             throw e;
         }
 
         Instant finish=Instant.now();
         runTime= Duration.between(start,finish).toMillis();
+        calculateAvgRunTime();
         createFlowLog();
     }
 
-    private void setFlowStatus(Step step){
-        if(step.getStatus()== Step.Status.Success)
-            status=Status.SUCCESS;
-        else if(step.getStatus()== Step.Status.Warning)
-            status=Status.WARNING;
-        else
+    private void setFlowStatus(){
+        if(steps.get(steps.size()-1).getStatus()== Step.Status.Failure){
             status=Status.FAILURE;
+            return;
+        }
+
+        for(Step step:steps){
+            if(step.getStatus()== Step.Status.Warning){
+                status=Status.WARNING;
+                return;
+            }
+        }
+        status=Status.SUCCESS;
     }
 
     private void createFlowLog(){
         flowLog=new FlowLog();
-        for(Step step:steps){
-            flowLog.addStepLogs(step.getLogsAsString());
-            if(step.getStatus()== Step.Status.Failure&&step.isBlocking()) break;
-        }
-
         flowLog.setFlowName(name);
         flowLog.setStatus(status);
-        flowLog.setTotalRuntimeInMs(runTime);
-        //check
+        for(String formalOutputName:formalOutputsNames)
+            flowLog.addFormalOutputsPresentation(outputs.get(formalOutputName));
+    }
+
+    public FlowLog getFlowLog() {
+        return flowLog;
     }
 
     public FlowDescriptor getFlowDescriptor() {
@@ -404,5 +414,13 @@ public class Flow {
                     return false;
             }
         return true;
+    }
+
+    private void calculateAvgRunTime(){
+        durationAvgInMs=durationAvgInMs+((runTime-durationAvgInMs)/flowRunsCounter);
+    }
+
+    public FlowStatistics getFlowStatistics(){
+        return new FlowStatistics(flowRunsCounter, durationAvgInMs, name);
     }
 }

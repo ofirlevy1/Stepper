@@ -12,6 +12,8 @@ public class FileDumperStep extends  Step{
     private StringType content;
     private StringType fileName;
     private StringType result;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FileDumperStep(){
         super("File dumper", true);
@@ -31,7 +33,7 @@ public class FileDumperStep extends  Step{
     }
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow() {
         try {
             runStepFlow();
         } catch (Exception e) {
@@ -77,14 +79,10 @@ public class FileDumperStep extends  Step{
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(fileName.getEffectiveName())) {
+        if(inputName.equals(fileName.getEffectiveName()))
             this.fileName.setData((String) input.getData());
-            this.fileName.setMandatory(true);
-        }
-        if(inputName.equals(content.getEffectiveName())) {
+        if(inputName.equals(content.getEffectiveName()))
             this.content.setData((String) input.getData());
-            this.content.setMandatory(true);
-        }
     }
 
     @Override
@@ -104,6 +102,20 @@ public class FileDumperStep extends  Step{
         allData.add(this.fileName);
         allData.add(this.content);
         return  allData;
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 
 }

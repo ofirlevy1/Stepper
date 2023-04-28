@@ -9,6 +9,8 @@ public class FilesDeleterStep extends Step{
     private ListType filesList;
     private ListType deletedList;
     private MappingType deletionStats;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FilesDeleterStep(ListType filesList) {
         this();
@@ -25,7 +27,7 @@ public class FilesDeleterStep extends Step{
         this.filesList.setMandatory(true);
     }
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try {
             this.runStepFlow();
         }
@@ -87,10 +89,8 @@ public class FilesDeleterStep extends Step{
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(filesList.getEffectiveName())) {
+        if(inputName.equals(filesList.getEffectiveName()))
             this.filesList.setData((ArrayList<DataType>) input.getData());
-            this.filesList.setMandatory(true);
-        }
     }
 
     @Override
@@ -124,5 +124,19 @@ public class FilesDeleterStep extends Step{
         public EveryFileFailedToDeleteException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

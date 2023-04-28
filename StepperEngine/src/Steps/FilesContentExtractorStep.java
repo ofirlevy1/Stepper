@@ -9,6 +9,8 @@ public class FilesContentExtractorStep extends Step {
     private ListType filesList;
     private NumberType lineNumber;
     private RelationType data;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public FilesContentExtractorStep() {
         super("Files Content Extractor", true);
@@ -31,7 +33,7 @@ public class FilesContentExtractorStep extends Step {
 
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try{
             this.runStepFlow();
         }
@@ -101,10 +103,8 @@ public class FilesContentExtractorStep extends Step {
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(filesList.getEffectiveName())) {
+        if(inputName.equals(filesList.getEffectiveName()))
             this.filesList.setData((ArrayList<DataType>) input.getData());
-            this.filesList.setMandatory(true);
-        }
     }
 
     @Override
@@ -138,5 +138,19 @@ public class FilesContentExtractorStep extends Step {
         public NoSuchLineException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

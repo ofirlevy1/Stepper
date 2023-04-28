@@ -1,6 +1,9 @@
 package Steps;
 
 import DataTypes.DataType;
+
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,8 +13,9 @@ public abstract class  Step {
     private String alias;
     private Boolean hasAlias;
     private Boolean isReadOnly; // a readonly step doesn't change anything in the system.
-    private static double durationAvgInMs = 0.0;
-    private static int stepRunsCounter = 0;
+    protected   double durationAvgInMs = 0.0;
+    protected   double runTimeInMs = 0;
+    protected   int startUpCounter = 0;
 
     private ArrayList<StepLog> logs;
     private String summaryLine;
@@ -38,7 +42,18 @@ public abstract class  Step {
         isBlocking = true;
     }
 
-    public abstract void execute();
+    public  void execute(){
+        startUpCounter++;
+        Instant start=Instant.now();
+        outerRunStepFlow();
+        Instant finish=Instant.now();
+        runTimeInMs= Duration.between(start,finish).toMillis();
+        updateAverageRunTime();
+        updateStaticTimers();
+    }
+    protected abstract void updateStaticTimers();
+
+    protected abstract void outerRunStepFlow();
 
     protected abstract void runStepFlow() throws Exception;
 
@@ -173,5 +188,13 @@ public abstract class  Step {
 
     public StepDescriptor getStepDescriptor() {
         return new StepDescriptor(name, alias, hasAlias, isReadOnly);
+    }
+
+    private void updateAverageRunTime(){
+        durationAvgInMs=durationAvgInMs+((runTimeInMs-durationAvgInMs)/ startUpCounter);
+    }
+
+    public double getRunTimeInMs() {
+        return runTimeInMs;
     }
 }

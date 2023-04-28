@@ -10,6 +10,8 @@ import java.util.List;
 
 public class SpendSomeTimeStep extends Step{
     private NumberType secondsToSpend;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     public SpendSomeTimeStep(){
         super("Spend Some Time", true);
@@ -25,7 +27,7 @@ public class SpendSomeTimeStep extends Step{
     }
 
     @Override
-    public void execute(){
+    protected void outerRunStepFlow(){
         try {
             this.runStepFlow();
         } catch (Exception e) {
@@ -58,10 +60,8 @@ public class SpendSomeTimeStep extends Step{
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(secondsToSpend.getEffectiveName())) {
+        if(inputName.equals(secondsToSpend.getEffectiveName()))
             this.secondsToSpend.setData((Integer) input.getData());
-            this.secondsToSpend.setMandatory(true);
-        }
     }
 
     @Override
@@ -88,5 +88,19 @@ public class SpendSomeTimeStep extends Step{
         public NumberZeroOrBelowException(String str){
             super(str);
         }
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

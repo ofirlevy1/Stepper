@@ -13,6 +13,8 @@ public class FilesRenamerStep extends Step {
     private StringType suffix;
     private RelationType renameResult;
     private ArrayList<String> failedFiles;
+    private static double stepAvgDuration=0;
+    private static int stepStartUpCount=0;
 
     // These are used to fill the Relation result output at the end of the step because
     // Relation is not dynamic - it can be created only at the end of the step
@@ -44,7 +46,7 @@ public class FilesRenamerStep extends Step {
     }
 
     @Override
-    public void execute() {
+    protected void outerRunStepFlow(){
         try {
             runStepFlow();
         } catch (Exception e) {
@@ -89,18 +91,12 @@ public class FilesRenamerStep extends Step {
 
     @Override
     public void setInputByName(DataType input, String inputName) {
-        if(inputName.equals(filesToRename.getEffectiveName())) {
+        if(inputName.equals(filesToRename.getEffectiveName()))
             this.filesToRename.setData((ArrayList<DataType>) input.getData());
-            this.filesToRename.setMandatory(true);
-        }
-        if(inputName.equals(suffix.getEffectiveName())) {
+        if(inputName.equals(suffix.getEffectiveName()))
             this.suffix.setData((String) input.getData());
-            this.suffix.setMandatory(false);
-        }
-        if(inputName.equals(prefix.getEffectiveName())) {
+        if(inputName.equals(prefix.getEffectiveName()))
             this.prefix.setData((String) input.getData());
-            this.prefix.setMandatory(false);
-        }
     }
 
     @Override
@@ -186,5 +182,19 @@ public class FilesRenamerStep extends Step {
         if (extensionStartIndex == -1)
             return "";
         return str.substring(extensionStartIndex, str.length());
+    }
+
+    @Override
+    protected void updateStaticTimers() {
+        stepStartUpCount= startUpCounter;
+        stepAvgDuration=durationAvgInMs;
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }
