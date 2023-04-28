@@ -136,6 +136,22 @@ public class MainMenu {
 
 
     private void loadSystemFromXML() {
+        consoleScanner.nextLine(); // clearing the buffer;
+        boolean loadedSuccessfully = false;
+        while(!loadedSuccessfully) {
+            System.out.println("Please enter the full path for the WT_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
+            String userInput = consoleScanner.nextLine();
+            try {
+                stepperUIManager.LoadStepperFromXmlFile(userInput);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to load system from XML file! ");
+                System.out.println(e.getMessage()); // this is not ideal - should display a clear message to the user, not based on getMessage();
+                continue;
+            }
+            loadedSuccessfully = true;
+            System.out.println("System was loaded successfully");
+        }
     }
     private void showFlowDefinition() {
 
