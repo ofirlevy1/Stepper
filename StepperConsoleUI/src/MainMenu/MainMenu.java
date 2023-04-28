@@ -139,8 +139,11 @@ public class MainMenu {
         consoleScanner.nextLine(); // clearing the buffer;
         boolean loadedSuccessfully = false;
         while(!loadedSuccessfully) {
-            System.out.println("Please enter the full path for the WT_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
+            System.out.println("Please enter the full path for the ST_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
+            System.out.println(("(Enter 0 to return to Main Menu)"));
             String userInput = consoleScanner.nextLine();
+            if(doesStringRepresentANumber(userInput, 0))
+                return;
             try {
                 stepperUIManager.LoadStepperFromXmlFile(userInput);
             }
@@ -166,7 +169,18 @@ public class MainMenu {
 
     }
 
-
+    static boolean doesStringRepresentANumber(String str, int num) {
+        int strAsNumber;
+        try {
+            strAsNumber = Integer.parseInt(str);
+        }
+        catch(NumberFormatException e) {
+            return false;
+        }
+        if(strAsNumber != num)
+            return false;
+        return true;
+    }
 
 
 
