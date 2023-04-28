@@ -22,7 +22,14 @@ public class StepperUIManager {
     }
 
     public void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
-        stepper = new Stepper(xmlFilePath);
+
+        // First assigning it to a new Stepper object, to not override anything in case of failure.
+        Stepper stepperCpy = new Stepper(xmlFilePath);
+
+        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
+        // So now we can override the actual stepper:
+        this.stepper = stepperCpy;
+
         isLoaded = true;
     }
 
