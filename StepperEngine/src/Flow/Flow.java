@@ -286,6 +286,7 @@ public class Flow {
 
     public void execute(){
         flowRunsCounter++;
+        clearAllStepsLogs();
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
         Instant start=Instant.now();
@@ -450,5 +451,10 @@ public class Flow {
     public void clearAllStepsDataMembers(){
         for(Step step:steps)
             step.clearDataMembers();
+    }
+
+    private void clearAllStepsLogs(){
+        for(Step step:steps)
+            step.clearLogs();
     }
 }

@@ -199,4 +199,8 @@ public abstract class  Step {
     }
 
     public abstract void clearDataMembers();
+
+    public void clearLogs(){
+        logs=new ArrayList<>();
+    }
 }
