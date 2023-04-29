@@ -18,12 +18,30 @@ import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-        testFlowExecution();
+        testRenameFilesFlowExecution();
 
 
     }
 
-    public static void testFlowExecution() throws FileNotFoundException, JAXBException
+    public static void testDeleteMatchedFilesFlowExecution() throws FileNotFoundException, JAXBException
+    {
+        StepperUIManager uiManager = new StepperUIManager();
+        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml");
+        System.out.println(uiManager.getFlowNames());
+        FlowDescriptor flowDescriptor = uiManager.getFlowDescriptor("Delete Matched Files");
+
+        ArrayList<FreeInputDescriptor> freeInputDescriptors = uiManager.getFreeInputDescriptorsByFlow("Delete Matched Files");
+
+        uiManager.setFreeInput("Delete Matched Files", "FOLDER_NAME", "E:\\folderToDelete");
+        uiManager.setFreeInput("Delete Matched Files", "TIME_TO_SPEND", "3");
+
+
+        uiManager.runFlow("Delete Matched Files");
+
+
+    }
+
+    public static void testRenameFilesFlowExecution() throws FileNotFoundException, JAXBException
     {
         StepperUIManager uiManager = new StepperUIManager();
         uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml");
