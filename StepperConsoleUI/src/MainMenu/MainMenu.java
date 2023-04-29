@@ -22,6 +22,7 @@ package MainMenu;
 * */
 
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -120,8 +121,6 @@ public class MainMenu {
     }
 
 
-
-
     private void loadSystemFromXML() {
         consoleScanner.nextLine(); // clearing the buffer;
         boolean loadedSuccessfully = false;
@@ -140,7 +139,8 @@ public class MainMenu {
                 continue;
             }
             loadedSuccessfully = true;
-            System.out.println("System was loaded successfully");
+            System.out.println("System was loaded successfully! enter anything to continue");
+            consoleScanner.nextLine();
         }
     }
     private void showFlowDefinition() {
@@ -192,8 +192,63 @@ public class MainMenu {
 
 
     private void runFlow() {
-
+        String selectedFlowName = getUserFlowSelection();
+        if(selectedFlowName == null)
+            return;
+        runExecuteFlowMenu(selectedFlowName);
     }
+
+    private void runExecuteFlowMenu(String flowName) {
+        int userInput = 0;
+        while(true) {
+            presentFreeInputs(stepperUIManager.getFreeInputDescriptorsByFlow(flowName));
+            System.out.println("1. Enter Free Input Value");
+            if(stepperUIManager.areAllMandatoryFreeInputsSet(flowName))
+                System.out.println("2. Run Flow");
+            System.out.println("0. Back to Main Menu");
+            userInput = getUserNumberChoiceWithinRange(0, stepperUIManager.areAllMandatoryFreeInputsSet(flowName) ? 2 : 1);
+            if(userInput == 0)
+                return;
+            if(userInput == 1)
+                fillFreeInputUI(flowName);
+            if(userInput == 2) {
+                try {
+                    stepperUIManager.runFlow(flowName);
+                }
+                catch(Exception e) {
+                    System.out.println("Flow execution failed: " + e.getMessage());
+                }
+
+                //presentFlowLastRunStatus()
+                System.out.println("Flow execution done, enter anything to continue");
+                consoleScanner.nextLine();
+            }
+
+        }
+    }
+
+    private void fillFreeInputUI(String flowName) {
+        System.out.println("Choose the free input's number: ");
+        int freeInputIndex = getUserNumberChoiceWithinRange(1, stepperUIManager.getFreeInputDescriptorsByFlow(flowName).size());
+        consoleScanner.nextLine(); // clear buffer
+        String value = "";
+        while(true) {
+            System.out.println("Enter a value for the free input: ");
+            value = consoleScanner.nextLine();
+            try {
+                stepperUIManager.setFreeInput(flowName, stepperUIManager.getFreeInputDescriptorsByFlow(flowName).get(freeInputIndex - 1).getInputEffectiveName(), value);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to assign value: " + e.getMessage());
+                continue;
+            }
+            break;
+        }
+        System.out.println("free input value was inserted successfully! enter anything to continue");
+        consoleScanner.nextLine();
+    }
+
+
     private void showPastFlowExecutionDetails() {
 
     }
@@ -223,13 +278,20 @@ public class MainMenu {
             System.out.println("Step #" + (i + 1) + ":");
             presentStepDetails(flowDescriptor.getStepDescriptors().get(i));
         }
-        System.out.println("Free Inputs:");
-        for(FreeInputDescriptor freeInputDescriptor : flowDescriptor.getFreeInputs()) {
-            presentFreeInput(freeInputDescriptor);
-        }
+
+        presentFreeInputs(flowDescriptor.getFreeInputs());
+
         System.out.println("All Outputs:");
         for(StepOutputDescriptor stepOutputDescriptor : flowDescriptor.getOutputs()) {
             presentStepOutput(stepOutputDescriptor);
+        }
+    }
+
+    private void presentFreeInputs(ArrayList<FreeInputDescriptor> freeInputDescriptors) {
+        System.out.println("Free Inputs:");
+        for(int i = 0; i < freeInputDescriptors.size(); i++) {
+            System.out.println(i + 1);
+            presentFreeInput(freeInputDescriptors.get(i));
         }
     }
 
