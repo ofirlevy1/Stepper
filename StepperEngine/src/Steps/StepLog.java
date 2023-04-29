@@ -1,5 +1,6 @@
 package Steps;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StepLog {
@@ -14,6 +15,6 @@ public class StepLog {
 
     @Override
     public String toString() {
-        return logTimeStamp+" "+logDescription;
+        return new SimpleDateFormat("HH.mm.ss:sss").format(logTimeStamp)+" "+logDescription;
     }
 }
