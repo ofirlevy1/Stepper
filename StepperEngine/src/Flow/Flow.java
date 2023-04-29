@@ -423,4 +423,9 @@ public class Flow {
     public FlowStatistics getFlowStatistics(){
         return new FlowStatistics(flowRunsCounter, durationAvgInMs, name);
     }
+
+    public void clearAllStepsDataMembers(){
+        for(Step step:steps)
+            step.clearDataMembers();
+    }
 }

@@ -197,4 +197,11 @@ public class FilesRenamerStep extends Step {
     public static double getStepAvgDuration() {
         return stepAvgDuration;
     }
+
+    public void clearDataMembers(){
+        this.suffix.setData(null);
+        this.prefix.setData(null);
+        this.filesToRename.setData(null);
+        this.renameResult.setData(null);
+    }
 }

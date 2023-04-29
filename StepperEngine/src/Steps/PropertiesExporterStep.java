@@ -112,4 +112,9 @@ public class PropertiesExporterStep extends Step{
     public static double getStepAvgDuration() {
         return stepAvgDuration;
     }
+
+    public void clearDataMembers(){
+        this.result.setData(null);
+        this.source.setData(null);
+    }
 }

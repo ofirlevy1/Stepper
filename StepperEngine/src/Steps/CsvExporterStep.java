@@ -126,4 +126,9 @@ public class CsvExporterStep extends Step {
         return stepAvgDuration;
     }
 
+    public void clearDataMembers(){
+        this.source.setData(null);
+        this.result.setData(null);
+    }
+
 }

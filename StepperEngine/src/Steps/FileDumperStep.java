@@ -118,4 +118,10 @@ public class FileDumperStep extends  Step{
         return stepAvgDuration;
     }
 
+    public void clearDataMembers(){
+        this.fileName.setData(null);
+        this.content.setData(null);
+        this.result.setData(null);
+    }
+
 }

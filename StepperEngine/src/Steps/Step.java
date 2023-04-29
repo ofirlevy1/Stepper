@@ -197,4 +197,6 @@ public abstract class  Step {
     public double getRunTimeInMs() {
         return runTimeInMs;
     }
+
+    public abstract void clearDataMembers();
 }

@@ -139,4 +139,10 @@ public class FilesDeleterStep extends Step{
     public static double getStepAvgDuration() {
         return stepAvgDuration;
     }
+
+    public void clearDataMembers(){
+        this.deletionStats.setData(null);
+        this.filesList.setData(null);
+        this.deletedList.setData(null);
+    }
 }

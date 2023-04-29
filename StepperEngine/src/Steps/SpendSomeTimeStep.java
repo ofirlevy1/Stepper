@@ -103,4 +103,8 @@ public class SpendSomeTimeStep extends Step{
     public static double getStepAvgDuration() {
         return stepAvgDuration;
     }
+
+    public void clearDataMembers(){
+        this.secondsToSpend.setData(0);
+    }
 }
