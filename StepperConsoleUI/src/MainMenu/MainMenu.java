@@ -22,9 +22,15 @@ package MainMenu;
 * */
 
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import Flow.FlowDescriptor;
+import Flow.FreeInputDescriptor;
+import Flow.StepOutputDescriptor;
 import Stepper.StepperUIManager;
+import Steps.StepDescriptor;
 
 public class MainMenu {
     private Options chosenOption;
@@ -91,25 +97,7 @@ public class MainMenu {
     }
 
     private void getUserChoice() {
-        System.out.println("Please enter the desired choice number(1-6): ");
-        boolean isInputValid = false;
-        int userInput = 0;
-        while(!isInputValid)
-        {
-            try {
-                userInput = consoleScanner.nextInt();
-            }
-            catch (InputMismatchException e) {
-                System.out.println("You have entered an invalid value! Please enter a number from 1 to 6: ");
-                consoleScanner.nextLine(); //clearing the buffer, since it's not cleared automatically in this case.
-                continue;
-            }
-            if(userInput < 1 || userInput > 6) {
-                System.out.println("The number must be from 1 to 6! please try again:");
-                continue;
-            }
-            isInputValid = true;
-        }
+        int userInput = getUserNumberChoiceWithinRange(1, 6);
         switch(userInput) {
             case 1:
                 chosenOption = Options.LoadSystemFromXML;
@@ -133,14 +121,15 @@ public class MainMenu {
     }
 
 
-
-
     private void loadSystemFromXML() {
         consoleScanner.nextLine(); // clearing the buffer;
         boolean loadedSuccessfully = false;
         while(!loadedSuccessfully) {
-            System.out.println("Please enter the full path for the WT_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
+            System.out.println("Please enter the full path for the ST_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
+            System.out.println(("(Or enter 0 to return to Main Menu)"));
             String userInput = consoleScanner.nextLine();
+            if(doesStringRepresentANumber(userInput, 0))
+                return;
             try {
                 stepperUIManager.LoadStepperFromXmlFile(userInput);
             }
@@ -150,15 +139,116 @@ public class MainMenu {
                 continue;
             }
             loadedSuccessfully = true;
-            System.out.println("System was loaded successfully");
+            System.out.println("System was loaded successfully! enter anything to continue");
+            consoleScanner.nextLine();
         }
     }
     private void showFlowDefinition() {
+        String selectedFlowName = getUserFlowSelection();
+        FlowDescriptor flowDescriptor = stepperUIManager.getFlowDescriptor(selectedFlowName);
 
+        presentFlowDetails(flowDescriptor);
     }
+
+
+    // returns null if the user entered 0 (back to main menu)
+    private String getUserFlowSelection() {
+        presentFlows();
+        System.out.println("Please enter the number of the desired Flow(or 0 to return to main menu)");
+        int userChoice = getUserNumberChoiceWithinRange(0, stepperUIManager.getFlowNames().size());
+        if(userChoice == 0)
+            return null;
+        return stepperUIManager.getFlowNames().get(userChoice - 1);
+    }
+
+    int getUserNumberChoiceWithinRange(int min, int max) {
+        boolean isChoiceValid = false;
+        int userInputAsInteger = -1;
+
+        while(!isChoiceValid) {
+            System.out.println("Enter a choice between " + min + " and " + max + ":");
+            try {
+                userInputAsInteger = consoleScanner.nextInt();
+            }
+            catch(Exception e){
+                System.out.println("Invalid input!");
+                consoleScanner.nextLine(); // clearing the buffer manually since it's not cleared if the scanner fails.
+                continue;
+            }
+            if(userInputAsInteger < min || userInputAsInteger > max) {
+                System.out.println("Value is not withing range!");
+                continue;
+            }
+            isChoiceValid = true;
+        }
+        return userInputAsInteger;
+    }
+
+    private void presentFlows() {
+        for(int i = 0; i <= stepperUIManager.getFlowNames().size() - 1; i++) {
+            System.out.println((i + 1) + ". " + stepperUIManager.getFlowNames().get(i));
+        }
+    }
+
+
     private void runFlow() {
-
+        String selectedFlowName = getUserFlowSelection();
+        if(selectedFlowName == null)
+            return;
+        runExecuteFlowMenu(selectedFlowName);
     }
+
+    private void runExecuteFlowMenu(String flowName) {
+        int userInput = 0;
+        while(true) {
+            presentFreeInputs(stepperUIManager.getFreeInputDescriptorsByFlow(flowName));
+            System.out.println("1. Enter Free Input Value");
+            if(stepperUIManager.areAllMandatoryFreeInputsSet(flowName))
+                System.out.println("2. Run Flow");
+            System.out.println("0. Back to Main Menu");
+            userInput = getUserNumberChoiceWithinRange(0, stepperUIManager.areAllMandatoryFreeInputsSet(flowName) ? 2 : 1);
+            if(userInput == 0)
+                return;
+            if(userInput == 1)
+                fillFreeInputUI(flowName);
+            if(userInput == 2) {
+                try {
+                    stepperUIManager.runFlow(flowName);
+                }
+                catch(Exception e) {
+                    System.out.println("Flow execution failed: " + e.getMessage());
+                }
+
+                //presentFlowLastRunStatus()
+                System.out.println("Flow execution done, enter anything to continue");
+                consoleScanner.nextLine();
+            }
+
+        }
+    }
+
+    private void fillFreeInputUI(String flowName) {
+        System.out.println("Choose the free input's number: ");
+        int freeInputIndex = getUserNumberChoiceWithinRange(1, stepperUIManager.getFreeInputDescriptorsByFlow(flowName).size());
+        consoleScanner.nextLine(); // clear buffer
+        String value = "";
+        while(true) {
+            System.out.println("Enter a value for the free input: ");
+            value = consoleScanner.nextLine();
+            try {
+                stepperUIManager.setFreeInput(flowName, stepperUIManager.getFreeInputDescriptorsByFlow(flowName).get(freeInputIndex - 1).getInputEffectiveName(), value);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to assign value: " + e.getMessage());
+                continue;
+            }
+            break;
+        }
+        System.out.println("free input value was inserted successfully! enter anything to continue");
+        consoleScanner.nextLine();
+    }
+
+
     private void showPastFlowExecutionDetails() {
 
     }
@@ -166,10 +256,64 @@ public class MainMenu {
 
     }
 
+    static boolean doesStringRepresentANumber(String str, int num) {
+        int strAsNumber;
+        try {
+            strAsNumber = Integer.parseInt(str);
+        }
+        catch(NumberFormatException e) {
+            return false;
+        }
+        if(strAsNumber != num)
+            return false;
+        return true;
+    }
 
 
+    private void presentFlowDetails(FlowDescriptor flowDescriptor) {
+        System.out.println("Flow Name: " + flowDescriptor.getFlowName());
+        System.out.println("Flow Description: " + flowDescriptor.getFlowDescription());
+        System.out.println("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString());
+        for(int i = 0; i < flowDescriptor.getStepDescriptors().size(); i++) {
+            System.out.println("Step #" + (i + 1) + ":");
+            presentStepDetails(flowDescriptor.getStepDescriptors().get(i));
+        }
 
+        presentFreeInputs(flowDescriptor.getFreeInputs());
 
+        System.out.println("All Outputs:");
+        for(StepOutputDescriptor stepOutputDescriptor : flowDescriptor.getOutputs()) {
+            presentStepOutput(stepOutputDescriptor);
+        }
+    }
+
+    private void presentFreeInputs(ArrayList<FreeInputDescriptor> freeInputDescriptors) {
+        System.out.println("Free Inputs:");
+        for(int i = 0; i < freeInputDescriptors.size(); i++) {
+            System.out.println(i + 1);
+            presentFreeInput(freeInputDescriptors.get(i));
+        }
+    }
+
+    private void presentStepOutput(StepOutputDescriptor stepOutputDescriptor) {
+        System.out.println("Effective Name: " + stepOutputDescriptor.getOutputEffectiveName());
+        System.out.println("Type: " + stepOutputDescriptor.getOutputType());
+        System.out.println("Produced by step: " + stepOutputDescriptor.getSourceStepName());
+    }
+
+    private void presentFreeInput(FreeInputDescriptor freeInputDescriptor) {
+        System.out.println("Effective Name: " + freeInputDescriptor.getInputEffectiveName());
+        System.out.println("Type: " + freeInputDescriptor.getInputType().toString());
+        System.out.println("Associated steps: " + freeInputDescriptor.getAssociatedSteps());
+        System.out.println((freeInputDescriptor.isMandatory() ? "mandatory" : "optional"));
+    }
+
+    private void presentStepDetails(StepDescriptor stepDescriptor) {
+        System.out.println("Step Name: " + stepDescriptor.getStepName());
+        if(stepDescriptor.isHasAlias())
+            System.out.println("Step Alias: " + stepDescriptor.getStepAlias());
+        System.out.println("The step is " + (stepDescriptor.isReadOnly() ? "readonly" : "NOT readonly"));
+    }
 
     public enum Options {
         LoadSystemFromXML,

@@ -56,5 +56,4 @@ public class StepperUIManager {
     public void runFlow(String flowName) {
         stepper.runFlow(flowName);
     }
-
 }
