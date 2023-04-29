@@ -49,6 +49,7 @@ public class CsvExporterStep extends Step {
         else {
             addDataFromTable();
             setStatus(Status.Success);
+            setSummaryLine("Finished Successfully");
         }
         this.result.setData(resultString);//=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
     }

@@ -313,9 +313,6 @@ public class Flow {
         calculateAvgRunTime();
         createFlowLog();
         createFlowHistory();
-        System.out.println(flowRunHistory.showMinimalFlowHistory());
-        System.out.println("\n \n");
-        System.out.println(flowRunHistory.showExtensiveFlowHistory());
     }
 
     private void setFlowStatus(){

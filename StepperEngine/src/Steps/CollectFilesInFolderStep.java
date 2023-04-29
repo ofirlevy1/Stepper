@@ -69,8 +69,9 @@ public class CollectFilesInFolderStep extends Step{
         }
         int matchingFiles = addMatchingFilesToOutput(folder.listFiles());
         this.totalFound.setData(matchingFiles);//;=new NumberType(matchingFiles, StepOutputNameEnum.TOTAL_FOUND.toString(), false);
-        addLog("Found " + matchingFiles + " files in folder matching the filter");
-        setStatus(Status.Success);
+        setStatusAndLog(Status.Success,
+                "Found " + matchingFiles + " files in folder matching the filter",
+                "Found " + matchingFiles + " files in folder matching the filter");
     }
 
     @Override
