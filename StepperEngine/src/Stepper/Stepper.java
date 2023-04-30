@@ -28,12 +28,14 @@ public class Stepper {
 
     HashSet<Flow> flows;
     String exceptionString;
+    ArrayList<FlowRunHistory> flowsRunHistories;
 
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         flows = new HashSet<>();
+        flowsRunHistories = new ArrayList<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
             try {
                 flows.add(new Flow(stFlow));
@@ -105,5 +107,10 @@ public class Stepper {
 
     public void runFlow(String flowName) {
         getFlowByName(flowName).execute();
+        flowsRunHistories.add(getFlowByName(flowName).getFlowRunHistory());
+    }
+
+    public ArrayList<FlowRunHistory> getFlowsRunHistories() {
+        return flowsRunHistories;
     }
 }

@@ -56,4 +56,8 @@ public class StepperUIManager {
     public void runFlow(String flowName) {
         stepper.runFlow(flowName);
     }
+
+    public ArrayList<FlowRunHistory> getFlowsRunHistories() {
+        return stepper.getFlowsRunHistories();
+    }
 }

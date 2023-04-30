@@ -27,6 +27,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import Flow.FlowDescriptor;
+import Flow.FlowRunHistory;
 import Flow.FreeInputDescriptor;
 import Flow.StepOutputDescriptor;
 import Stepper.StepperUIManager;
@@ -122,7 +123,6 @@ public class MainMenu {
 
 
     private void loadSystemFromXML() {
-        consoleScanner.nextLine(); // clearing the buffer;
         boolean loadedSuccessfully = false;
         while(!loadedSuccessfully) {
             System.out.println("Please enter the full path for the ST_Stepper XML file (example: C:\\Users\\me\\stepper.xml) :");
@@ -169,6 +169,7 @@ public class MainMenu {
             System.out.println("Enter a choice between " + min + " and " + max + ":");
             try {
                 userInputAsInteger = consoleScanner.nextInt();
+                consoleScanner.nextLine(); // scanner.nextInt does not clear the newline(enter) from the buffer
             }
             catch(Exception e){
                 System.out.println("Invalid input!");
@@ -213,6 +214,7 @@ public class MainMenu {
                 fillFreeInputUI(flowName);
             if(userInput == 2) {
                 try {
+                    System.out.println("Executing flow...");
                     stepperUIManager.runFlow(flowName);
                 }
                 catch(Exception e) {
@@ -230,7 +232,6 @@ public class MainMenu {
     private void fillFreeInputUI(String flowName) {
         System.out.println("Choose the free input's number: ");
         int freeInputIndex = getUserNumberChoiceWithinRange(1, stepperUIManager.getFreeInputDescriptorsByFlow(flowName).size());
-        consoleScanner.nextLine(); // clear buffer
         String value = "";
         while(true) {
             System.out.println("Enter a value for the free input: ");
@@ -250,7 +251,14 @@ public class MainMenu {
 
 
     private void showPastFlowExecutionDetails() {
-
+        ArrayList<FlowRunHistory> flowsRunHistories = stepperUIManager.getFlowsRunHistories();
+        for(int i = 0; i < flowsRunHistories.size(); i++) {
+            System.out.println((i+1) + ". " + flowsRunHistories.get(i).showMinimalFlowHistory());
+        }
+        int userChoice = getUserNumberChoiceWithinRange(1, flowsRunHistories.size());
+        System.out.println(flowsRunHistories.get(userChoice-1).showExtensiveFlowHistory());
+        System.out.println("Enter anything to continue...");
+        consoleScanner.nextLine();
     }
     private void showStatistics() {
 
