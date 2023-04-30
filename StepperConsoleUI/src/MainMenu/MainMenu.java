@@ -26,12 +26,10 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import Flow.FlowDescriptor;
-import Flow.FlowRunHistory;
-import Flow.FreeInputDescriptor;
-import Flow.StepOutputDescriptor;
+import Flow.*;
 import Stepper.StepperUIManager;
 import Steps.StepDescriptor;
+import Steps.StepStatistics;
 
 public class MainMenu {
     private Options chosenOption;
@@ -261,7 +259,15 @@ public class MainMenu {
         consoleScanner.nextLine();
     }
     private void showStatistics() {
+        ArrayList<FlowStatistics> flowsStatistics = stepperUIManager.getFlowStatistics();
+        ArrayList<StepStatistics> stepsStatistics = stepperUIManager.getStepsStatistics();
 
+        for(FlowStatistics flowStatistics : flowsStatistics) {
+            System.out.println(flowStatistics.getFlowStatisticsAsString());
+        }
+        for(StepStatistics stepStatistics : stepsStatistics) {
+            System.out.println(stepStatistics.getStepstatisticsAsString());
+        }
     }
 
     static boolean doesStringRepresentANumber(String str, int num) {
