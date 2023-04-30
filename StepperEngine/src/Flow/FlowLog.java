@@ -17,7 +17,7 @@ public class FlowLog {
 
     FlowLog(){
         flowId= UUID.randomUUID().toString();
-        timeStamp= new SimpleDateFormat("HH.mm.ss").format(new Date());
+        timeStamp= new SimpleDateFormat("HH:mm:ss").format(new Date());
         formalOutputsPresentation="";
     }
 

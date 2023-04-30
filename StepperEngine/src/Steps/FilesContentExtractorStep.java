@@ -153,4 +153,10 @@ public class FilesContentExtractorStep extends Step {
     public static double getStepAvgDuration() {
         return stepAvgDuration;
     }
+
+    public void clearDataMembers(){
+        this.data.setData(null);
+        this.filesList.setData(null);
+        this.lineNumber.setData(0);
+    }
 }

@@ -49,6 +49,7 @@ public class CsvExporterStep extends Step {
         else {
             addDataFromTable();
             setStatus(Status.Success);
+            setSummaryLine("Finished Successfully");
         }
         this.result.setData(resultString);//=new StringType(resultString, StepOutputNameEnum.RESULT.toString(), false);
     }
@@ -124,6 +125,11 @@ public class CsvExporterStep extends Step {
 
     public static double getStepAvgDuration() {
         return stepAvgDuration;
+    }
+
+    public void clearDataMembers(){
+        this.source.setData(null);
+        this.result.setData(null);
     }
 
 }

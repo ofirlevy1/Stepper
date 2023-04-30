@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="StepperEngine" level="project" />
+    <orderEntry type="module" module-name="StepperEngine" exported="" />
   </component>
 </module>

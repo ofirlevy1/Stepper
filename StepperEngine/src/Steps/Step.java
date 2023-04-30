@@ -197,4 +197,10 @@ public abstract class  Step {
     public double getRunTimeInMs() {
         return runTimeInMs;
     }
+
+    public abstract void clearDataMembers();
+
+    public void clearLogs(){
+        logs=new ArrayList<>();
+    }
 }

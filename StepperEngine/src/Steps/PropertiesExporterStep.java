@@ -45,7 +45,7 @@ public class PropertiesExporterStep extends Step{
         Relation relation=(Relation) source.getData();
         String properties="";
         this.addLog("About to process "+relation.getRows()+" lines of data");
-        if(relation.getRows()==0&&relation.getCols()==0) throw new EmptyPropertiesRelationException("Properties Relation is empty");
+        if(relation.getRows()==0&&relation.getCols()==0||source.getData()==null) throw new EmptyPropertiesRelationException("Properties Relation is empty");
         for(int i=0;i<relation.getRows();i++){
             for(int j=0;j< relation.getCols();j++){
                 properties+="row-"+(i+1)+"."+relation.getColumnNames()[j]+"="+relation.get(i,j)+" ";
@@ -111,5 +111,10 @@ public class PropertiesExporterStep extends Step{
 
     public static double getStepAvgDuration() {
         return stepAvgDuration;
+    }
+
+    public void clearDataMembers(){
+        this.result.setData(null);
+        this.source.setData(null);
     }
 }

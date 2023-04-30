@@ -44,7 +44,8 @@ public class Flow {
     private static double durationAvgInMs = 0.0;
     private static long runTime=0;
     private static int flowRunsCounter = 0;
-     private FlowLog flowLog;
+    private FlowLog flowLog;
+    private FlowRunHistory flowRunHistory;
 
     private FlowMap map;
 
@@ -285,6 +286,7 @@ public class Flow {
 
     public void execute(){
         flowRunsCounter++;
+        clearAllStepsLogs();
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
         Instant start=Instant.now();
@@ -311,6 +313,7 @@ public class Flow {
         runTime= Duration.between(start,finish).toMillis();
         calculateAvgRunTime();
         createFlowLog();
+        createFlowHistory();
     }
 
     private void setFlowStatus(){
@@ -336,8 +339,29 @@ public class Flow {
             flowLog.addFormalOutputsPresentation(outputs.get(formalOutputName));
     }
 
+    private void createFlowHistory(){
+        flowRunHistory=new FlowRunHistory();
+        flowRunHistory.setFlowId(flowLog.getFlowId());
+        flowRunHistory.setRunTime(runTime);
+        flowRunHistory.setFlowName(name);
+        flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
+        flowRunHistory.setStatus(status);
+        for(String freeInputString:freeInputs.keySet()){
+            for(DataType freeInput:freeInputs.get(freeInputString))
+                flowRunHistory.addFreeInput(freeInput);
+        }
+        for(Step step:steps)
+            flowRunHistory.addStep(step);
+        for(String outputString:outputs.keySet())
+            flowRunHistory.addOutput(outputs.get(outputString));
+    }
+
     public FlowLog getFlowLog() {
         return flowLog;
+    }
+
+    public FlowRunHistory getFlowRunHistory(){
+        return flowRunHistory;
     }
 
     public FlowDescriptor getFlowDescriptor() {
@@ -422,5 +446,15 @@ public class Flow {
 
     public FlowStatistics getFlowStatistics(){
         return new FlowStatistics(flowRunsCounter, durationAvgInMs, name);
+    }
+
+    public void clearAllStepsDataMembers(){
+        for(Step step:steps)
+            step.clearDataMembers();
+    }
+
+    private void clearAllStepsLogs(){
+        for(Step step:steps)
+            step.clearLogs();
     }
 }
