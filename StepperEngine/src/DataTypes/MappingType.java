@@ -10,6 +10,6 @@ public class MappingType extends DataType<Mapping>{
     public MappingType(Mapping mapping, String name, boolean isInput){super(name, name.toLowerCase().replace('_',' '), mapping, Type.MAPPING, isInput);}
     @Override
     public String getPresentableString() {
-        return "car: "+getData().getCar().getData()+"\ncdr: "+getData().getCdr().getData();
+        return "car: "+getData().getCar().getPresentableString()+"\ncdr: "+getData().getCdr().getPresentableString();
     }
 }
