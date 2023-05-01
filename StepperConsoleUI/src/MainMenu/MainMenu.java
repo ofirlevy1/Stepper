@@ -54,6 +54,7 @@ public class MainMenu {
             executeUserChoice();
             showMenuAndGetUserChoice();
         }
+        System.out.println("Thank you for using Stepper :)");
     }
 
     private void executeUserChoice()
@@ -149,6 +150,8 @@ public class MainMenu {
     }
     private void showFlowDefinition() {
         String selectedFlowName = getUserFlowSelection();
+        if(selectedFlowName == null)
+            return;
         FlowDescriptor flowDescriptor = stepperUIManager.getFlowDescriptor(selectedFlowName);
 
         presentFlowDetails(flowDescriptor);
