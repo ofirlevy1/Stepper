@@ -199,9 +199,9 @@ public class FilesRenamerStep extends Step {
     }
 
     public void clearDataMembers(){
-        this.suffix.setData(null);
-        this.prefix.setData(null);
-        this.filesToRename.setData(null);
-        this.renameResult.setData(null);
+        this.suffix.eraseData();
+        this.prefix.eraseData();
+        this.filesToRename.eraseData();
+        this.renameResult.eraseData();
     }
 }

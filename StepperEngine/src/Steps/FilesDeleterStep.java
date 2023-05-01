@@ -141,8 +141,8 @@ public class FilesDeleterStep extends Step{
     }
 
     public void clearDataMembers(){
-        this.deletionStats.setData(null);
-        this.filesList.setData(null);
-        this.deletedList.setData(null);
+        this.deletionStats.eraseData();
+        this.filesList.eraseData();
+        this.deletedList.eraseData();
     }
 }

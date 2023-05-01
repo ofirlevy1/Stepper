@@ -4,15 +4,12 @@ package Stepper;
 // and managing the stepper object itself
 
 import Flow.*;
-import Generated.STStepper;
+import RunHistory.FlowRunHistory;
 import Steps.*;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class StepperUIManager {
     Stepper stepper;

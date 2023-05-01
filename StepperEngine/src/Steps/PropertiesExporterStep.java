@@ -114,7 +114,7 @@ public class PropertiesExporterStep extends Step{
     }
 
     public void clearDataMembers(){
-        this.result.setData(null);
-        this.source.setData(null);
+        this.result.eraseData();
+        this.source.eraseData();
     }
 }

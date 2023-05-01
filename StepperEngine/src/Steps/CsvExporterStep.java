@@ -128,8 +128,8 @@ public class CsvExporterStep extends Step {
     }
 
     public void clearDataMembers(){
-        this.source.setData(null);
-        this.result.setData(null);
+        this.source.eraseData();
+        this.result.eraseData();
     }
 
 }
