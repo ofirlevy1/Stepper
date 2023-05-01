@@ -5,6 +5,7 @@ package Stepper;
 
 import Flow.*;
 import Generated.STStepper;
+import Steps.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -59,5 +60,13 @@ public class StepperUIManager {
 
     public ArrayList<FlowRunHistory> getFlowsRunHistories() {
         return stepper.getFlowsRunHistories();
+    }
+
+    public ArrayList<FlowStatistics> getFlowStatistics(){
+        return stepper.getFlowStatistics();
+    }
+
+    public ArrayList<StepStatistics> getStepsStatistics(){
+        return stepper.getStepsStatistics();
     }
 }
