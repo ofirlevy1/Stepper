@@ -105,6 +105,6 @@ public class SpendSomeTimeStep extends Step{
     }
 
     public void clearDataMembers(){
-        this.secondsToSpend.setData(0);
+        this.secondsToSpend.eraseData();
     }
 }

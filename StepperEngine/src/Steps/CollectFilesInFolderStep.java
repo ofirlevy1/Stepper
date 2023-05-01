@@ -147,9 +147,9 @@ public class CollectFilesInFolderStep extends Step{
     }
 
     public void clearDataMembers(){
-        this.filesList.setData(null);
-        this.folderName.setData(null);
-        this.filter.setData(null);
-        this.totalFound.setData(0);
+        this.filesList.eraseData();
+        this.folderName.eraseData();
+        this.filter.eraseData();
+        this.totalFound.eraseData();
     }
 }

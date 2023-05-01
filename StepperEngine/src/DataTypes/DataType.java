@@ -68,6 +68,11 @@ public abstract class DataType<T> {
         isDataSet = true;
     }
 
+    public void eraseData(){
+        this.data=null;
+        isDataSet=false;
+    }
+
     public String getEffectiveName() {
         return hasAlias ? alias : name;
     }

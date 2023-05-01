@@ -119,9 +119,9 @@ public class FileDumperStep extends  Step{
     }
 
     public void clearDataMembers(){
-        this.fileName.setData(null);
-        this.content.setData(null);
-        this.result.setData(null);
+        this.fileName.eraseData();
+        this.content.eraseData();
+        this.result.eraseData();
     }
 
 }

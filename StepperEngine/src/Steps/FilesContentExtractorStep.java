@@ -155,8 +155,8 @@ public class FilesContentExtractorStep extends Step {
     }
 
     public void clearDataMembers(){
-        this.data.setData(null);
-        this.filesList.setData(null);
-        this.lineNumber.setData(0);
+        this.data.eraseData();
+        this.filesList.eraseData();
+        this.lineNumber.eraseData();
     }
 }
