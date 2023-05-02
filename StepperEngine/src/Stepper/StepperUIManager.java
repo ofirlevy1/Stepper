@@ -20,7 +20,6 @@ public class StepperUIManager {
     }
 
     public void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
-
         // First assigning it to a new Stepper object, to not override anything in case of failure.
         Stepper stepperCpy = new Stepper(xmlFilePath);
 
@@ -59,11 +58,15 @@ public class StepperUIManager {
         return stepper.getFlowsRunHistories();
     }
 
-    public ArrayList<FlowStatistics> getFlowStatistics(){
+    public ArrayList<FlowStatistics> getFlowStatistics() {
         return stepper.getFlowStatistics();
     }
 
-    public ArrayList<StepStatistics> getStepsStatistics(){
+    public ArrayList<StepStatistics> getStepsStatistics() {
         return stepper.getStepsStatistics();
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
     }
 }

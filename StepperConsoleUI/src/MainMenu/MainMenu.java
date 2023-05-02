@@ -54,10 +54,17 @@ public class MainMenu {
             executeUserChoice();
             showMenuAndGetUserChoice();
         }
+        System.out.println("Thank you for using Stepper :)");
     }
 
     private void executeUserChoice()
     {
+        if(chosenOption != Options.LoadSystemFromXML && chosenOption != Options.Exit && !stepperUIManager.isLoaded()) {
+            System.out.println("Stepper system is not loaded yet! Please load the system using 'Load System From XML' and try again");
+            System.out.println("Enter anything to continue...");
+            consoleScanner.nextLine();
+            return;
+        }
         switch(chosenOption) {
             case LoadSystemFromXML:
                 loadSystemFromXML();
@@ -143,6 +150,8 @@ public class MainMenu {
     }
     private void showFlowDefinition() {
         String selectedFlowName = getUserFlowSelection();
+        if(selectedFlowName == null)
+            return;
         FlowDescriptor flowDescriptor = stepperUIManager.getFlowDescriptor(selectedFlowName);
 
         presentFlowDetails(flowDescriptor);
