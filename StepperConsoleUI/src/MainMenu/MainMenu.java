@@ -65,6 +65,14 @@ public class MainMenu {
             consoleScanner.nextLine();
             return;
         }
+
+        if((chosenOption==Options.ShowStatistics||chosenOption==Options.ShowPastFlowExecutionDetails)&&!stepperUIManager.isFlowRan()){
+            System.out.println("A flow has to be ran in order to show the information you need, Please run a flow with 'Run a Flow' and try again");
+            System.out.println("Enter anything to continue...");
+            consoleScanner.nextLine();
+            return;
+        }
+
         switch(chosenOption) {
             case LoadSystemFromXML:
                 loadSystemFromXML();

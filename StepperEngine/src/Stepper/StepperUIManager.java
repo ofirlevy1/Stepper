@@ -14,9 +14,11 @@ import java.util.ArrayList;
 public class StepperUIManager {
     Stepper stepper;
     boolean isLoaded;
+    boolean isFlowRan;
 
     public StepperUIManager() {
         isLoaded = false;
+        isFlowRan=false;
     }
 
     public void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
@@ -52,6 +54,7 @@ public class StepperUIManager {
 
     public void runFlow(String flowName) {
         stepper.runFlow(flowName);
+        isFlowRan=true;
     }
 
     public ArrayList<FlowRunHistory> getFlowsRunHistories() {
@@ -69,4 +72,6 @@ public class StepperUIManager {
     public boolean isLoaded() {
         return isLoaded;
     }
+
+    public boolean isFlowRan(){return  isFlowRan;}
 }

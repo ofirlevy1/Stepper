@@ -42,9 +42,9 @@ public class Flow {
     private HashMap<String, HashSet<DataType>> freeInputs;
     private Flow.Status status;
     private String flowRunsummery;
-    private static double durationAvgInMs = 0.0;
-    private static long runTime=0;
-    private static int flowRunsCounter = 0;
+    private  double durationAvgInMs = 0.0;
+    private  long runTime=0;
+    private  int flowRunsCounter = 0;
     private FlowLog flowLog;
     private FlowRunHistory flowRunHistory;
 
