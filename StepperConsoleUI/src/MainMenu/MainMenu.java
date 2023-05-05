@@ -25,6 +25,7 @@ package MainMenu;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Exceptions.PathDoesNotPointToXMLFileException;
 import Flow.*;
 import RunHistory.FlowRunHistory;
 import Stepper.StepperUIManager;
@@ -146,9 +147,13 @@ public class MainMenu {
             try {
                 stepperUIManager.LoadStepperFromXmlFile(userInput);
             }
+            catch(PathDoesNotPointToXMLFileException e) {
+                System.out.println("The given path is not an XML file! Please enter a valid path");
+                continue;
+            }
             catch (Exception e) {
                 System.out.println("Failed to load system from XML file! ");
-                System.out.println(e.getMessage()); // this is not ideal - should display a clear message to the user, not based on getMessage();
+                System.out.println(e.getMessage());
                 continue;
             }
             loadedSuccessfully = true;
