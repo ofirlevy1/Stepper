@@ -35,6 +35,7 @@ public class Stepper {
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
+        validateFlowNames(stStepper);
         flows = new HashSet<>();
         flowsRunHistories = new ArrayList<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
@@ -113,5 +114,11 @@ public class Stepper {
 
     public ArrayList<FlowRunHistory> getFlowsRunHistories() {
         return flowsRunHistories;
+    }
+
+    private void validateFlowNames(STStepper stStepper)throws RuntimeException{
+        HashSet<String> flowNamesSet=new HashSet<>();
+        for(STFlow stFlow:stStepper.getSTFlows().getSTFlow())
+            if(!flowNamesSet.add(stFlow.getName()))throw new RuntimeException("There are more than one flow named: "+stFlow.getName()+", please provide a unique name for each flow");
     }
 }
