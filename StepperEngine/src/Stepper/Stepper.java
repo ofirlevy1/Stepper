@@ -121,12 +121,13 @@ public class Stepper {
 
 
     private void validatePathPointsToXMLFile(String path) {
-        if(!path.endsWith("xml")) {
+        if (!path.endsWith("xml")) {
             throw new PathDoesNotPointToXMLFileException();
         }
         File file = new File(path);
-        if(!file.isFile())
+        if (!file.isFile())
             throw new PathDoesNotPointToXMLFileException();
+    }
 
     private void validateFlowNames(STStepper stStepper)throws RuntimeException{
         HashSet<String> flowNamesSet=new HashSet<>();
