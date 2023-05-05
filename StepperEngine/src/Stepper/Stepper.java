@@ -34,23 +34,13 @@ public class Stepper {
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
-        System.out.println("debug printing");
         validatePathPointsToXMLFile(xmlFilePath);
-        System.out.println("debug printing");
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
         flows = new HashSet<>();
         flowsRunHistories = new ArrayList<>();
-        for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
-            try {
-                flows.add(new Flow(stFlow));
-            }
-            // input validation exception
-            catch (RuntimeException e){
-                exceptionString=e.getMessage();
-                throw e;
-            }
-        }
+        for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
+            flows.add(new Flow(stFlow));
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -132,7 +122,7 @@ public class Stepper {
     private void validateFlowNames(STStepper stStepper)throws RuntimeException{
         HashSet<String> flowNamesSet=new HashSet<>();
         for(STFlow stFlow:stStepper.getSTFlows().getSTFlow())
-            if(!flowNamesSet.add(stFlow.getName()))throw new RuntimeException("There are more than one flow named: "+stFlow.getName()+", please provide a unique name for each flow");
+            if(!flowNamesSet.add(stFlow.getName()))throw new RuntimeException("There is more than one flow named: "+stFlow.getName()+", please provide a unique name for each flow");
 
     }
 }

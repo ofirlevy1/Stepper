@@ -67,8 +67,6 @@ public class Flow {
         fillOutputsDescriptorsArray();
         setFlowLevelAliases(flow.getSTFlowLevelAliasing());
         setFlowMap(flow.getSTCustomMappings());
-
-
         findFreeInputs();
         formalOutputsValidation();
         setIsReadOnly();
@@ -91,7 +89,7 @@ public class Flow {
             for (STFlowLevelAlias alias : aliases.getSTFlowLevelAlias()) {
                 Step current = getStepByFinalName(alias.getStep(), "flow level aliasing");
                 if (!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))
-                    throw new RuntimeException("In flow level aliasing:" + alias.getSourceDataName() + " step does not exist");
+                    throw new RuntimeException(alias.getSourceDataName() + "Step does not exist!");
             }
         }
 
@@ -106,7 +104,7 @@ public class Flow {
             for(DataType dataMember:dataMembers) {
                 if(!dataMember.isInput())
                     if (!outputsSet.add(dataMember.getEffectiveName()))
-                        throw new RuntimeException("In flow level aliasing: there more than one output named:"+dataMember.getEffectiveName()+" after aliasing");
+                        throw new RuntimeException("There's more than one output named '" + dataMember.getEffectiveName() + "' (after aliasing)");
             }
         }
     }
@@ -126,7 +124,7 @@ public class Flow {
         if(stSteps==null||stSteps.getSTStepInFlow()==null)throw new RuntimeException("No steps provided");
         for(STStepInFlow stStep : stSteps.getSTStepInFlow()) {
             Step current = StepFactory.createStep(stStep.getName());
-            if(current==null) throw  new RuntimeException("In step creation:"+stStep.getName()+" does not exist");
+            if(current==null) throw  new RuntimeException("Step "+stStep.getName()+" does not exist");
             if(stStep.getAlias() != null)
                 current.setAlias(stStep.getAlias());
             if(stStep.isContinueIfFailing() != null)
@@ -136,7 +134,7 @@ public class Flow {
         //checking if there are steps with the same final name
         HashSet<String> stepsSet= new HashSet<>();
         for(Step step:steps)
-            if(!stepsSet.add(step.getFinalName()))throw new RuntimeException("In step creation: there more than one step named:"+step.getFinalName()+" after aliasing");
+            if(!stepsSet.add(step.getFinalName()))throw new RuntimeException("There's more than one step named '"+step.getFinalName()+"' (after aliasing)");
     }
 
 
@@ -289,13 +287,13 @@ public class Flow {
         flowRunsCounter++;
         clearAllStepsLogs();
         if(!areAllMandatoryFreeInputsSet())
-            throw new RuntimeException("An attempt was made to run the Flow while there are UNASSIGNED mandatory free inputs");
+            throw new RuntimeException("An attempt was made to run the Flow while there are UNSET mandatory free inputs");
         Instant start=Instant.now();
         try {
             for (Step step : steps) {
                 step.execute();
                 if (step.getStatus() == Step.Status.Failure && step.isBlocking())
-                    throw new RuntimeException("Error:" + step.getFinalName() + " has failed while executing, and does not continue in case of failure, source: "+step.getSummaryLine());
+                    throw new RuntimeException("'" + step.getFinalName() + "' has failed while executing, and does not continue in case of failure, source: "+step.getSummaryLine());
                 if(map.getMappingsByStep(step.getFinalName())!=null) {
                     for (StepMap mapping : map.getMappingsByStep(step.getFinalName()))
                         getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
