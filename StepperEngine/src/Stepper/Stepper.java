@@ -38,6 +38,7 @@ public class Stepper {
         validatePathPointsToXMLFile(xmlFilePath);
         System.out.println("debug printing");
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
+        validateFlowNames(stStepper);
         flows = new HashSet<>();
         flowsRunHistories = new ArrayList<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
@@ -118,6 +119,7 @@ public class Stepper {
         return flowsRunHistories;
     }
 
+
     private void validatePathPointsToXMLFile(String path) {
         if(!path.endsWith("xml")) {
             throw new PathDoesNotPointToXMLFileException();
@@ -125,5 +127,11 @@ public class Stepper {
         File file = new File(path);
         if(!file.isFile())
             throw new PathDoesNotPointToXMLFileException();
+
+    private void validateFlowNames(STStepper stStepper)throws RuntimeException{
+        HashSet<String> flowNamesSet=new HashSet<>();
+        for(STFlow stFlow:stStepper.getSTFlows().getSTFlow())
+            if(!flowNamesSet.add(stFlow.getName()))throw new RuntimeException("There are more than one flow named: "+stFlow.getName()+", please provide a unique name for each flow");
+
     }
 }
