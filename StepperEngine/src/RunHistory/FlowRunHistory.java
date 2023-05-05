@@ -117,7 +117,7 @@ public class FlowRunHistory {
         String consolePresentationSteps="------------------------------------------------------------------------\n";
         for(StepHistory stepHistory:stepHistories){
             consolePresentationSteps+=i+".Name "+stepHistory.getName()+" Step run time: "+stepHistory.getRunTimeInMs()+" Status: "+stepHistory.getStatus().toString()+"\n";
-            consolePresentationSteps+="Summery: "+stepHistory.getSummery()+"\n"+"Logs:\n"+stepHistory.getLogs()+"\n";
+            consolePresentationSteps+="Summary: "+stepHistory.getSummery()+"\n"+"Logs:\n"+stepHistory.getLogs()+"\n";
             consolePresentationSteps+="------------------------------------------------------------------------\n";
             i++;
         }
