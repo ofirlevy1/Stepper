@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="StepperEngine">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/artifacts/StepperEngine_jar/StepperEngine.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

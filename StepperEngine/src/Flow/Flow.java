@@ -91,7 +91,7 @@ public class Flow {
             for (STFlowLevelAlias alias : aliases.getSTFlowLevelAlias()) {
                 Step current = getStepByFinalName(alias.getStep(), "flow level aliasing");
                 if (!current.trySetDataAlias(alias.getSourceDataName(), alias.getAlias()))
-                    throw new RuntimeException("In flow level aliasing:" + alias.getSourceDataName() + " does not exist");
+                    throw new RuntimeException("In flow level aliasing:" + alias.getSourceDataName() + " step does not exist");
             }
         }
 
