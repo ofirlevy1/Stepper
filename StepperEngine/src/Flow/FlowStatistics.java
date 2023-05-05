@@ -39,6 +39,6 @@ public class FlowStatistics {
     }
 
     public String getFlowStatisticsAsString(){
-        return flowName+" has run: "+ startUpCount +" times. For the average run time: "+avgDuration;
+        return "'" + flowName + "' flow has run "+ startUpCount +" times, with an average run time of " + avgDuration + " ms";
     }
 }

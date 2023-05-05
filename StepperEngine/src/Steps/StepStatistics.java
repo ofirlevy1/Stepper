@@ -36,6 +36,6 @@ public class StepStatistics {
     }
 
     public String getStepstatisticsAsString(){
-        return stepName+" has run: "+startUpCount+" times. For the average run time: "+avgDuration;
+        return "'" + stepName + "'" + "step has run " + startUpCount + " times, with an average run time of "+avgDuration + " ms";
     }
 }
