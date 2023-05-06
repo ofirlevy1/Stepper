@@ -152,8 +152,10 @@ public class MainMenu {
                 continue;
             }
             catch (Exception e) {
-                System.out.println("Failed to load system from XML file! ");
+                System.out.println("Failed to load system from XML file due to the following reason:");
                 System.out.println(e.getMessage());
+                System.out.println("Please try again:");
+                System.out.println();
                 continue;
             }
             loadedSuccessfully = true;
