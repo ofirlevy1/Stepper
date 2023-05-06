@@ -61,6 +61,10 @@ public class StepperUIManager {
         return stepper.getFlowsRunHistories();
     }
 
+    public FlowLog getFlowLog(String flowName) {
+        return stepper.getFlowLog(flowName);
+    }
+
     public ArrayList<FlowStatistics> getFlowStatistics() {
         return stepper.getFlowStatistics();
     }
