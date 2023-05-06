@@ -202,7 +202,7 @@ public class MainMenu {
                 continue;
             }
             if(userInputAsInteger < min || userInputAsInteger > max) {
-                System.out.println("Value is not withing range!");
+                System.out.println("Value is not within range!");
                 continue;
             }
             isChoiceValid = true;
@@ -326,7 +326,7 @@ public class MainMenu {
         System.out.println("Flow Description: " + flowDescriptor.getFlowDescription());
         System.out.println("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString());
         for(int i = 0; i < flowDescriptor.getStepDescriptors().size(); i++) {
-            System.out.println("Step #" + (i + 1) + ":");
+            System.out.print("Step #" + (i + 1) + ": ");
             presentStepDetails(flowDescriptor.getStepDescriptors().get(i));
         }
 
@@ -347,8 +347,8 @@ public class MainMenu {
     }
 
     private void presentStepOutput(StepOutputDescriptor stepOutputDescriptor) {
-        System.out.println("Effective Name: " + stepOutputDescriptor.getOutputEffectiveName());
-        System.out.println("Type: " + stepOutputDescriptor.getOutputType());
+        System.out.print("Effective Name: " + stepOutputDescriptor.getOutputEffectiveName() + ". ");
+        System.out.print("Type: " + stepOutputDescriptor.getOutputType() + ". ");
         System.out.println("Produced by step: " + stepOutputDescriptor.getSourceStepName());
     }
 
@@ -357,9 +357,9 @@ public class MainMenu {
     }
 
     private void presentStepDetails(StepDescriptor stepDescriptor) {
-        System.out.println("Step Name: " + stepDescriptor.getStepName());
+        System.out.print("Name: " + stepDescriptor.getStepName() + ". ");
         if(stepDescriptor.isHasAlias())
-            System.out.println("Step Alias: " + stepDescriptor.getStepAlias());
+            System.out.print("Step Alias: " + stepDescriptor.getStepAlias() + ". ");
         System.out.println("The step is " + (stepDescriptor.isReadOnly() ? "readonly" : "NOT readonly"));
     }
 
