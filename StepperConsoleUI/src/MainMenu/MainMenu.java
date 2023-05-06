@@ -305,6 +305,9 @@ public class MainMenu {
         for(StepStatistics stepStatistics : stepsStatistics) {
             System.out.println(stepStatistics.getStepstatisticsAsString());
         }
+
+        System.out.println("Enter anything to continue...");
+        consoleScanner.nextLine();
     }
 
     static boolean doesStringRepresentANumber(String str, int num) {
