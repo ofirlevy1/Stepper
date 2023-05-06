@@ -29,6 +29,7 @@ import Exceptions.PathDoesNotPointToXMLFileException;
 import Flow.*;
 import RunHistory.FlowRunHistory;
 import Stepper.StepperUIManager;
+import Steps.Step;
 import Steps.StepDescriptor;
 import Steps.StepStatistics;
 
@@ -170,6 +171,8 @@ public class MainMenu {
         FlowDescriptor flowDescriptor = stepperUIManager.getFlowDescriptor(selectedFlowName);
 
         presentFlowDetails(flowDescriptor);
+        System.out.println("Enter anything to continue...");
+        consoleScanner.nextLine();
     }
 
 
@@ -225,6 +228,7 @@ public class MainMenu {
         int userInput = 0;
         while(true) {
             presentFreeInputs(stepperUIManager.getFreeInputDescriptorsByFlow(flowName));
+            System.out.println("Menu Options:");
             System.out.println("1. Enter Free Input Value");
             if(stepperUIManager.areAllMandatoryFreeInputsSet(flowName))
                 System.out.println("2. Run Flow");
@@ -242,13 +246,22 @@ public class MainMenu {
                 catch(Exception e) {
                     System.out.println("Flow execution failed: " + e.getMessage());
                 }
-
-                //presentFlowLastRunStatus()
-                System.out.println("Flow execution done, enter anything to continue");
+                System.out.println("Flow execution done, run details: ");
+                presentFlowLastRunStatus(flowName);
+                System.out.println("Enter anything to continue...");
                 consoleScanner.nextLine();
             }
 
         }
+    }
+
+    private void presentFlowLastRunStatus(String flowName) {
+        FlowLog flowLog = stepperUIManager.getFlowLog(flowName);
+        System.out.println("Flow run unique ID: " + flowLog.getFlowId());
+        System.out.println("Flow name: " + flowLog.getFlowName());
+        System.out.println("Flow run end status: " + flowLog.getStatus());
+        System.out.println("Flow formal outputs: ");
+        System.out.println(flowLog.getFormalOutputsPresentation());
     }
 
     private void fillFreeInputUI(String flowName) {
@@ -328,7 +341,7 @@ public class MainMenu {
     private void presentFreeInputs(ArrayList<FreeInputDescriptor> freeInputDescriptors) {
         System.out.println("Free Inputs:");
         for(int i = 0; i < freeInputDescriptors.size(); i++) {
-            System.out.println(i + 1);
+            System.out.print(i + 1 + ". ");
             presentFreeInput(freeInputDescriptors.get(i));
         }
     }
@@ -340,10 +353,7 @@ public class MainMenu {
     }
 
     private void presentFreeInput(FreeInputDescriptor freeInputDescriptor) {
-        System.out.println("Effective Name: " + freeInputDescriptor.getInputEffectiveName());
-        System.out.println("Type: " + freeInputDescriptor.getInputType().toString());
-        System.out.println("Associated steps: " + freeInputDescriptor.getAssociatedSteps());
-        System.out.println((freeInputDescriptor.isMandatory() ? "mandatory" : "optional"));
+        System.out.println("Name: " + freeInputDescriptor.getInputEffectiveName() + "(" + (freeInputDescriptor.isMandatory() ? "mandatory" : "optional") + "), Type: " + freeInputDescriptor.getInputType().toString() + ", Associated steps: " + freeInputDescriptor.getAssociatedSteps());
     }
 
     private void presentStepDetails(StepDescriptor stepDescriptor) {

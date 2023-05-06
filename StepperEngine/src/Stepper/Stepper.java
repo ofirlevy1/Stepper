@@ -125,4 +125,8 @@ public class Stepper {
             if(!flowNamesSet.add(stFlow.getName()))throw new RuntimeException("There is more than one flow named: "+stFlow.getName()+", please provide a unique name for each flow");
 
     }
+
+    public FlowLog getFlowLog(String flowName) {
+        return getFlowByName(flowName).getFlowLog();
+    }
 }
