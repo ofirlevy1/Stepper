@@ -28,7 +28,7 @@ public class StepperUIManager {
         // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
         // So now we can override the actual stepper:
         this.stepper = stepperCpy;
-
+        isFlowRan = false;
         isLoaded = true;
     }
 
