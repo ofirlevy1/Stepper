@@ -11,5 +11,6 @@ public enum StepInputNameEnum {
     LINE,
     SOURCE,
     CONTENT,
-    FILE_NAME
+    FILE_NAME,
+    OPERATION
 }
