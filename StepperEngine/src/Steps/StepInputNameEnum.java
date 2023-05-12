@@ -12,5 +12,7 @@ public enum StepInputNameEnum {
     SOURCE,
     CONTENT,
     FILE_NAME,
-    OPERATION
+    OPERATION,
+    ARGUMENTS,
+    COMMAND
 }
