@@ -19,9 +19,8 @@ import java.util.HashMap;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
         //testRenameFilesFlowExecution();
-        Step st=new ZipperStep(new StringType("C:\\Users\\igal6\\Downloads\\folder test1\\3.zip","",true), new EnumeratorType("UNZIP","",true));
+        Step st=new CommandLineStep(new StringType("ping ","",true), new StringType("-n 3 google.com","",true));
         st.execute();
-        System.out.println(st.getLogsAsString());
     }
 
     public static void testDeleteMatchedFilesFlowExecution() throws FileNotFoundException, JAXBException
