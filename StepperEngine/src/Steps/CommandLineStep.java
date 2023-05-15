@@ -1,6 +1,7 @@
 package Steps;
 
 import DataTypes.*;
+import com.sun.deploy.util.SystemUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class CommandLineStep extends Step{
     public CommandLineStep() {
         super("Command Line", false);
         this.command = new StringType(StepInputNameEnum.COMMAND.toString(),true);
-        this.arguments=new StringType(StepInputNameEnum.OPERATION.toString(),true);
+        this.arguments=new StringType(StepInputNameEnum.ARGUMENTS.toString(),true);
         this.result=new StringType(StepOutputNameEnum.RESULT.toString(),false);
         this.command.setMandatory(true);
         this.arguments.setMandatory(false);
@@ -46,11 +47,19 @@ public class CommandLineStep extends Step{
 
     @Override
     protected void runStepFlow() throws Exception {
+        String commandLineWithArguments = "";
         String commandLine=this.command.getData();
         String arguments=this.arguments.getData();
         addLog("About to invoke "+ commandLine + arguments);
         if(commandLine==null||commandLine.isEmpty())throw new Exception("empty command entered");
-        String commandLineWithArguments="cmd.exe /c "+commandLine+" "+arguments;
+
+        if(System.getProperty("os.name").toLowerCase().contains("windows"))
+             commandLineWithArguments="cmd.exe /c " + commandLine+ " " + arguments;
+        else if(System.getProperty("os.name").toLowerCase().contains("linux"))
+            commandLineWithArguments="/bin/bash " + commandLine+ " " + arguments;
+        else if(System.getProperty("os.name").toLowerCase().contains("mac"))
+            commandLineWithArguments="/usr/local/bin/nmap " + commandLine+ " " + arguments;
+
         String[] strings=commandLineWithArguments.split(" ");
 
         ProcessBuilder processBuilder=new ProcessBuilder(strings);
