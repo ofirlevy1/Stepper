@@ -23,7 +23,7 @@ public class ZipperStep extends Step{
         super("Zipper", false);
 
         this.source = new StringType(StepInputNameEnum.SOURCE.toString(), true);
-        this.operation=new EnumeratorType(StepInputNameEnum.OPERATION.toString(), true);
+        this.operation=new EnumeratorType(StepInputNameEnum.OPERATION.toString(), true, ZipOperation.class);
         this.result=new StringType(StepOutputNameEnum.RESULT.toString(),false);
         this.source.setMandatory(true);
         this.operation.setMandatory(true);
@@ -57,7 +57,7 @@ public class ZipperStep extends Step{
     @Override
     protected void runStepFlow() throws Exception {
         String path=source.getData();
-        ZipOperation op=ZipOperation.valueOf(operation.getData());
+        ZipOperation op= (ZipOperation) operation.getData();
 
         addLog("About to perform operation "+op.toString()+" on source "+path);
         if(!(new File(path).exists()))throw new ZipException("The source provided does not exit");
