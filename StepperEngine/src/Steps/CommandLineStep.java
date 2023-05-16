@@ -70,7 +70,7 @@ public class CommandLineStep extends Step{
         String line = null;
         while ( (line = reader.readLine()) != null) {
             builder.append(line);
-            builder.append(" ");
+            builder.append("\n");
         }
         String resultString = builder.toString();
         result.setData(resultString);

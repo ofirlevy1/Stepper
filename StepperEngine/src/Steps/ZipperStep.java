@@ -77,7 +77,7 @@ public class ZipperStep extends Step{
         String[] strings=new String[1];
         strings[0]=path;
         if(file.isDirectory())
-            new ZipUsingJavaUtil().zip(strings, path.substring(0, path.lastIndexOf('\\'))+".zip");
+            new ZipUsingJavaUtil().zip(strings, path+".zip");
         else
             new ZipUsingJavaUtil().zip(strings, path.substring(0, path.lastIndexOf('.'))+".zip");
     }
