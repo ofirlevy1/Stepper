@@ -17,7 +17,7 @@ public abstract class DataType<T> {
     boolean isDataSet;    // true if the "Data" member is set (not null...);
 
     public enum Type{
-        DOUBLE, FILE, LIST, MAPPING, NUMBER, RELATION, STRING
+        DOUBLE, FILE, LIST, MAPPING, NUMBER, RELATION, STRING, ENUM, JSON
     }
 
     private Type type;
