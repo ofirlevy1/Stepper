@@ -1,5 +1,6 @@
 package MainStage;
 
+import MainStage.Components.Main.MainStepperController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,7 +19,8 @@ public class MainStage extends Application {
         loader.setLocation(mainFXML);
         BorderPane root=loader.load();
 
-
+        MainStepperController mainStepperController=loader.getController();
+        mainStepperController.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Stepper");
         Scene scene=new Scene(root,1050, 600);
