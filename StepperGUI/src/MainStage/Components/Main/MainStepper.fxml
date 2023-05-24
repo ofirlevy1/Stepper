@@ -48,13 +48,13 @@
    <center>
       <ScrollPane minHeight="500.0" minWidth="800.0" BorderPane.alignment="CENTER">
          <content>
-            <TabPane fx:id="selctionTabPane" styleClass="stepper-selection" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="selectionTabPane" styleClass="stepper-selection" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Flows Defenition">
+                <Tab text="Flows Definition">
                      <content>
                         <AnchorPane prefHeight="500.0" prefWidth="900.0">
                            <children>
-                              <fx:include source="../FlowsDefenition/FlowsDefnitions.fxml" />
+                              <fx:include fx:id="flowsDefinition" source="../FlowsDefinition/FlowsDefinitions.fxml" />
                            </children></AnchorPane>
                      </content>
                   </Tab>
