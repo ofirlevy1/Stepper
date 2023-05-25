@@ -70,6 +70,7 @@ public class MainStepperController {
             errorAlert.show();
             return;
         }
+        flowsDefinitionController.loadFlowsButtons(stepperUIManager); //need to obtain all the flow descriptors;
         String absolutPath=selectedFile.getAbsolutePath();
         absoluteFilePath.set(absolutPath);
         fileLoaded.set(true);
