@@ -392,12 +392,17 @@ public class Flow {
         ArrayList<StepDescriptor> descriptors = new ArrayList<>();
         for(Step step : steps) {
             StepDescriptor stepDescriptor=step.getStepDescriptor();
-            for(StepMap stepMap:map.getInputMappingsByStep(step.getName())){
-                stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), stepMap.getSourceDataName(), stepMap.getSourceStepName()));
+            if(map.getMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : map.getMappingsByStep(step.getName())) {
+                    stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(), stepMap.getTargetDataName(), stepMap.getTargetStepName()));
+                }
             }
-            for (StepMap stepMap:map.getMappingsByStep(step.getName())){
-                stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(),stepMap.getTargetDataName(),stepMap.getTargetStepName()));
+            if(map.getInputMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : map.getInputMappingsByStep(step.getName())) {
+                    stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), stepMap.getSourceDataName(), stepMap.getSourceStepName()));
+                }
             }
+
             descriptors.add(stepDescriptor);
         }
 

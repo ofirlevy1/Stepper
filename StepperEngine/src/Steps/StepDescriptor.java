@@ -73,6 +73,7 @@ public class StepDescriptor {
     public void addOutputConnections(OutputConnections outputConnections) {
         if(!this.outputConnections.containsKey(outputConnections.getOutputName())){
             this.outputConnections.put(outputConnections.getOutputName(),outputConnections);
+            return;
         }
         this.outputConnections.get(outputConnections.getOutputName()).addConnection(outputConnections.getConnectedInputsName().get(0),outputConnections.getConnectedStepsName().get(0));
     }
