@@ -4,6 +4,8 @@ import DataTypes.DataType;
 import DataTypes.UserFriendly;
 import Generated.*;
 import RunHistory.FlowRunHistory;
+import StepConnections.InputConnections;
+import StepConnections.OutputConnections;
 import Steps.Step;
 import Steps.StepDescriptor;
 import Steps.StepFactory;
@@ -389,8 +391,16 @@ public class Flow {
     private ArrayList<StepDescriptor> getStepDescriptors() {
         ArrayList<StepDescriptor> descriptors = new ArrayList<>();
         for(Step step : steps) {
-            descriptors.add(step.getStepDescriptor());
+            StepDescriptor stepDescriptor=step.getStepDescriptor();
+            for(StepMap stepMap:map.getInputMappingsByStep(step.getName())){
+                stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), stepMap.getSourceDataName(), stepMap.getSourceStepName()));
+            }
+            for (StepMap stepMap:map.getMappingsByStep(step.getName())){
+                stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(),stepMap.getTargetDataName(),stepMap.getTargetStepName()));
+            }
+            descriptors.add(stepDescriptor);
         }
+
         return descriptors;
     }
 
