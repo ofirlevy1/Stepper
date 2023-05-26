@@ -23,7 +23,7 @@ public class MainStage extends Application {
         mainStepperController.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Stepper");
-        Scene scene=new Scene(root,1050, 600);
+        Scene scene=new Scene(root,1500, 930);
         primaryStage.setScene(scene);
         primaryStage.show();
 

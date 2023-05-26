@@ -9,9 +9,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" stylesheets="@FlowsDefnitions.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainStage.Components.FlowsDefinition.FlowsDefinitionController">
+
+<BorderPane stylesheets="@FlowsDefnitions.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainStage.Components.FlowsDefinition.FlowsDefinitionController">
    <center>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane prefHeight="830.0" prefWidth="1500.0" BorderPane.alignment="CENTER">
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
             <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
@@ -40,17 +41,24 @@
                   <Insets left="55.0" />
                </GridPane.margin>
             </Label>
-            <FlowPane fx:id="availableFlowsFlowPane" alignment="TOP_CENTER" orientation="VERTICAL" styleClass="available-flows" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="4">
+            <FlowPane fx:id="availableFlowsFlowPane" alignment="TOP_CENTER" orientation="VERTICAL" rowValignment="TOP" styleClass="available-flows" vgap="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="4">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
             </FlowPane>
-            <Label styleClass="flow-label" text="Flow Details" GridPane.columnIndex="4" GridPane.columnSpan="2">
+            <Label styleClass="flow-label" text="Flow Details" GridPane.columnIndex="5" GridPane.columnSpan="2">
                <GridPane.margin>
                   <Insets left="110.0" />
                </GridPane.margin>
             </Label>
-            <FlowPane fx:id="flowDetailsFlowPane" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" styleClass="available-flows" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.rowSpan="4" />
+            <FlowPane fx:id="flowDetailsFlowPane" orientation="VERTICAL" styleClass="available-flows" vgap="5.0" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.rowSpan="4">
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </FlowPane>
             <Button fx:id="executeFlowButton" mnemonicParsing="false" onAction="#executeFlowButtonAction" styleClass="flow-execution-button" text="Execute Flow !" GridPane.columnIndex="7" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets />

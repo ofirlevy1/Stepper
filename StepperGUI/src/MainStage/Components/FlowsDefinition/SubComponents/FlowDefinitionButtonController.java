@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import javax.script.Bindings;
+
 public class FlowDefinitionButtonController {
 
     @FXML
@@ -54,7 +56,7 @@ public class FlowDefinitionButtonController {
     }
 
     public void setFlowButtonText(FlowDescriptor flowDescriptor){
-        flowNameStringProperty.set("Flow Name: "+flowDescriptor.getFlowName());
+        flowNameStringProperty.set(flowDescriptor.getFlowName());
         flowDescriptionStringProperty.set("Flow Description: "+flowDescriptor.getFlowDescription());
         numberOfStepsStringProperty.set("Number Of Steps: "+flowDescriptor.getStepDescriptors().size());
         numberOfFreeInputsStringProperty.set("Number Of Free Inputs: "+flowDescriptor.getFreeInputs().size());

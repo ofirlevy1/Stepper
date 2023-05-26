@@ -1,5 +1,6 @@
 package MainStage.Components.Main;
 
+import Flow.FlowDescriptor;
 import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
 import Stepper.StepperUIManager;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -67,6 +68,8 @@ public class MainStepperController {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("File Invalid");
             errorAlert.setContentText(e.getMessage());
+            absoluteFilePath.set("File Not Loaded");
+            fileLoaded.set(false);
             errorAlert.show();
             return;
         }
@@ -76,4 +79,11 @@ public class MainStepperController {
         fileLoaded.set(true);
     }
 
+    public StepperUIManager getStepperUIManager() {
+        return stepperUIManager;
+    }
+
+    public FlowDescriptor getFlowDescriptor(String flowName){
+        return stepperUIManager.getFlowDescriptor(flowName);
+    }
 }

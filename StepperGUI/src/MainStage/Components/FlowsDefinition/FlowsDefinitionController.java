@@ -1,5 +1,6 @@
 package MainStage.Components.FlowsDefinition;
 
+import Flow.FlowDescriptor;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowDefinitionButtonController;
 import MainStage.Components.Main.MainStepperController;
 import Stepper.StepperUIManager;
@@ -8,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
@@ -26,11 +29,14 @@ public class FlowsDefinitionController {
 
     private MainStepperController mainStepperController;
 
+    private SimpleStringProperty currentSelectedFlow;
+
     private Map<String,FlowDefinitionButtonController> flowsButtonsMap;
 
     @FXML
     private void initialize(){
         flowsButtonsMap=new HashMap<>();
+        currentSelectedFlow=new SimpleStringProperty();
     }
 
     @FXML
@@ -43,6 +49,9 @@ public class FlowsDefinitionController {
     }
 
     public void loadFlowsButtons(StepperUIManager stepperUIManager){
+        flowsButtonsMap.clear();
+        availableFlowsFlowPane.getChildren().clear();
+
         for(String flowName:stepperUIManager.getFlowNames()){
             try {
                 FXMLLoader loader=new FXMLLoader();
@@ -63,7 +72,10 @@ public class FlowsDefinitionController {
     }
 
     public void showFlowDetails(SimpleStringProperty flowName){
-
+        currentSelectedFlow.set(String.valueOf(flowName));
+        FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
+        flowDetailsFlowPane.getChildren().clear();
+        flowDetailsFlowPane.getChildren().add(new TextField(flowDescriptor.getFlowDescription()));
     }
 
 }
