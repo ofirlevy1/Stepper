@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
@@ -75,7 +76,11 @@ public class FlowsDefinitionController {
         currentSelectedFlow.set(String.valueOf(flowName));
         FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
         flowDetailsFlowPane.getChildren().clear();
-        flowDetailsFlowPane.getChildren().add(new TextField(flowDescriptor.getFlowDescription()));
+
+        flowDetailsFlowPane.getChildren().add(new Label("Flow Name: " + flowDescriptor.getFlowName()));
+        flowDetailsFlowPane.getChildren().add(new Label("Flow Description: " + flowDescriptor.getFlowDescription()));
+        flowDetailsFlowPane.getChildren().add(new Label("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString()));
+        flowDetailsFlowPane.getChildren().add(new Label(flowDescriptor.isReadonly()?"Read only":"Not read only"));
     }
 
 }

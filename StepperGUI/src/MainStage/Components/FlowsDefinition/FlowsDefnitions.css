@@ -3,10 +3,16 @@
     -fx-opacity: 0.8;
 }
 
+.label{
+    -fx-font-size: 16px;
+    -fx-background-color: #5959f3;
+}
+
 .flow-label{
     -fx-text-fill: blue;
     -fx-font-weight: Bold;
     -fx-font-size:16px ;
+    -fx-background-color: rgba(74, 74, 203, 0);
 }
 
 .button{
