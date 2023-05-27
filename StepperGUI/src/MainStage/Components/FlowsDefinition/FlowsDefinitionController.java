@@ -2,21 +2,20 @@ package MainStage.Components.FlowsDefinition;
 
 import Flow.FlowDescriptor;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowDefinitionButtonController;
+import MainStage.Components.FlowsDefinition.SubComponents.FlowsDefinitionStepToolTipLabelController;
 import MainStage.Components.Main.MainStepperController;
 import Stepper.StepperUIManager;
+import Steps.StepDescriptor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class FlowsDefinitionController {
 
@@ -32,11 +31,13 @@ public class FlowsDefinitionController {
 
     private SimpleStringProperty currentSelectedFlow;
 
-    private Map<String,FlowDefinitionButtonController> flowsButtonsMap;
+    private HashMap<String,FlowDefinitionButtonController> flowsButtonsMap;
+    private HashMap<String, FlowsDefinitionStepToolTipLabelController> flowsDefinitionStepToolTipLabelControllerMap;
 
     @FXML
     private void initialize(){
         flowsButtonsMap=new HashMap<>();
+        flowsDefinitionStepToolTipLabelControllerMap =new HashMap<>();
         currentSelectedFlow=new SimpleStringProperty();
     }
 
@@ -76,11 +77,31 @@ public class FlowsDefinitionController {
         currentSelectedFlow.set(String.valueOf(flowName));
         FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
         flowDetailsFlowPane.getChildren().clear();
+        flowsDefinitionStepToolTipLabelControllerMap.clear();
 
         flowDetailsFlowPane.getChildren().add(new Label("Flow Name: " + flowDescriptor.getFlowName()));
         flowDetailsFlowPane.getChildren().add(new Label("Flow Description: " + flowDescriptor.getFlowDescription()));
         flowDetailsFlowPane.getChildren().add(new Label("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString()));
         flowDetailsFlowPane.getChildren().add(new Label(flowDescriptor.isReadonly()?"Read only":"Not read only"));
+
+        for(StepDescriptor stepDescriptor:flowDescriptor.getStepDescriptors())
+        {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MainStage/Components/FlowsDefinition/SubComponents/FlowsDefinitionStepToolTipLabel.fxml"));
+                Label stepLabel = loader.load();
+
+                FlowsDefinitionStepToolTipLabelController flowsDefinitionStepToolTipLabelController = loader.getController();
+                flowsDefinitionStepToolTipLabelController.setFlowsDefinitionController(this);
+                flowsDefinitionStepToolTipLabelController.setStepLabelToolTipText(stepDescriptor);
+
+                flowDetailsFlowPane.getChildren().add(stepLabel);
+                flowsDefinitionStepToolTipLabelControllerMap.put(stepDescriptor.getStepEffectiveName(),flowsDefinitionStepToolTipLabelController);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

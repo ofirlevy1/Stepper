@@ -1,5 +1,6 @@
 package Steps;
 
+import DataTypes.DataType;
 import Flow.StepMap;
 import StepConnections.InputConnections;
 import StepConnections.OutputConnections;
@@ -14,7 +15,7 @@ public class StepDescriptor {
     private String stepAlias;
     private boolean hasAlias;
     private boolean isReadOnly;
-    private ArrayList<InputConnections> inputConnections;
+    private HashMap<String,InputConnections> inputConnections;
     private HashMap<String,OutputConnections> outputConnections;
 
     public StepDescriptor(String stepName, String stepAlias, boolean hasAlias, boolean isReadOnly) {
@@ -22,7 +23,7 @@ public class StepDescriptor {
         this.stepAlias = stepAlias;
         this.hasAlias = hasAlias;
         this.isReadOnly = isReadOnly;
-        inputConnections=new ArrayList<>();
+        inputConnections=new HashMap<>();
         outputConnections=new HashMap<>();
     }
 
@@ -36,6 +37,13 @@ public class StepDescriptor {
 
     public String getStepAlias() {
         return stepAlias;
+    }
+
+    public String getStepEffectiveName(){
+        if(hasAlias)
+            return stepAlias;
+        else
+            return stepName;
     }
 
     public void setStepAlias(String stepAlias) {
@@ -58,12 +66,12 @@ public class StepDescriptor {
         isReadOnly = readOnly;
     }
 
-    public ArrayList<InputConnections> getInputConnections() {
+    public HashMap<String,InputConnections> getInputConnections() {
         return inputConnections;
     }
 
     public void addInputConnections(InputConnections inputConnections) {
-        this.inputConnections.add(inputConnections);
+        this.inputConnections.put(inputConnections.getInputName(),inputConnections);
     }
 
     public HashMap<String,OutputConnections> getOutputConnections() {
@@ -76,5 +84,16 @@ public class StepDescriptor {
             return;
         }
         this.outputConnections.get(outputConnections.getOutputName()).addConnection(outputConnections.getConnectedInputsName().get(0),outputConnections.getConnectedStepsName().get(0));
+    }
+
+    public void addUnconnectedDataMembers(ArrayList<DataType> dataMembers){
+        for(DataType dataType:dataMembers){
+            if(dataType.isInput() && !inputConnections.containsKey(dataType.getEffectiveName())){
+                inputConnections.put(dataType.getEffectiveName(),new InputConnections(dataType.getEffectiveName(),dataType.isMandatory()?"Mandatory":"Optional","free input"));
+            }
+            if(!dataType.isInput() && !outputConnections.containsKey(dataType.getEffectiveName())){
+                outputConnections.put(dataType.getEffectiveName(),new OutputConnections(dataType.getEffectiveName(),"Formal output",""));
+            }
+        }
     }
 }

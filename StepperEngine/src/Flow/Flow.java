@@ -403,6 +403,7 @@ public class Flow {
                 }
             }
 
+            stepDescriptor.addUnconnectedDataMembers(step.getAllData());
             descriptors.add(stepDescriptor);
         }
 
