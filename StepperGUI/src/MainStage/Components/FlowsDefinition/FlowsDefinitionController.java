@@ -1,6 +1,8 @@
 package MainStage.Components.FlowsDefinition;
 
 import Flow.FlowDescriptor;
+import Flow.FreeInputDescriptor;
+import Flow.StepOutputDescriptor;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowDefinitionButtonController;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowsDefinitionStepToolTipLabelController;
 import MainStage.Components.Main.MainStepperController;
@@ -43,6 +45,7 @@ public class FlowsDefinitionController {
 
     @FXML
     void executeFlowButtonAction(ActionEvent event) {
+        mainStepperController.switchTabs(MainStepperController.Tabs.FlowsExecutionTab, currentSelectedFlow.get());
 
     }
 
@@ -83,6 +86,16 @@ public class FlowsDefinitionController {
         flowDetailsFlowPane.getChildren().add(new Label("Flow Description: " + flowDescriptor.getFlowDescription()));
         flowDetailsFlowPane.getChildren().add(new Label("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString()));
         flowDetailsFlowPane.getChildren().add(new Label(flowDescriptor.isReadonly()?"Read only":"Not read only"));
+        flowDetailsFlowPane.getChildren().add(new Label("Steps"));
+        for(StepDescriptor stepDescriptor:flowDescriptor.getStepDescriptors())
+            flowDetailsFlowPane.getChildren().add(new Label("Step Name:"+stepDescriptor.getStepName()+(stepDescriptor.isHasAlias()?(", Alias name:"+stepDescriptor.getStepAlias()):"")+(stepDescriptor.isReadOnly()?" is read only":"is not read only")));
+        flowDetailsFlowPane.getChildren().add(new Label("Free Inputs:"));
+        for(FreeInputDescriptor freeInputDescriptor:flowDescriptor.getFreeInputs())
+            flowDetailsFlowPane.getChildren().add(new Label("Free Input Name:"+freeInputDescriptor.getInputEffectiveName()+", Type: "+freeInputDescriptor.getInputType().toString()+", Connected Steps: "+freeInputDescriptor.getAssociatedSteps()+" the input is"+(freeInputDescriptor.isMandatory()?" mandatory":" not mandatory")));
+        flowDetailsFlowPane.getChildren().add(new Label("Formal Outputs"));
+        for(StepOutputDescriptor stepOutputDescriptor:flowDescriptor.getOutputs())
+            flowDetailsFlowPane.getChildren().add(new Label("Formal Output Name: "+stepOutputDescriptor.getOutputEffectiveName()+" Type: "+stepOutputDescriptor.getOutputType().toString()+" produced by step: "+stepOutputDescriptor.getSourceStepName()));
+        flowDetailsFlowPane.getChildren().add(new Label("Hover on Next Steps For Further Info:"));
 
         for(StepDescriptor stepDescriptor:flowDescriptor.getStepDescriptors())
         {

@@ -79,11 +79,23 @@ public class MainStepperController {
         fileLoaded.set(true);
     }
 
+    public void switchTabs(Tabs tab,String flowName){
+        selectionTabPane.getSelectionModel().select(tab.ordinal());
+    }
+
     public StepperUIManager getStepperUIManager() {
         return stepperUIManager;
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName){
         return stepperUIManager.getFlowDescriptor(flowName);
+    }
+
+    public enum Tabs{
+        FlowsDefinitionTab,
+        FlowsExecutionTab,
+        ExecutionsHistoryTab,
+        Statistics
+
     }
 }

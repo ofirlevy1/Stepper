@@ -1,14 +1,11 @@
 package Steps;
 
 import DataTypes.DataType;
-import Flow.StepMap;
 import StepConnections.InputConnections;
 import StepConnections.OutputConnections;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class StepDescriptor {
     private String stepName;
@@ -71,7 +68,7 @@ public class StepDescriptor {
     }
 
     public void addInputConnections(InputConnections inputConnections) {
-        this.inputConnections.put(inputConnections.getInputName(),inputConnections);
+        this.inputConnections.put(inputConnections.getInputAliasName(),inputConnections);
     }
 
     public HashMap<String,OutputConnections> getOutputConnections() {
@@ -79,20 +76,20 @@ public class StepDescriptor {
     }
 
     public void addOutputConnections(OutputConnections outputConnections) {
-        if(!this.outputConnections.containsKey(outputConnections.getOutputName())){
-            this.outputConnections.put(outputConnections.getOutputName(),outputConnections);
+        if(!this.outputConnections.containsKey(outputConnections.getOutputAliasName())){
+            this.outputConnections.put(outputConnections.getOutputAliasName(),outputConnections);
             return;
         }
-        this.outputConnections.get(outputConnections.getOutputName()).addConnection(outputConnections.getConnectedInputsName().get(0),outputConnections.getConnectedStepsName().get(0));
+        this.outputConnections.get(outputConnections.getOutputAliasName()).addConnection(outputConnections.getConnectedInputsName().get(0),outputConnections.getConnectedStepsName().get(0));
     }
 
     public void addUnconnectedDataMembers(ArrayList<DataType> dataMembers){
         for(DataType dataType:dataMembers){
             if(dataType.isInput() && !inputConnections.containsKey(dataType.getEffectiveName())){
-                inputConnections.put(dataType.getEffectiveName(),new InputConnections(dataType.getEffectiveName(),dataType.isMandatory()?"Mandatory":"Optional","free input"));
+                inputConnections.put(dataType.getEffectiveName(),new InputConnections(dataType.getEffectiveName(), dataType.hasAlias(), dataType.getName(), dataType.isMandatory()?"Mandatory":"Optional","free input"));
             }
             if(!dataType.isInput() && !outputConnections.containsKey(dataType.getEffectiveName())){
-                outputConnections.put(dataType.getEffectiveName(),new OutputConnections(dataType.getEffectiveName(),"Formal output",""));
+                outputConnections.put(dataType.getEffectiveName(),new OutputConnections(dataType.getEffectiveName(), dataType.hasAlias(), dataType.getName(),"Formal output",""));
             }
         }
     }

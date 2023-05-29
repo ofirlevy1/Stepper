@@ -4,7 +4,8 @@
 }
 
 .label{
-    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
     -fx-background-color: #5959f3;
 }
 
