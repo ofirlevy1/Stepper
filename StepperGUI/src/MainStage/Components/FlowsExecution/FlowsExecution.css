@@ -1,0 +1,5 @@
+.label{
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(0, 0, 255, 0.71);
+    -fx-font-size: 16px;
+}
