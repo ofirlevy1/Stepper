@@ -40,7 +40,7 @@ public class FlowsDefinitionController {
     private void initialize(){
         flowsButtonsMap=new HashMap<>();
         flowsDefinitionStepToolTipLabelControllerMap =new HashMap<>();
-        currentSelectedFlow=new SimpleStringProperty();
+        currentSelectedFlow=new SimpleStringProperty("");
     }
 
     @FXML
@@ -77,7 +77,7 @@ public class FlowsDefinitionController {
     }
 
     public void showFlowDetails(SimpleStringProperty flowName){
-        currentSelectedFlow.set(String.valueOf(flowName));
+        currentSelectedFlow.set(flowName.get());
         FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
         flowDetailsFlowPane.getChildren().clear();
         flowsDefinitionStepToolTipLabelControllerMap.clear();

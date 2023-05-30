@@ -2,6 +2,7 @@ package MainStage.Components.Main;
 
 import Flow.FlowDescriptor;
 import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
+import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import Stepper.StepperUIManager;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,6 +29,10 @@ public class MainStepperController {
     private BorderPane flowsDefinition;
     @FXML
     private FlowsDefinitionController flowsDefinitionController;
+    @FXML
+    private BorderPane flowsExecution;
+    @FXML
+    private FlowsExecutionController flowsExecutionController;
 
     private SimpleStringProperty absoluteFilePath;
     private SimpleBooleanProperty fileLoaded;
@@ -50,6 +55,7 @@ public class MainStepperController {
         filePathLabel.textProperty().bind(absoluteFilePath);
         selectionTabPane.disableProperty().bind(fileLoaded.not());
         this.flowsDefinitionController.setMainStepperController(this);
+        this.flowsExecutionController.setMainStepperController(this);
     }
 
     @FXML
@@ -81,6 +87,7 @@ public class MainStepperController {
 
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
+        flowsExecutionController.loadFlowsExecutionInputs(flowName);
     }
 
     public StepperUIManager getStepperUIManager() {
