@@ -88,6 +88,7 @@ public class MainStepperController {
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
         flowsExecutionController.loadFlowsExecutionInputs(flowName);
+        flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
     }
 
     public StepperUIManager getStepperUIManager() {

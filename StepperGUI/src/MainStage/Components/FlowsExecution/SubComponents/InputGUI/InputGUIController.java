@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.lang.reflect.Method;
+
 public class InputGUIController {
 
     @FXML
@@ -17,6 +19,8 @@ public class InputGUIController {
     private FlowsExecutionController flowsExecutionController;
 
     private SimpleStringProperty inputName;
+    private int inputIndex;
+    private boolean isMandatory;
 
     @FXML
     public void initialize(){
@@ -32,7 +36,35 @@ public class InputGUIController {
         inputName.set(name);
     }
 
-    public SimpleBooleanProperty isTextFieldFilled(){
-        return new SimpleBooleanProperty(inputTextField.textProperty().get()!="");
+    public void setPromptTextFieldText(String text){
+        inputTextField.setPromptText(text);
+    }
+
+    public int getInputIndex() {
+        return inputIndex;
+    }
+
+    public void setInputIndex(int inputIndex) {
+        this.inputIndex = inputIndex;
+    }
+
+    public String getInput(){
+        return inputTextField.getText();
+    }
+
+    public String getInputName(){
+        return inputName.get();
+    }
+
+    public TextField getInputTextField() {
+        return inputTextField;
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        isMandatory = mandatory;
     }
 }
