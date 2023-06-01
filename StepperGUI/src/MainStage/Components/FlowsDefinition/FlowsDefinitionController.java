@@ -67,6 +67,7 @@ public class FlowsDefinitionController {
                 flowDefinitionButtonController.setFlowsDefinitionsController(this);
                 flowDefinitionButtonController.setFlowButtonText(stepperUIManager.getFlowDescriptor(flowName));
 
+                availableFlowsFlowPane.setPrefWrapLength(availableFlowsFlowPane.getPrefWrapLength()+100);
                 availableFlowsFlowPane.getChildren().add(flowButton);
                 flowsButtonsMap.put(flowName,flowDefinitionButtonController);
 
@@ -81,6 +82,8 @@ public class FlowsDefinitionController {
         FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
         flowDetailsFlowPane.getChildren().clear();
         flowsDefinitionStepToolTipLabelControllerMap.clear();
+
+        flowDetailsFlowPane.setPrefWrapLength(900);
 
         flowDetailsFlowPane.getChildren().add(new Label("Flow Name: " + flowDescriptor.getFlowName()));
         flowDetailsFlowPane.getChildren().add(new Label("Flow Description: " + flowDescriptor.getFlowDescription()));
