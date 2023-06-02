@@ -1,13 +1,16 @@
 package MainStage.Components.Main;
 
 import Flow.FlowDescriptor;
+import MainStage.Components.ExecutionsHistory.ExecutionsHistoryController;
 import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
 import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import Stepper.StepperUIManager;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -33,6 +36,10 @@ public class MainStepperController {
     private BorderPane flowsExecution;
     @FXML
     private FlowsExecutionController flowsExecutionController;
+    @FXML
+    private BorderPane executionsHistory;
+    @FXML
+    private ExecutionsHistoryController executionsHistoryController;
 
     private SimpleStringProperty absoluteFilePath;
     private SimpleBooleanProperty fileLoaded;
@@ -56,6 +63,7 @@ public class MainStepperController {
         selectionTabPane.disableProperty().bind(fileLoaded.not());
         this.flowsDefinitionController.setMainStepperController(this);
         this.flowsExecutionController.setMainStepperController(this);
+        this.executionsHistoryController.setMainStepperController(this);
     }
 
     @FXML
@@ -97,6 +105,14 @@ public class MainStepperController {
 
     public FlowDescriptor getFlowDescriptor(String flowName){
         return stepperUIManager.getFlowDescriptor(flowName);
+    }
+
+    public void updatePastExecutionsTable(){
+        this.executionsHistoryController.updateExecutionsTable();
+    }
+
+    public ObservableList<Node> getFlowRunHistoryChildrenNodesFromFlowsExecution(){
+        return this.flowsExecutionController.getExecutionDetailsFlowPaneChildrenNodes();
     }
 
     public enum Tabs{

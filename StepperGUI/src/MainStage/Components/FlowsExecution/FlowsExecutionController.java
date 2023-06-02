@@ -7,9 +7,11 @@ import RunHistory.FlowRunHistory;
 import Stepper.StepperUIManager;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -76,10 +78,12 @@ public class FlowsExecutionController {
             errorAlert.show();
             return;
         }
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("it works");
-        errorAlert.setContentText("\"all of it just works\"\n  -Todd Howard");
-        errorAlert.show();
+        try{
+        stepperUIManager.runFlow(selectedFlow.get());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        mainStepperController.updatePastExecutionsTable();
     }
 
     public void setMainStepperController(MainStepperController mainStepperController){
@@ -136,4 +140,7 @@ public class FlowsExecutionController {
                 .allMatch(inputGUIController -> !inputGUIController.isMandatory() || !inputGUIController.getInputTextField().getText().isEmpty()));
     }
 
+    public ObservableList<Node> getExecutionDetailsFlowPaneChildrenNodes() {
+        return executionDetailsFlowPane.getChildren();
+    }
 }
