@@ -62,7 +62,7 @@
               </content>
             </ScrollPane>
             <Label text="Past Executions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <CheckBox mnemonicParsing="false" onAction="#successfulPastExecutionsFilter" text="show only successfull executions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+            <CheckBox fx:id="successfulExecutionsFilterCheckBox" mnemonicParsing="false" onAction="#successfulPastExecutionsFilter" text="show only successfull executions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="5.0" />
                </GridPane.margin>

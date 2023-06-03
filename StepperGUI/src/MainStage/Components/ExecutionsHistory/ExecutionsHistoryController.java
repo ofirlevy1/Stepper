@@ -3,9 +3,11 @@ package MainStage.Components.ExecutionsHistory;
 import Flow.Flow;
 import MainStage.Components.Main.MainStepperController;
 import RunHistory.FlowRunHistory;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,9 +30,12 @@ public class ExecutionsHistoryController {
     private FlowPane executionElementsFlowPane;
     @FXML
     private Button rerunFlowButton;
+    @FXML
+    private CheckBox successfulExecutionsFilterCheckBox;
 
     private MainStepperController mainStepperController;
     private boolean filterCheckboxMarked;
+    private ObservableList<FlowRunHistory> flowRunHistoryObservableList;
 
     @FXML
     public void initialize(){
@@ -39,6 +44,7 @@ public class ExecutionsHistoryController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         flowNameColumn.setCellFactory(column -> new TableCellWithHyperlink<>());
         filterCheckboxMarked=false;
+        flowRunHistoryObservableList=FXCollections.observableArrayList();
     }
 
     @FXML
@@ -48,9 +54,7 @@ public class ExecutionsHistoryController {
 
     @FXML
     void successfulPastExecutionsFilter(ActionEvent event) {
-        pastExecutionsTable.getItems().clear();
-        pastExecutionsTable.getItems().addAll(mainStepperController.getStepperUIManager().getFlowsRunHistories());
-        FilteredList<FlowRunHistory> flowRunHistories=new FilteredList<>(pastExecutionsTable.getItems());
+        FilteredList<FlowRunHistory> flowRunHistories=new FilteredList<>(flowRunHistoryObservableList);
         if(filterCheckboxMarked){
             filterCheckboxMarked=false;
             flowRunHistories.setPredicate(flowRunHistory -> true);
@@ -69,7 +73,11 @@ public class ExecutionsHistoryController {
 
     public void updateExecutionsTable(){
         FlowRunHistory flowRunHistory = mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
-        pastExecutionsTable.getItems().add(flowRunHistory);
+        //pastExecutionsTable.getItems().add(flowRunHistory);
+        flowRunHistoryObservableList.add(flowRunHistory);
+        pastExecutionsTable.setItems(flowRunHistoryObservableList);
+        filterCheckboxMarked=false;
+        successfulExecutionsFilterCheckBox.setSelected(false);
     }
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
