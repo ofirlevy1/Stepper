@@ -7,12 +7,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
+
+import java.util.Comparator;
+import java.util.Objects;
 
 public class ExecutionsHistoryController {
 
@@ -23,7 +24,7 @@ public class ExecutionsHistoryController {
     @FXML
     private TableColumn<FlowRunHistory, String> timeStampColumn;
     @FXML
-    private TableColumn<FlowRunHistory, String> statusColumn;
+    private TableColumn<FlowRunHistory, Flow.Status> statusColumn;
     @FXML
     private FlowPane flowDetailsFlowPane;
     @FXML
@@ -45,6 +46,7 @@ public class ExecutionsHistoryController {
         flowNameColumn.setCellFactory(column -> new TableCellWithHyperlink<>());
         filterCheckboxMarked=false;
         flowRunHistoryObservableList=FXCollections.observableArrayList();
+        setColumnsComparators();
     }
 
     @FXML
@@ -65,6 +67,27 @@ public class ExecutionsHistoryController {
             flowRunHistories.setPredicate(flowRunHistory -> flowRunHistory.getStatus()== Flow.Status.SUCCESS);
             pastExecutionsTable.setItems(flowRunHistories);
         }
+    }
+
+    private void setColumnsComparators(){
+        Comparator<String> stringColumnComparator = Comparator.comparing(String::toLowerCase);
+        Comparator<Flow.Status> statusColumnComparator=
+                (Flow.Status st1, Flow.Status st2)->{
+            if(st1.equals(st2)) return 0;
+            if(Objects.equals(st1, Flow.Status.SUCCESS))
+                return 1;
+            else if(Objects.equals(st1, Flow.Status.WARNING)){
+                if(st2.equals(Flow.Status.SUCCESS))
+                    return -1;
+                else
+                    return 1;
+            }
+            else
+                return -1;
+                };
+        flowNameColumn.setComparator(stringColumnComparator);
+        timeStampColumn.setComparator(stringColumnComparator);
+        statusColumn.setComparator(statusColumnComparator);
     }
 
     public void setMainStepperController(MainStepperController mainStepperController) {
