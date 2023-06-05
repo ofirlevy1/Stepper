@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/StepperConsoleUI/StepperConsoleUI.iml" filepath="$PROJECT_DIR$/StepperConsoleUI/StepperConsoleUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/StepperEngine/StepperEngine.iml" filepath="$PROJECT_DIR$/StepperEngine/StepperEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/StepperEngine2/StepperEngine2.iml" filepath="$PROJECT_DIR$/StepperEngine2/StepperEngine2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StepperGUI/StepperGUI.iml" filepath="$PROJECT_DIR$/StepperGUI/StepperGUI.iml" />
     </modules>
   </component>
 </project>

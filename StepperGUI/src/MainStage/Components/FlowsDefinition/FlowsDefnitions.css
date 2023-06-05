@@ -1,0 +1,32 @@
+.available-flows{
+    -fx-background-color: #4f98c0;
+    -fx-opacity: 0.8;
+}
+
+.label{
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-color: #5959f3;
+}
+
+.flow-label{
+    -fx-text-fill: blue;
+    -fx-font-weight: Bold;
+    -fx-font-size:16px ;
+    -fx-background-color: rgba(74, 74, 203, 0);
+}
+
+.button{
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.flow-execution-button{
+    -fx-background-color: #76e06e;
+}
+
+.flow-execution-button:hover{
+    -fx-opacity: 0.7;
+    -fx-background-color: #1fbd15;
+    -fx-animated: 1;
+}

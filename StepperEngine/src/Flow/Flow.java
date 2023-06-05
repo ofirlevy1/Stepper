@@ -4,6 +4,8 @@ import DataTypes.DataType;
 import DataTypes.UserFriendly;
 import Generated.*;
 import RunHistory.FlowRunHistory;
+import StepConnections.InputConnections;
+import StepConnections.OutputConnections;
 import Steps.Step;
 import Steps.StepDescriptor;
 import Steps.StepFactory;
@@ -389,8 +391,22 @@ public class Flow {
     private ArrayList<StepDescriptor> getStepDescriptors() {
         ArrayList<StepDescriptor> descriptors = new ArrayList<>();
         for(Step step : steps) {
-            descriptors.add(step.getStepDescriptor());
+            StepDescriptor stepDescriptor=step.getStepDescriptor();
+            if(map.getMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : map.getMappingsByStep(step.getName())) {
+                    stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(), step.getOutputs(stepMap.getSourceDataName()).get(0).hasAlias(),step.getOutputs(stepMap.getSourceDataName()).get(0).getName(), stepMap.getTargetDataName(), stepMap.getTargetStepName()));
+                }
+            }
+            if(map.getInputMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : map.getInputMappingsByStep(step.getName())) {
+                    stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), step.getSingleInput(stepMap.getTargetDataName()).get(0).hasAlias(), step.getSingleInput(stepMap.getTargetDataName()).get(0).getName(),stepMap.getSourceDataName(), stepMap.getSourceStepName()));
+                }
+            }
+
+            stepDescriptor.addUnconnectedDataMembers(step.getAllData());
+            descriptors.add(stepDescriptor);
         }
+
         return descriptors;
     }
 

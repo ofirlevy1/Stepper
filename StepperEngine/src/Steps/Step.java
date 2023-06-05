@@ -95,6 +95,10 @@ public abstract class  Step {
         return getAllData().stream().filter(d -> d.getEffectiveName().equals(name)).collect(Collectors.toList());
     }
 
+    public List<DataType> getSingleInput(String name){
+        return getDataMembersByName(name);
+    }
+
     public boolean containsDataMember(String name){
         return !getDataMembersByName(name).isEmpty();
     }
