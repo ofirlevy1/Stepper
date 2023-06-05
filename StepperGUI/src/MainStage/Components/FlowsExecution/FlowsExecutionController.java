@@ -84,10 +84,18 @@ public class FlowsExecutionController {
             System.out.println(e.getMessage());
         }
         mainStepperController.updatePastExecutionsTable();
+        startFlowExecutionButton.setText("Rerun Flow");
+        updateFlowDetailsFlowPane();
     }
 
     public void setMainStepperController(MainStepperController mainStepperController){
         this.mainStepperController=mainStepperController;
+    }
+
+    private void updateFlowDetailsFlowPane(){
+        flowDetailsFlowPane.getChildren().clear();
+        FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
+        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showExtensiveFlowHistory()));
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){
@@ -101,6 +109,7 @@ public class FlowsExecutionController {
     public void loadFlowsExecutionInputs(String flowName){
         StepperUIManager stepperUIManager;
 
+        startFlowExecutionButton.setText("Start!");
         selectedFlow.set(flowName);
         flowInputsFlowPane.getChildren().clear();
         inputGUIControllers.clear();

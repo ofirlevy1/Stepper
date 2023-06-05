@@ -4,6 +4,7 @@ import MainStage.Components.Main.MainStepperController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -17,13 +18,13 @@ public class MainStage extends Application {
 
         URL mainFXML=getClass().getResource("/MainStage/Components/Main/MainStepper.fxml");
         loader.setLocation(mainFXML);
-        BorderPane root=loader.load();
+        ScrollPane root=loader.load();
 
         MainStepperController mainStepperController=loader.getController();
         mainStepperController.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Stepper");
-        Scene scene=new Scene(root,1500, 930);
+        Scene scene=new Scene(root,1510, 950);
         primaryStage.setScene(scene);
         primaryStage.show();
 
