@@ -2,13 +2,23 @@ package RunHistory;
 
 public class OutputHistory {
     private String name;
+    private String alias;
     private String type;
     private String presentableString;
 
-    public OutputHistory(String name, String type, String presentableString) {
+    public OutputHistory(String name, String alias, String type, String presentableString) {
         this.name = name;
+        this.alias=alias;
         this.type = type;
         this.presentableString = presentableString;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getName() {

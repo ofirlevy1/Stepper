@@ -23,6 +23,10 @@ public class FlowRunHistory {
         stepHistories=new ArrayList<>();
     }
 
+    public String showGUIFlowHistory(){
+        return "Flow name: "+flowName+"\nFlow ID: "+flowId+"\nTime Stamp: "+timeStamp+"\nRun Time: "+runTime+"\nStatus: "+status;
+    }
+
     public String showMinimalFlowHistory(){
         return "Flow name: "+flowName+" Flow ID: "+flowId+" Time Stamp: "+timeStamp;
     }
@@ -74,9 +78,9 @@ public class FlowRunHistory {
 
     public void addFreeInput(DataType freeInput){
         if(freeInput.isMandatory())
-            freeInputHistories.add(0,new FreeInputHistory(freeInput.getName(), freeInput.getType().toString(), freeInput.getPresentableString(), freeInput.isMandatory()));
+            freeInputHistories.add(0,new FreeInputHistory(freeInput.getName(), freeInput.getAlias(),freeInput.getType().toString(), freeInput.getPresentableString(), freeInput.isMandatory()));
         else
-            freeInputHistories.add(new FreeInputHistory(freeInput.getName(), freeInput.getType().toString(), freeInput.getPresentableString(), freeInput.isMandatory()));
+            freeInputHistories.add(new FreeInputHistory(freeInput.getName(), freeInput.getAlias(), freeInput.getType().toString(), freeInput.getPresentableString(), freeInput.isMandatory()));
     }
 
     //used for console presentation
@@ -92,7 +96,7 @@ public class FlowRunHistory {
     }
 
     public void addOutput(DataType output){
-        outputHistories.add(new OutputHistory(output.getName(), output.getType().toString(), output.getPresentableString()));
+        outputHistories.add(new OutputHistory(output.getName(), output.getAlias(), output.getType().toString(), output.getPresentableString()));
     }
 
     //used for console presentation
@@ -108,7 +112,8 @@ public class FlowRunHistory {
     }
 
     public void addStep(Step step){
-        stepHistories.add(new StepHistory(step.getName(), step.getRunTimeInMs(), step.getStatus(), step.getSummaryLine(), step.getLogsAsString()));
+        stepHistories.add(new StepHistory(step.getName(), step.getRunTimeInMs(), step.getStatus(), step.getSummaryLine(), step.getLogsAsString(),step.getAllData()));
+
     }
 
     //used for console presentation

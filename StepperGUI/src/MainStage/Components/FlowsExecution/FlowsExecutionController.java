@@ -4,6 +4,9 @@ import Flow.FreeInputDescriptor;
 import MainStage.Components.FlowsExecution.SubComponents.InputGUI.InputGUIController;
 import MainStage.Components.Main.MainStepperController;
 import RunHistory.FlowRunHistory;
+import RunHistory.FreeInputHistory;
+import RunHistory.OutputHistory;
+import RunHistory.StepHistory;
 import Stepper.StepperUIManager;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -95,7 +99,33 @@ public class FlowsExecutionController {
     private void updateFlowDetailsFlowPane(){
         flowDetailsFlowPane.getChildren().clear();
         FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
-        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showExtensiveFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label());
+        flowDetailsFlowPane.getChildren().add(new Label("Steps:"));
+        for(StepHistory stepHistory:flowRunHistory.getStepHistories()) {
+            Hyperlink stepHyperLink=new Hyperlink(stepHistory.getName()+" Status: "+stepHistory.getStatus());
+            stepHyperLink.setOnAction(event -> updateExecutionDetailsFlowPane(stepHistory));
+            flowDetailsFlowPane.getChildren().add(stepHyperLink);
+        }
+    }
+
+    private void updateExecutionDetailsFlowPane(StepHistory stepHistory){
+        executionDetailsFlowPane.getChildren().clear();
+        executionDetailsFlowPane.getChildren().add(new Label("Step name: "+stepHistory.getName()));
+        executionDetailsFlowPane.getChildren().add(new Label("Status: "+stepHistory.getStatus()));
+        executionDetailsFlowPane.getChildren().add(new Label("Run Time: "+stepHistory.getRunTimeInMs()));
+        executionDetailsFlowPane.getChildren().add(new Label());
+        if(!stepHistory.getInputs().isEmpty()) {
+            executionDetailsFlowPane.getChildren().add(new Label("Inputs:"));
+            for (FreeInputHistory input : stepHistory.getInputs())
+                executionDetailsFlowPane.getChildren().add(new Label("Name: " + input.getName() + (input.getAlias() != null ? (" Alias: " + input.getAlias()) : "") + " User presentation:\n" + input.getPresentableString()));
+        }
+
+        if(!stepHistory.getOutputs().isEmpty()) {
+            executionDetailsFlowPane.getChildren().add(new Label("Outputs:"));
+            for (OutputHistory output : stepHistory.getOutputs())
+                executionDetailsFlowPane.getChildren().add(new Label("Name: " + output.getName() + (output.getAlias() != null ? (" Alias: " + output.getAlias()) : "") + " User presentation:\n" + output.getPresentableString()));
+        }
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){

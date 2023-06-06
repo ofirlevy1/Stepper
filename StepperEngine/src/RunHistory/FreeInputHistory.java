@@ -2,15 +2,25 @@ package RunHistory;
 
 public class FreeInputHistory {
     private String name;
+    private String alias;
     private String type;
     private String presentableString;
     private Boolean isMandatory;
 
-    public FreeInputHistory(String name, String type, String presentableString, Boolean isMandatory) {
+    public FreeInputHistory(String name, String alias, String type, String presentableString, Boolean isMandatory) {
         this.name = name;
+        this.alias=alias;
         this.type = type;
         this.presentableString = presentableString;
         this.isMandatory = isMandatory;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getName() {

@@ -3,6 +3,8 @@ package MainStage.Components.ExecutionsHistory;
 import Flow.Flow;
 import MainStage.Components.Main.MainStepperController;
 import RunHistory.FlowRunHistory;
+import RunHistory.FreeInputHistory;
+import RunHistory.StepHistory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -105,7 +107,27 @@ public class ExecutionsHistoryController {
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
         flowDetailsFlowPane.getChildren().clear();
-        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showExtensiveFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label());
+        flowDetailsFlowPane.getChildren().add(new Label("Steps:"));
+        for(StepHistory stepHistory:flowRunHistory.getStepHistories()) {
+            Hyperlink stepHyperLink=new Hyperlink(stepHistory.getName()+" Status: "+stepHistory.getStatus());
+            stepHyperLink.setOnAction(event -> updateExecutionDetailsFlowPane(stepHistory));
+            flowDetailsFlowPane.getChildren().add(stepHyperLink);
+        }
+    }
+
+    private void updateExecutionDetailsFlowPane(StepHistory stepHistory) {
+        executionElementsFlowPane.getChildren().clear();
+        executionElementsFlowPane.getChildren().add(new Label("Step name: " + stepHistory.getName()));
+        executionElementsFlowPane.getChildren().add(new Label("Status: " + stepHistory.getStatus()));
+        executionElementsFlowPane.getChildren().add(new Label("Run Time: " + stepHistory.getRunTimeInMs()));
+        executionElementsFlowPane.getChildren().add(new Label());
+        if (!stepHistory.getInputs().isEmpty()) {
+            executionElementsFlowPane.getChildren().add(new Label("Inputs:"));
+            for (FreeInputHistory input : stepHistory.getInputs())
+                executionElementsFlowPane.getChildren().add(new Label("Name: " + input.getName() + (input.getAlias() != null ? (" Alias: " + input.getAlias()) : "") + " User presentation:\n" + input.getPresentableString()));
+        }
     }
 
     public void restartUIElements() {
