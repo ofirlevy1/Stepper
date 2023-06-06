@@ -1,3 +1,5 @@
 .label{
-    -fx-background-color: red;
+    -fx-background-color: rgba(255, 0, 0, 0.96);
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
 }
