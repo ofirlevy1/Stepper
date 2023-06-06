@@ -108,6 +108,14 @@ public class ExecutionsHistoryController {
         flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showExtensiveFlowHistory()));
     }
 
+    public void restartUIElements() {
+        this.filterCheckboxMarked=false;
+        this.flowRunHistoryObservableList.clear();
+        this.flowDetailsFlowPane.getChildren().clear();
+        this.executionElementsFlowPane.getChildren().clear();
+        this.successfulExecutionsFilterCheckBox.setSelected(false);
+    }
+
     private class TableCellWithHyperlink<T> extends javafx.scene.control.TableCell<T, String> {
 
         private final Hyperlink hyperlink;

@@ -69,7 +69,7 @@ public class MainStepperController {
     @FXML
     void loadFileButtonAction(ActionEvent event) {
         FileChooser fileChooser=new FileChooser();
-        fileChooser.setTitle("select xml file");
+        fileChooser.setTitle("Select xml file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
@@ -87,6 +87,7 @@ public class MainStepperController {
             errorAlert.show();
             return;
         }
+        restartUIElements();
         flowsDefinitionController.loadFlowsButtons(stepperUIManager); //need to obtain all the flow descriptors;
         String absolutPath=selectedFile.getAbsolutePath();
         absoluteFilePath.set(absolutPath);
@@ -97,6 +98,12 @@ public class MainStepperController {
         selectionTabPane.getSelectionModel().select(tab.ordinal());
         flowsExecutionController.loadFlowsExecutionInputs(flowName);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
+    }
+
+    public void restartUIElements(){
+        this.flowsDefinitionController.restartUIElements();
+        this.flowsExecutionController.restartUIElements();
+        this.executionsHistoryController.restartUIElements();
     }
 
     public StepperUIManager getStepperUIManager() {

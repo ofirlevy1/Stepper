@@ -99,20 +99,22 @@ public class FlowsExecutionController {
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){
-        ArrayList<FlowRunHistory> flowRunHistories =mainStepperController.getStepperUIManager().getFlowsRunHistories();
-        List<FlowRunHistory> specifiedFlowRunHistories=flowRunHistories.stream().filter(flowRunHistory -> flowRunHistory.getFlowName().equals(flowName)).collect(Collectors.toList());
-        for(FlowRunHistory flowRunHistory:specifiedFlowRunHistories){
-            flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showMinimalFlowHistory()));
-        }
+//        ArrayList<FlowRunHistory> flowRunHistories =mainStepperController.getStepperUIManager().getFlowsRunHistories();
+//        List<FlowRunHistory> specifiedFlowRunHistories=flowRunHistories.stream().filter(flowRunHistory -> flowRunHistory.getFlowName().equals(flowName)).collect(Collectors.toList());
+//        for(FlowRunHistory flowRunHistory:specifiedFlowRunHistories){
+//            flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showMinimalFlowHistory()));
+//        }
     }
 
     public void loadFlowsExecutionInputs(String flowName){
         StepperUIManager stepperUIManager;
 
         startFlowExecutionButton.setText("Start!");
+        allMandatoryInputsFilled.set(false);
         selectedFlow.set(flowName);
         flowInputsFlowPane.getChildren().clear();
         inputGUIControllers.clear();
+
         if(flowName.isEmpty())
             return;
         stepperUIManager = mainStepperController.getStepperUIManager();
@@ -151,5 +153,15 @@ public class FlowsExecutionController {
 
     public ObservableList<Node> getExecutionDetailsFlowPaneChildrenNodes() {
         return executionDetailsFlowPane.getChildren();
+    }
+
+    public void restartUIElements() {
+        flowDetailsFlowPane.getChildren().clear();
+        flowInputsFlowPane.getChildren().clear();
+        executionDetailsFlowPane.getChildren().clear();
+        continuationDataFlowPane.getChildren().clear();
+        selectedFlow.set("");
+        inputGUIControllers.clear();
+        allMandatoryInputsFilled.set(false);
     }
 }

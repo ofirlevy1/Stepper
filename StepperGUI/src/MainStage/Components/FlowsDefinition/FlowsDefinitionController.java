@@ -124,4 +124,11 @@ public class FlowsDefinitionController {
         }
     }
 
+    public void restartUIElements() {
+        flowDetailsFlowPane.getChildren().clear();
+        flowsButtonsMap.clear();
+        flowsDefinitionStepToolTipLabelControllerMap.clear();
+        availableFlowsFlowPane.getChildren().clear();
+        currentSelectedFlow.set("");
+    }
 }
