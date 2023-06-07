@@ -50,10 +50,10 @@ public class FlowsDefinitionStepToolTipLabelController {
         stepLabelText.set(stepDescriptor.getStepEffectiveName());
         String text=stepDescriptor.getStepEffectiveName();
         if(!stepDescriptor.getInputConnections().isEmpty()) {
-            text +="\ninputs:\n";
+            text +="\nInputs:\n";
             for (String inputConnectionsString : stepDescriptor.getInputConnections().keySet()) {
                 InputConnections inputConnections = stepDescriptor.getInputConnections().get(inputConnectionsString);
-                text += inputConnections.getInputName()+(inputConnections.isHasAlias()?(" With Alias: "+inputConnections.getInputAliasName()):"") + " <- " + inputConnections.getConnectedOutputName() + ", " + inputConnections.getConnectedStepName() + "\n";
+                text += inputConnections.getInputName()+(inputConnections.isHasAlias()?(" With Alias: "+inputConnections.getInputAliasName()):"") + " gets data from " + inputConnections.getConnectedOutputName() + ", " + inputConnections.getConnectedStepName() + "\n";
             }
         }
 
@@ -62,7 +62,7 @@ public class FlowsDefinitionStepToolTipLabelController {
             text += "outputs:\n";
             for (String outputConnectionsString : stepDescriptor.getOutputConnections().keySet()) {
                 OutputConnections outputConnections = stepDescriptor.getOutputConnections().get(outputConnectionsString);
-                text += outputConnections.getOutputName()+(outputConnections.isHasAlias()?(" With Alias: "+outputConnections.getOutputAliasName()):"") + " -> ";
+                text += outputConnections.getOutputName()+(outputConnections.isHasAlias()?(" With Alias: "+outputConnections.getOutputAliasName()):"") + " sends data to ";
                 for(int i=0;i<outputConnections.getConnectedInputsName().size();i++){
                     text+=outputConnections.getConnectedInputsName().get(i)+", "+outputConnections.getConnectedStepsName().get(i);
                     text+=" and ";

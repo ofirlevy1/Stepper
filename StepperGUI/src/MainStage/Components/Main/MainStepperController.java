@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 public class MainStepperController {
 
@@ -69,7 +70,7 @@ public class MainStepperController {
     @FXML
     void loadFileButtonAction(ActionEvent event) {
         FileChooser fileChooser=new FileChooser();
-        fileChooser.setTitle("select xml file");
+        fileChooser.setTitle("Select xml file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
@@ -87,6 +88,7 @@ public class MainStepperController {
             errorAlert.show();
             return;
         }
+        restartUIElements();
         flowsDefinitionController.loadFlowsButtons(stepperUIManager); //need to obtain all the flow descriptors;
         String absolutPath=selectedFile.getAbsolutePath();
         absoluteFilePath.set(absolutPath);
@@ -97,6 +99,17 @@ public class MainStepperController {
         selectionTabPane.getSelectionModel().select(tab.ordinal());
         flowsExecutionController.loadFlowsExecutionInputs(flowName);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
+    }
+
+    public void rerunFlow(String flowName, HashMap<String ,String> freeInputsMap){
+        selectionTabPane.getSelectionModel().select(Tabs.FlowsExecutionTab.ordinal());
+        flowsExecutionController.loadFlowsExecutionInputsRerun(flowName, freeInputsMap);
+    }
+
+    public void restartUIElements(){
+        this.flowsDefinitionController.restartUIElements();
+        this.flowsExecutionController.restartUIElements();
+        this.executionsHistoryController.restartUIElements();
     }
 
     public StepperUIManager getStepperUIManager() {

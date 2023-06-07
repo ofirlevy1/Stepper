@@ -355,6 +355,9 @@ public class Flow {
             flowRunHistory.addStep(step);
         for(String outputString:outputs.keySet())
             flowRunHistory.addOutput(outputs.get(outputString));
+        for(String freeInputName:freeInputs.keySet())
+            for(DataType freeInput:freeInputs.get(freeInputName))
+                flowRunHistory.addFreeInputEnteredByUser(freeInput);
     }
 
     public FlowLog getFlowLog() {

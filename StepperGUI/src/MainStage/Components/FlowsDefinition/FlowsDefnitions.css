@@ -6,7 +6,7 @@
 .label{
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-background-color: #5959f3;
+    //-fx-background-color: #5959f3;
 }
 
 .flow-label{

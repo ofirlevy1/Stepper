@@ -3,6 +3,8 @@ package MainStage.Components.ExecutionsHistory;
 import Flow.Flow;
 import MainStage.Components.Main.MainStepperController;
 import RunHistory.FlowRunHistory;
+import RunHistory.FreeInputHistory;
+import RunHistory.StepHistory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -36,6 +38,7 @@ public class ExecutionsHistoryController {
 
     private MainStepperController mainStepperController;
     private boolean filterCheckboxMarked;
+    private FlowRunHistory currentlySelectedFlowRunHistory;
     private ObservableList<FlowRunHistory> flowRunHistoryObservableList;
 
     @FXML
@@ -45,13 +48,15 @@ public class ExecutionsHistoryController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         flowNameColumn.setCellFactory(column -> new TableCellWithHyperlink<>());
         filterCheckboxMarked=false;
+        currentlySelectedFlowRunHistory=null;
         flowRunHistoryObservableList=FXCollections.observableArrayList();
         setColumnsComparators();
     }
 
     @FXML
     void rerunFlowButtonAction(ActionEvent event) {
-
+        if(currentlySelectedFlowRunHistory!=null)
+            mainStepperController.rerunFlow(currentlySelectedFlowRunHistory.getFlowName(), currentlySelectedFlowRunHistory.getFreeInputsEnteredByUser());
     }
 
     @FXML
@@ -104,8 +109,38 @@ public class ExecutionsHistoryController {
     }
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
+        currentlySelectedFlowRunHistory=flowRunHistory;
         flowDetailsFlowPane.getChildren().clear();
-        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showExtensiveFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
+        flowDetailsFlowPane.getChildren().add(new Label());
+        flowDetailsFlowPane.getChildren().add(new Label("Steps:"));
+        for(StepHistory stepHistory:flowRunHistory.getStepHistories()) {
+            Hyperlink stepHyperLink=new Hyperlink(stepHistory.getName()+" Status: "+stepHistory.getStatus());
+            stepHyperLink.setOnAction(event -> updateExecutionDetailsFlowPane(stepHistory));
+            flowDetailsFlowPane.getChildren().add(stepHyperLink);
+        }
+    }
+
+    private void updateExecutionDetailsFlowPane(StepHistory stepHistory) {
+        executionElementsFlowPane.getChildren().clear();
+        executionElementsFlowPane.getChildren().add(new Label("Step name: " + stepHistory.getName()));
+        executionElementsFlowPane.getChildren().add(new Label("Status: " + stepHistory.getStatus()));
+        executionElementsFlowPane.getChildren().add(new Label("Run Time: " + stepHistory.getRunTimeInMs()));
+        executionElementsFlowPane.getChildren().add(new Label());
+        if (!stepHistory.getInputs().isEmpty()) {
+            executionElementsFlowPane.getChildren().add(new Label("Inputs:"));
+            for (FreeInputHistory input : stepHistory.getInputs())
+                executionElementsFlowPane.getChildren().add(new Label("Name: " + input.getName() + (input.getAlias() != null ? (" Alias: " + input.getAlias()) : "") + " User presentation:\n" + input.getPresentableString()));
+        }
+    }
+
+    public void restartUIElements() {
+        this.filterCheckboxMarked=false;
+        currentlySelectedFlowRunHistory=null;
+        this.flowRunHistoryObservableList.clear();
+        this.flowDetailsFlowPane.getChildren().clear();
+        this.executionElementsFlowPane.getChildren().clear();
+        this.successfulExecutionsFilterCheckBox.setSelected(false);
     }
 
     private class TableCellWithHyperlink<T> extends javafx.scene.control.TableCell<T, String> {
