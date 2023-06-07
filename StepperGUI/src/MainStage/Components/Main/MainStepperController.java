@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 public class MainStepperController {
 
@@ -98,6 +99,11 @@ public class MainStepperController {
         selectionTabPane.getSelectionModel().select(tab.ordinal());
         flowsExecutionController.loadFlowsExecutionInputs(flowName);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
+    }
+
+    public void rerunFlow(String flowName, HashMap<String ,String> freeInputsMap){
+        selectionTabPane.getSelectionModel().select(Tabs.FlowsExecutionTab.ordinal());
+        flowsExecutionController.loadFlowsExecutionInputsRerun(flowName, freeInputsMap);
     }
 
     public void restartUIElements(){

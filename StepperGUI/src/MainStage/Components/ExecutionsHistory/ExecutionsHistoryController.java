@@ -38,6 +38,7 @@ public class ExecutionsHistoryController {
 
     private MainStepperController mainStepperController;
     private boolean filterCheckboxMarked;
+    private FlowRunHistory currentlySelectedFlowRunHistory;
     private ObservableList<FlowRunHistory> flowRunHistoryObservableList;
 
     @FXML
@@ -47,13 +48,15 @@ public class ExecutionsHistoryController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         flowNameColumn.setCellFactory(column -> new TableCellWithHyperlink<>());
         filterCheckboxMarked=false;
+        currentlySelectedFlowRunHistory=null;
         flowRunHistoryObservableList=FXCollections.observableArrayList();
         setColumnsComparators();
     }
 
     @FXML
     void rerunFlowButtonAction(ActionEvent event) {
-
+        if(currentlySelectedFlowRunHistory!=null)
+            mainStepperController.rerunFlow(currentlySelectedFlowRunHistory.getFlowName(), currentlySelectedFlowRunHistory.getFreeInputsEnteredByUser());
     }
 
     @FXML
@@ -106,6 +109,7 @@ public class ExecutionsHistoryController {
     }
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
+        currentlySelectedFlowRunHistory=flowRunHistory;
         flowDetailsFlowPane.getChildren().clear();
         flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
         flowDetailsFlowPane.getChildren().add(new Label());
@@ -132,6 +136,7 @@ public class ExecutionsHistoryController {
 
     public void restartUIElements() {
         this.filterCheckboxMarked=false;
+        currentlySelectedFlowRunHistory=null;
         this.flowRunHistoryObservableList.clear();
         this.flowDetailsFlowPane.getChildren().clear();
         this.executionElementsFlowPane.getChildren().clear();

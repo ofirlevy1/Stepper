@@ -46,7 +46,7 @@ public class FlowsExecutionController {
 
 
     private MainStepperController mainStepperController;
-    private HashSet<InputGUIController> inputGUIControllers;
+    private HashMap<String, InputGUIController> inputGUIControllers;
 
     private SimpleBooleanProperty allMandatoryInputsFilled;
     private SimpleStringProperty selectedFlow;
@@ -56,7 +56,7 @@ public class FlowsExecutionController {
         allMandatoryInputsFilled=new SimpleBooleanProperty(false);
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
         selectedFlow=new SimpleStringProperty("");
-        inputGUIControllers =new HashSet<>();
+        inputGUIControllers =new HashMap<>();
     }
 
     @FXML
@@ -70,9 +70,9 @@ public class FlowsExecutionController {
         String inputName="";
 
         try {
-            for (InputGUIController inputGUIController : inputGUIControllers) {
-                inputName=inputGUIController.getInputName();
-                stepperUIManager.setFreeInput(selectedFlow.get(), inputGUIController.getInputName(), inputGUIController.getInput());
+            for (String inputGUIController : inputGUIControllers.keySet()) {
+                inputName=inputGUIControllers.get(inputGUIController).getInputName();
+                stepperUIManager.setFreeInput(selectedFlow.get(), inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
             }
         }
         catch (Exception e){
@@ -167,7 +167,7 @@ public class FlowsExecutionController {
                     flowInputsFlowPane.getChildren().add(0,inputGUI);
                 else
                     flowInputsFlowPane.getChildren().add(inputGUI);
-                inputGUIControllers.add(inputGUIController);
+                inputGUIControllers.put(inputGUIController.getInputName(),inputGUIController);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -176,9 +176,9 @@ public class FlowsExecutionController {
     }
 
     public void checkFieldsAreFilled(){
-        allMandatoryInputsFilled.set(inputGUIControllers
+        allMandatoryInputsFilled.set(inputGUIControllers.keySet()
                 .stream()
-                .allMatch(inputGUIController -> !inputGUIController.isMandatory() || !inputGUIController.getInputTextField().getText().isEmpty()));
+                .allMatch(inputGUIController -> !inputGUIControllers.get(inputGUIController).isMandatory() || !inputGUIControllers.get(inputGUIController).getInputTextField().getText().isEmpty()));
     }
 
     public ObservableList<Node> getExecutionDetailsFlowPaneChildrenNodes() {
@@ -193,5 +193,13 @@ public class FlowsExecutionController {
         selectedFlow.set("");
         inputGUIControllers.clear();
         allMandatoryInputsFilled.set(false);
+    }
+
+    public void loadFlowsExecutionInputsRerun(String flowName, HashMap<String, String> freeInputsMap) {
+        loadFlowsExecutionInputs(flowName);
+        for(String freeInput:freeInputsMap.keySet()){
+            inputGUIControllers.get(freeInput).setInput(freeInputsMap.get(freeInput));
+        }
+
     }
 }

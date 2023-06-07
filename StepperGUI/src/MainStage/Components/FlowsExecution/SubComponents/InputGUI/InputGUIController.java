@@ -52,6 +52,8 @@ public class InputGUIController {
         return inputTextField.getText();
     }
 
+    public void setInput(String input){inputTextField.setText(input);}
+
     public String getInputName(){
         return inputName.get();
     }

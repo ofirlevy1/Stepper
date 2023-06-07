@@ -5,6 +5,7 @@ import Flow.Flow;
 import Steps.Step;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FlowRunHistory {
     private String flowId;
@@ -16,11 +17,14 @@ public class FlowRunHistory {
     private ArrayList<FreeInputHistory> freeInputHistories;
     private ArrayList<OutputHistory> outputHistories;
     private ArrayList<StepHistory> stepHistories;
+    private HashMap<String,String> freeInputsEnteredByUser;
+
 
     public FlowRunHistory(){
         freeInputHistories=new ArrayList<>();
         outputHistories=new ArrayList<>();
         stepHistories=new ArrayList<>();
+        freeInputsEnteredByUser=new HashMap<>();
     }
 
     public String showGUIFlowHistory(){
@@ -153,6 +157,16 @@ public class FlowRunHistory {
         this.stepHistories = stepHistories;
     }
 
+    public void addFreeInputEnteredByUser(DataType freeInput){
+        if(freeInput.getData()!=null)
+            freeInputsEnteredByUser.putIfAbsent(freeInput.getEffectiveName(),freeInput.getData().toString());
+    }
 
+    public HashMap<String ,String> getFreeInputsEnteredByUser() {
+        return freeInputsEnteredByUser;
+    }
 
+    public void setFreeInputsEnteredByUser(HashMap<String,String> freeInputsEnteredByUser) {
+        this.freeInputsEnteredByUser = freeInputsEnteredByUser;
+    }
 }
