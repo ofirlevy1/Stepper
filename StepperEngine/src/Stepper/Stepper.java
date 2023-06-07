@@ -129,4 +129,12 @@ public class Stepper {
     public FlowLog getFlowLog(String flowName) {
         return getFlowByName(flowName).getFlowLog();
     }
+
+    public boolean doesFlowHaveContinuations(String flowName) {
+        return getFlowByName(flowName).hasContinuations();
+    }
+
+    public ArrayList<String> getFlowContinuationOptions(String flowName) {
+        return getFlowByName(flowName).getContinuationTargets();
+    }
 }

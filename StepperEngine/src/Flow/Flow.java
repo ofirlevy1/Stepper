@@ -490,4 +490,21 @@ public class Flow {
             this.continuations.add(new Continuation(stContinuation));
         }
     }
+
+    public boolean hasContinuations() {
+        return hasContinuations;
+    }
+
+    public ArrayList<String> getContinuationTargets() {
+        if(!hasContinuations)
+            throw new RuntimeException("An Attempt was made to get continuation targets on a flow that has no continuations");
+
+        ArrayList<String> continuationTargets = new ArrayList<>();
+
+        for(Continuation continuation : continuations) {
+            continuationTargets.add(continuation.targetFlow);
+        }
+
+        return continuationTargets;
+    }
 }

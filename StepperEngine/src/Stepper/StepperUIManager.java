@@ -78,4 +78,6 @@ public class StepperUIManager {
     }
 
     public boolean isFlowRan(){return  isFlowRan;}
+    public boolean doesFlowHasContinuations(String flowName) {return stepper.doesFlowHaveContinuations(flowName);}
+    public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
 }
