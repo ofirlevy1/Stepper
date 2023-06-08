@@ -10,6 +10,7 @@ import Steps.*;
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class StepperUIManager {
     Stepper stepper;
@@ -81,4 +82,5 @@ public class StepperUIManager {
     public boolean doesFlowHasContinuations(String flowName) {return stepper.doesFlowHaveContinuations(flowName);}
     public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
     public void activateContinuation(String sourceFlowName, String targetFlowName) {activateContinuation(sourceFlowName, targetFlowName);}
+    public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {return stepper.getFreeInputsCurrentValues(flowName);}
 }

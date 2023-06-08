@@ -159,4 +159,8 @@ public class Stepper {
             }
         }
     }
+
+    public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {
+        return getFlowByName(flowName).getFreeInputsCurrentValues();
+    }
 }

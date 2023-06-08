@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class Main {
@@ -50,6 +51,9 @@ public class Main {
 
         stepper.setFreeInput("Delete Matched Files", "FOLDER_NAME", "C:\\temp");
         ArrayList<FreeInputDescriptor> arr2 = stepper.getFreeInputDescriptorsByFlow("Delete Matched Files");
+
+        HashMap<String, String> currentFreeInputVlauesInNewFlow = stepper.getFreeInputsCurrentValues("Delete Matched Files");
+
         System.out.println("If this is true, that means that continuation worked - the field TIME_TO_SPEND was copied from the first flow : " + stepper.areAllMandatoryFreeInputsSet("Delete Matched Files"));
     }
 
