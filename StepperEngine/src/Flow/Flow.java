@@ -507,4 +507,20 @@ public class Flow {
 
         return continuationTargets;
     }
+
+    public Continuation getContinuation(String targetFlow) {
+        if(!hasContinuations || !getContinuationTargets().contains(targetFlow))
+            throw new RuntimeException("An attempt was made to get a non existent continuation");
+
+        return continuations.get(getContinuationTargets().indexOf(targetFlow));
+    }
+
+    public DataType getDataTypeByEffectiveName(String effectiveName) {
+        HashSet<DataType> result = new HashSet<>();
+        if(outputs.containsKey(effectiveName))
+            return outputs.get(effectiveName);
+        if(freeInputs.containsKey(effectiveName))
+            return freeInputs.get(effectiveName).iterator().next();
+        throw new RuntimeException("Flow " + this.name + " does not have inputs or outputs called '" + effectiveName + "' ");
+    }
 }
