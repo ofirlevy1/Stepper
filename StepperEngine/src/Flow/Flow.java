@@ -54,7 +54,8 @@ public class Flow {
 
     private ArrayList<FreeInputDescriptor> freeInputsDescriptors;
     private ArrayList<StepOutputDescriptor> outputDescriptors;
-
+    private boolean hasContinuations;
+    private ArrayList<Continuation> continuations;
 
     public Flow(STFlow flow)
     {
@@ -73,6 +74,7 @@ public class Flow {
         formalOutputsValidation();
         setIsReadOnly();
 
+        setContinuations(flow.getSTContinuations());
     }
 
     private Flow() {
@@ -81,6 +83,7 @@ public class Flow {
         this.freeInputs = new HashMap<>();
         this.map = new FlowMap();
         this.flowLog=new FlowLog();
+        this.continuations = new ArrayList<>();
     }
 
     // Input validation to do:
@@ -474,5 +477,34 @@ public class Flow {
     private void clearAllStepsLogs(){
         for(Step step:steps)
             step.clearLogs();
+    }
+
+    private void setContinuations(STContinuations continuations)
+    {
+        if(continuations == null || continuations.getSTContinuation() == null || continuations.getSTContinuation().isEmpty()) {
+            hasContinuations = false;
+            return;
+        }
+        hasContinuations = true;
+        for(STContinuation stContinuation : continuations.getSTContinuation()) {
+            this.continuations.add(new Continuation(stContinuation));
+        }
+    }
+
+    public boolean hasContinuations() {
+        return hasContinuations;
+    }
+
+    public ArrayList<String> getContinuationTargets() {
+        if(!hasContinuations)
+            throw new RuntimeException("An Attempt was made to get continuation targets on a flow that has no continuations");
+
+        ArrayList<String> continuationTargets = new ArrayList<>();
+
+        for(Continuation continuation : continuations) {
+            continuationTargets.add(continuation.targetFlow);
+        }
+
+        return continuationTargets;
     }
 }
