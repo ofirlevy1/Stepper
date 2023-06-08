@@ -49,6 +49,7 @@ public class Flow {
     private  int flowRunsCounter = 0;
     private FlowLog flowLog;
     private FlowRunHistory flowRunHistory;
+    private HashMap<String, String> initialValues;
 
     private FlowMap map;
 
@@ -66,9 +67,12 @@ public class Flow {
         freeInputsDescriptors = new ArrayList<FreeInputDescriptor>();
         outputDescriptors = new ArrayList<StepOutputDescriptor>();
 
+
         loadSteps(flow.getSTStepsInFlow());
         fillOutputsDescriptorsArray();
         setFlowLevelAliases(flow.getSTFlowLevelAliasing());
+        if(flow.getSTInitialInputValues() != null && flow.getSTInitialInputValues().getSTInitialInputValue() != null && !flow.getSTInitialInputValues().getSTInitialInputValue().isEmpty())
+            loadAndSetInitialValues(flow.getSTInitialInputValues());
         setFlowMap(flow.getSTCustomMappings());
         findFreeInputs();
         formalOutputsValidation();
@@ -84,6 +88,7 @@ public class Flow {
         this.map = new FlowMap();
         this.flowLog=new FlowLog();
         this.continuations = new ArrayList<>();
+        this.initialValues = new HashMap<>();
     }
 
     // Input validation to do:
@@ -194,6 +199,7 @@ public class Flow {
         if(sourceStep.IsDataMemberIsInput(mapping.getSourceData()))throw new RuntimeException("In custom mapping:"+mapping.getSourceData()+" is an input, but referred as output");
         if(!targetStep.IsDataMemberIsInput(mapping.getTargetData()))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" is an output, but referred as input");
         if(!targetStep.getTypeOfDataMember(mapping.getTargetData()).equals(sourceStep.getTypeOfDataMember(mapping.getSourceData())))throw new RuntimeException("In custom mapping:"+mapping.getTargetData()+" and "+mapping.getSourceData()+" are not the same type");
+        if(initialValues.containsKey(mapping.getTargetData())) throw new RuntimeException("in Custom Mapping: A mapping exist to '" + mapping.getTargetData() + "', which has an initial value! a dataType with an initial value cannot be a mapping target");
     }
 
     // loop one steps - by order
@@ -226,7 +232,8 @@ public class Flow {
                     if(stepDataMember.isInput() &&
                             !stepDataMember.isAssigned() &&
                             stepDataMember.getEffectiveName().equals(stepOutput.getEffectiveName()) &&
-                            stepDataMember.getType() == stepOutput.getType()) {
+                            stepDataMember.getType() == stepOutput.getType() &&
+                            !initialValues.containsKey(stepDataMember.getEffectiveName())) {
 
                         map.addMapping(new StepMap(steps.get(stepIndex).getFinalName(), stepOutput.getEffectiveName(), steps.get(i).getFinalName(), stepDataMember.getEffectiveName()));
                         stepDataMember.setAssigned(true);
@@ -245,7 +252,7 @@ public class Flow {
     private void findFreeInputs(){
         for(Step step:steps){
             for(DataType dataMember:step.getAllData()){
-                if(dataMember.isInput() && !dataMember.isAssigned()) {
+                if(dataMember.isInput() && !dataMember.isAssigned() && !initialValues.containsKey(dataMember.getEffectiveName())) {
                     if(!(dataMember instanceof UserFriendly) && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
                     addFreeInput(dataMember);
                     addFreeInputInformationToFreeInputDescriptorsArray(dataMember, step);
@@ -533,5 +540,32 @@ public class Flow {
             result.put(effectiveName, freeInputs.get(effectiveName).iterator().next().getPresentableString());
 
         return result;
+    }
+
+    private void loadAndSetInitialValues(STInitialInputValues stInitialValues) {
+        loadInitialValues(stInitialValues);
+        ArrayList<DataType> stepDataTypes;
+
+        // Go through all the steps, and insert the initial value on every DataType that's an input,
+        // is userFriendly. (and has a defined initial value)
+
+        for(Step step : steps) {
+            stepDataTypes = step.getAllData();
+            for(DataType dataType : stepDataTypes) {
+                if(dataType.isInput() && dataType instanceof UserFriendly && initialValues.containsKey(dataType.getEffectiveName())) {
+                    ((UserFriendly)dataType).setData(initialValues.get(dataType.getEffectiveName()));
+                }
+            }
+        }
+    }
+
+    private void loadInitialValues(STInitialInputValues stInitialValues) {
+        for(STInitialInputValue initialValue : stInitialValues.getSTInitialInputValue()) {
+            initialValues.put(initialValue.getInputName(), initialValue.getInitialValue());
+        }
+    }
+
+    private boolean hasInitialValue(String dataTypeEffectiveName) {
+        return initialValues.containsKey(dataTypeEffectiveName);
     }
 }
