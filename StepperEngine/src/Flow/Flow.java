@@ -58,6 +58,7 @@ public class Flow {
     private boolean hasContinuations;
     private ArrayList<Continuation> continuations;
 
+    private int completedStepsCounter;
     public Flow(STFlow flow)
     {
         this();
@@ -296,8 +297,9 @@ public class Flow {
         return name;
     }
 
-    public void execute(){
+    public synchronized void execute(){
         flowRunsCounter++;
+        completedStepsCounter = 0;
         clearAllStepsLogs();
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNSET mandatory free inputs");
@@ -305,6 +307,7 @@ public class Flow {
         try {
             for (Step step : steps) {
                 step.execute();
+                completedStepsCounter++;
                 if (step.getStatus() == Step.Status.Failure && step.isBlocking())
                     throw new RuntimeException("'" + step.getFinalName() + "' has failed while executing, and does not continue in case of failure, source: "+step.getSummaryLine());
                 if(map.getMappingsByStep(step.getFinalName())!=null) {
@@ -568,5 +571,13 @@ public class Flow {
 
     private boolean hasInitialValue(String dataTypeEffectiveName) {
         return initialValues.containsKey(dataTypeEffectiveName);
+    }
+
+    public int getTotalNumberOfSteps() {
+        return steps.size();
+    }
+
+    public int getCompletedStepsCounter() {
+        return completedStepsCounter;
     }
 }

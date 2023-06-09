@@ -17,6 +17,8 @@ public class StepperUIManager {
     boolean isLoaded;
     boolean isFlowRan;
 
+    String mostRecentFlowName;
+
     public StepperUIManager() {
         isLoaded = false;
         isFlowRan=false;
@@ -55,6 +57,7 @@ public class StepperUIManager {
 
     public void runFlow(String flowName) {
         stepper.runFlow(flowName);
+        mostRecentFlowName = flowName;
         isFlowRan=true;
     }
 
@@ -83,4 +86,10 @@ public class StepperUIManager {
     public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
     public void activateContinuation(String sourceFlowName, String targetFlowName) {activateContinuation(sourceFlowName, targetFlowName);}
     public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {return stepper.getFreeInputsCurrentValues(flowName);}
+    public int getMostRecentFlowTotalSteps() {
+        return stepper.getFlowTotalNumberOfSteps(mostRecentFlowName);
+    }
+    public int getMostRecentFlowCompletedStepsCounter() {
+        return stepper.getFlowNumberOfCompletedSteps(mostRecentFlowName);
+    }
 }
