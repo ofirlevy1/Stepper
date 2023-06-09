@@ -116,6 +116,11 @@ public class MainStepperController {
         this.flowsDefinitionController.restartUIElements();
         this.flowsExecutionController.restartUIElements();
         this.executionsHistoryController.restartUIElements();
+        this.statisticsController.restartUIElements();
+    }
+
+    public void updateStatisticsTables(){
+        this.statisticsController.updateStatisticsTables();
     }
 
     public StepperUIManager getStepperUIManager() {

@@ -81,6 +81,7 @@ public class FlowsExecutionController {
             System.out.println(e.getMessage());
         }
         mainStepperController.updatePastExecutionsTable();
+        mainStepperController.updateStatisticsTables();
         startFlowExecutionButton.setText("Rerun Flow");
         updateFlowDetailsFlowPane();
         updateContinuationDataFlowPane();
