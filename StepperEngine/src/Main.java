@@ -3,6 +3,7 @@ import DataTypes.*;
 
 import Flow.*;
 import Generated.STStepper;
+import Stepper.Stepper;
 import Stepper.StepperUIManager;
 import Steps.*;
 
@@ -14,13 +15,46 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-        //testRenameFilesFlowExecution();
-        //testCommandLineStep();
-        testZipperStep();
+        testContinuation();
+    }
+
+    public static void testContinuation() {
+        Stepper stepper = null;
+        try {
+            stepper = new Stepper("C:\\users\\ofir\\ex2.xml");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
+        ArrayList<FreeInputDescriptor> arr = stepper.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
+
+        stepper.setFreeInput("Rename Files Zip Results", "FOLDER_NAME", "C:\\temp");
+        stepper.setFreeInput("Rename Files Zip Results", "PREFIX", "123");
+        stepper.setFreeInput("Rename Files Zip Results", "CSV_FILE_NAME", "C:\\temp\\dump.csv");
+        stepper.setFreeInput("Rename Files Zip Results", "PROP_FILE_NAME", "C:\\temp\\propdump.csv");
+        stepper.setFreeInput("Rename Files Zip Results", "OPERATION", "ZIP");
+
+        System.out.println(("are all mandatory inputs set: " + stepper.areAllMandatoryFreeInputsSet("Rename Files Zip Results")));
+
+        stepper.runFlow("Rename Files Zip Results");
+
+        ArrayList<String> contOptions = stepper.getFlowContinuationOptions("Rename Files Zip Results");
+
+        stepper.activateContinuation("Rename Files Zip Results", "Delete Matched Files");
+
+        stepper.getFreeInputDescriptorsByFlow("Delete Matched Files");
+
+        stepper.setFreeInput("Delete Matched Files", "FOLDER_NAME", "C:\\temp");
+        ArrayList<FreeInputDescriptor> arr2 = stepper.getFreeInputDescriptorsByFlow("Delete Matched Files");
+
+        HashMap<String, String> currentFreeInputVlauesInNewFlow = stepper.getFreeInputsCurrentValues("Delete Matched Files");
+
+        System.out.println("If this is true, that means that continuation worked - the field TIME_TO_SPEND was copied from the first flow : " + stepper.areAllMandatoryFreeInputsSet("Delete Matched Files"));
     }
 
     public static void testZipperStep(){

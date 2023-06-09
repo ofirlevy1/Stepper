@@ -10,6 +10,7 @@ Things To Consider:
  */
 
 
+import DataTypes.DataType;
 import Flow.*;
 import Generated.STFlow;
 import Generated.STStepper;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Stepper {
@@ -134,7 +136,31 @@ public class Stepper {
         return getFlowByName(flowName).hasContinuations();
     }
 
+    // This returns an array of the target flows names.
     public ArrayList<String> getFlowContinuationOptions(String flowName) {
         return getFlowByName(flowName).getContinuationTargets();
+    }
+
+    public void activateContinuation(String sourceFlowName, String targetFlowName) {
+        Flow sourceFlow = getFlowByName(sourceFlowName);
+        Flow targetFlow = getFlowByName(targetFlowName);
+        if(!sourceFlow.hasContinuations() || !sourceFlow.getContinuationTargets().contains(targetFlowName))
+            throw new RuntimeException("An attempt was made to activate an undefined continuation");
+
+        Continuation continuation = sourceFlow.getContinuation(targetFlowName);
+        if(continuation.hasCustomContinuationDataMappings()) {
+            HashMap<String, String> customDataMappings = continuation.getDataMap();
+            for(String sourceDataName : customDataMappings.keySet()) {
+                DataType sourceFlowDataType = sourceFlow.getDataTypeByEffectiveName(sourceDataName);
+                // ofir - I'm not completely sure about this. this uses the "getPresentableString" to fill
+                // the DataType as if the user filled it. this should work fine, if "getPresentableString"
+                // returns a string that the user could've given to fill the same data type.
+                targetFlow.setFreeInput(customDataMappings.get(sourceDataName), sourceFlowDataType.getPresentableString());
+            }
+        }
+    }
+
+    public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {
+        return getFlowByName(flowName).getFreeInputsCurrentValues();
     }
 }

@@ -507,4 +507,31 @@ public class Flow {
 
         return continuationTargets;
     }
+
+    public Continuation getContinuation(String targetFlow) {
+        if(!hasContinuations || !getContinuationTargets().contains(targetFlow))
+            throw new RuntimeException("An attempt was made to get a non existent continuation");
+
+        return continuations.get(getContinuationTargets().indexOf(targetFlow));
+    }
+
+    public DataType getDataTypeByEffectiveName(String effectiveName) {
+        HashSet<DataType> result = new HashSet<>();
+        if(outputs.containsKey(effectiveName))
+            return outputs.get(effectiveName);
+        if(freeInputs.containsKey(effectiveName))
+            return freeInputs.get(effectiveName).iterator().next();
+        throw new RuntimeException("Flow " + this.name + " does not have inputs or outputs called '" + effectiveName + "' ");
+    }
+
+    public HashMap<String, String> getFreeInputsCurrentValues() {
+        HashMap<String, String> result = new HashMap<String, String>();
+
+        // Using Iterator.next to get the value of the first dataType in the HashSet. It shouldn't matter which one
+        // because all of them should have the same value at any given time.
+        for(String effectiveName : freeInputs.keySet())
+            result.put(effectiveName, freeInputs.get(effectiveName).iterator().next().getPresentableString());
+
+        return result;
+    }
 }

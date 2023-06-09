@@ -22,6 +22,10 @@ public class StepFactory {
                 return new PropertiesExporterStep();
             case "file dumper":
                 return new FileDumperStep();
+            case "zipper":
+                return new ZipperStep();
+            case "command line":
+                return new CommandLineStep();
         }
         return null;
     }
