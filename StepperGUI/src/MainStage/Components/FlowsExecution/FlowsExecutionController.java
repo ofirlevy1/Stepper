@@ -38,8 +38,6 @@ public class FlowsExecutionController {
     @FXML
     private FlowPane executionDetailsFlowPane;
     @FXML
-    private Button flowContinuationExecuteButton;
-    @FXML
     private FlowPane continuationDataFlowPane;
     @FXML
     private Button startFlowExecutionButton;
@@ -57,11 +55,6 @@ public class FlowsExecutionController {
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
         selectedFlow=new SimpleStringProperty("");
         inputGUIControllers =new HashMap<>();
-    }
-
-    @FXML
-    void flowContinuationExecuteAction(ActionEvent event) {
-
     }
 
     @FXML
@@ -88,8 +81,10 @@ public class FlowsExecutionController {
             System.out.println(e.getMessage());
         }
         mainStepperController.updatePastExecutionsTable();
+        mainStepperController.updateStatisticsTables();
         startFlowExecutionButton.setText("Rerun Flow");
         updateFlowDetailsFlowPane();
+        updateContinuationDataFlowPane();
     }
 
     public void setMainStepperController(MainStepperController mainStepperController){
@@ -126,6 +121,25 @@ public class FlowsExecutionController {
             for (OutputHistory output : stepHistory.getOutputs())
                 executionDetailsFlowPane.getChildren().add(new Label("Name: " + output.getName() + (output.getAlias() != null ? (" Alias: " + output.getAlias()) : "") + " User presentation:\n" + output.getPresentableString()));
         }
+    }
+
+    private void updateContinuationDataFlowPane(){
+        StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
+        if(!stepperUIManager.doesFlowHasContinuations(selectedFlow.get()))
+            return;
+        continuationDataFlowPane.getChildren().clear();
+        continuationDataFlowPane.setPrefWrapLength(200);
+        for(String flow:stepperUIManager.getFlowContinuationOptions(selectedFlow.get())){
+            Button button=new Button(flow);
+            button.setOnAction(event -> loadFlowContinuation(flow));
+            continuationDataFlowPane.getChildren().add(button);
+            continuationDataFlowPane.setPrefWrapLength(continuationDataFlowPane.getPrefWrapLength()+150);
+        }
+    }
+
+    private void loadFlowContinuation(String flowName){
+        //code to connect between flows
+        loadFlowsExecutionInputs(flowName);
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){

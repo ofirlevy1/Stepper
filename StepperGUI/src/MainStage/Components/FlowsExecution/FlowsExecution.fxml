@@ -72,16 +72,14 @@
             <Label text="Inputs" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
             <Label text="Flow &amp; Step Details" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Label text="Execution Details" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-            <Button fx:id="flowContinuationExecuteButton" mnemonicParsing="false" onAction="#flowContinuationExecuteAction" text="Continue To Flow" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="TOP">
-               <GridPane.margin>
-                  <Insets top="10.0" />
-               </GridPane.margin>
-            </Button>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="6" GridPane.rowSpan="2">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
-                        <FlowPane fx:id="continuationDataFlowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <FlowPane fx:id="continuationDataFlowPane" alignment="BOTTOM_LEFT" prefWrapLength="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding></FlowPane>
                      </children>
                   </AnchorPane>
               </content>
