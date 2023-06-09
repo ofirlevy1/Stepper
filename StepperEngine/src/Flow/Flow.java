@@ -74,8 +74,7 @@ public class Flow {
             setFlowLevelAliases(flow.getSTFlowLevelAliasing());
         if(flow.getSTInitialInputValues() != null && flow.getSTInitialInputValues().getSTInitialInputValue() != null && !flow.getSTInitialInputValues().getSTInitialInputValue().isEmpty())
             loadAndSetInitialValues(flow.getSTInitialInputValues());
-        if(flow.getSTCustomMappings() != null && flow.getSTCustomMappings().getSTCustomMapping() != null && !flow.getSTCustomMappings().getSTCustomMapping().isEmpty())
-            setFlowMap(flow.getSTCustomMappings());
+        setFlowMap(flow.getSTCustomMappings());
         findFreeInputs();
         formalOutputsValidation();
         setIsReadOnly();
