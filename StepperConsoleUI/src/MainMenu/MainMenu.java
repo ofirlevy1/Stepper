@@ -24,6 +24,7 @@ package MainMenu;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Vector;
 
 import Exceptions.PathDoesNotPointToXMLFileException;
 import Flow.*;
@@ -286,7 +287,7 @@ public class MainMenu {
 
 
     private void showPastFlowExecutionDetails() {
-        ArrayList<FlowRunHistory> flowsRunHistories = stepperUIManager.getFlowsRunHistories();
+        Vector<FlowRunHistory> flowsRunHistories = stepperUIManager.getFlowsRunHistories();
         for(int i = 0; i < flowsRunHistories.size(); i++) {
             System.out.println((i+1) + ". " + flowsRunHistories.get(i).showMinimalFlowHistory());
         }

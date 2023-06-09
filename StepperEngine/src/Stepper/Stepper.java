@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,7 +34,7 @@ public class Stepper {
 
     HashSet<Flow> flows;
     String exceptionString;
-    ArrayList<FlowRunHistory> flowsRunHistories;
+    Vector<FlowRunHistory> flowsRunHistories;
     ExecutorService threadPool;
 
     // attempting to load from an invalid file should NOT override any data.
@@ -42,7 +43,7 @@ public class Stepper {
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
         flows = new HashSet<>();
-        flowsRunHistories = new ArrayList<>();
+        flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
             flows.add(new Flow(stFlow));
         if(stStepper.getSTThreadPool() < 1)
@@ -109,11 +110,15 @@ public class Stepper {
 
     public void runFlow(String flowName) {
         Flow flow = getFlowByName(flowName);
-        threadPool.execute( () -> flow.execute() );
-        flowsRunHistories.add(flow.getFlowRunHistory());
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                flowsRunHistories.add(flow.execute());
+            }
+        });
     }
 
-    public ArrayList<FlowRunHistory> getFlowsRunHistories() {
+    public Vector<FlowRunHistory> getFlowsRunHistories() {
         return flowsRunHistories;
     }
 

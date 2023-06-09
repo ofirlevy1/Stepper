@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class StepperUIManager {
     Stepper stepper;
@@ -61,7 +62,7 @@ public class StepperUIManager {
         isFlowRan=true;
     }
 
-    public ArrayList<FlowRunHistory> getFlowsRunHistories() {
+    public Vector<FlowRunHistory> getFlowsRunHistories() {
         return stepper.getFlowsRunHistories();
     }
 

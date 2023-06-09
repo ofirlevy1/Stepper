@@ -297,7 +297,7 @@ public class Flow {
         return name;
     }
 
-    public synchronized void execute(){
+    public synchronized FlowRunHistory execute(){
         flowRunsCounter++;
         completedStepsCounter = 0;
         clearAllStepsLogs();
@@ -329,6 +329,7 @@ public class Flow {
         calculateAvgRunTime();
         createFlowLog();
         createFlowHistory();
+        return flowRunHistory;
     }
 
     private void setFlowStatus(){
@@ -378,9 +379,9 @@ public class Flow {
         return flowLog;
     }
 
-    public FlowRunHistory getFlowRunHistory(){
-        return flowRunHistory;
-    }
+//    public FlowRunHistory getFlowRunHistory(){
+//        return flowRunHistory;
+//    }
 
     public FlowDescriptor getFlowDescriptor() {
         FlowDescriptor descriptor = new FlowDescriptor();
