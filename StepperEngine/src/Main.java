@@ -37,7 +37,7 @@ public class Main {
         stepper.setFreeInput("Rename Files Zip Results", "PREFIX", "123");
         stepper.setFreeInput("Rename Files Zip Results", "CSV_FILE_NAME", "C:\\temp\\dump.csv");
         stepper.setFreeInput("Rename Files Zip Results", "PROP_FILE_NAME", "C:\\temp\\propdump.csv");
-        stepper.setFreeInput("Rename Files Zip Results", "OPERATION", "ZIP");
+        //stepper.setFreeInput("Rename Files Zip Results", "OPERATION", "ZIP");
 
         System.out.println(("are all mandatory inputs set: " + stepper.areAllMandatoryFreeInputsSet("Rename Files Zip Results")));
 
