@@ -92,4 +92,7 @@ public class StepperUIManager {
     public int getMostRecentFlowCompletedStepsCounter() {
         return stepper.getFlowNumberOfCompletedSteps(mostRecentFlowName);
     }
+    public String getMostRecentFlowName() {
+        return mostRecentFlowName;
+    }
 }
