@@ -8,10 +8,14 @@ import RunHistory.FreeInputHistory;
 import RunHistory.OutputHistory;
 import RunHistory.StepHistory;
 import Stepper.StepperUIManager;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -75,20 +79,37 @@ public class FlowsExecutionController {
             errorAlert.show();
             return;
         }
-        try{
-        stepperUIManager.runFlow(selectedFlow.get());
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        mainStepperController.updatePastExecutionsTable();
-        mainStepperController.updateStatisticsTables();
+        runFlow();
+        new Thread(this::checkOnFlow).start();
         startFlowExecutionButton.setText("Rerun Flow");
-        updateFlowDetailsFlowPane();
-        updateContinuationDataFlowPane();
     }
 
     public void setMainStepperController(MainStepperController mainStepperController){
         this.mainStepperController=mainStepperController;
+    }
+
+    private void runFlow(){
+        try{
+            mainStepperController.getStepperUIManager().runFlow(selectedFlow.get());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void checkOnFlow(){
+        while(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter()<mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps())
+        {
+
+        }
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Platform.runLater(()->mainStepperController.updatePastExecutionsTable());
+        Platform.runLater(()->mainStepperController.updateStatisticsTables());
+        Platform.runLater(this::updateFlowDetailsFlowPane);
+        Platform.runLater(this::updateContinuationDataFlowPane);
     }
 
     private void updateFlowDetailsFlowPane(){
