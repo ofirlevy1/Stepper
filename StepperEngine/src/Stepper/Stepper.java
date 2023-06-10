@@ -26,13 +26,16 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Stepper {
 
     HashSet<Flow> flows;
     String exceptionString;
-    ArrayList<FlowRunHistory> flowsRunHistories;
-
+    Vector<FlowRunHistory> flowsRunHistories;
+    ExecutorService threadPool;
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
@@ -40,9 +43,12 @@ public class Stepper {
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
         flows = new HashSet<>();
-        flowsRunHistories = new ArrayList<>();
+        flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
             flows.add(new Flow(stFlow));
+        if(stStepper.getSTThreadPool() < 1)
+            throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
+        threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -103,14 +109,18 @@ public class Stepper {
     }
 
     public void runFlow(String flowName) {
-        getFlowByName(flowName).execute();
-        flowsRunHistories.add(getFlowByName(flowName).getFlowRunHistory());
+        Flow flow = getFlowByName(flowName);
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                flowsRunHistories.add(flow.execute());
+            }
+        });
     }
 
-    public ArrayList<FlowRunHistory> getFlowsRunHistories() {
+    public Vector<FlowRunHistory> getFlowsRunHistories() {
         return flowsRunHistories;
     }
-
 
     private void validatePathPointsToXMLFile(String path) {
         if (!path.endsWith("xml")) {
@@ -163,4 +173,13 @@ public class Stepper {
     public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {
         return getFlowByName(flowName).getFreeInputsCurrentValues();
     }
+
+    public int getFlowTotalNumberOfSteps(String flowName) {
+        return getFlowByName(flowName).getTotalNumberOfSteps();
+    }
+
+    public int getFlowNumberOfCompletedSteps(String flowName) {
+        return getFlowByName(flowName).getCompletedStepsCounter();
+    }
+
 }
