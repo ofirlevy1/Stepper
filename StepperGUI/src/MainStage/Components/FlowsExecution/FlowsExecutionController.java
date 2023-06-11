@@ -1,5 +1,6 @@
 package MainStage.Components.FlowsExecution;
 
+import Flow.Continuation;
 import Flow.FreeInputDescriptor;
 import MainStage.Components.FlowsExecution.SubComponents.InputGUI.InputGUIController;
 import MainStage.Components.Main.MainStepperController;
@@ -170,8 +171,8 @@ public class FlowsExecutionController {
     }
 
     private void loadFlowContinuation(String flowName){
-        //code to connect between flows
-        loadFlowsExecutionInputs(flowName);
+        HashMap<String ,String> dataMap=mainStepperController.getStepperUIManager().getFlowContinuationMap(selectedFlow.get(), flowName);
+        loadFlowsExecutionInputsRerun(flowName,dataMap);
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){
@@ -184,15 +185,7 @@ public class FlowsExecutionController {
 
     public void loadFlowsExecutionInputs(String flowName){
         StepperUIManager stepperUIManager;
-        if(statusThread!=null)
-            statusThread.interrupt();
-        startFlowExecutionButton.setText("Start!");
-        allMandatoryInputsFilled.set(false);
-        selectedFlow.set(flowName);
-        flowInputsFlowPane.getChildren().clear();
-        inputGUIControllers.clear();
-        flowProgression.set("");
-
+        setUpFlowExecutionGui(flowName);
         if(flowName.isEmpty())
             return;
         stepperUIManager = mainStepperController.getStepperUIManager();
@@ -221,6 +214,20 @@ public class FlowsExecutionController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void setUpFlowExecutionGui(String flowName){
+        if(statusThread!=null)
+            statusThread.interrupt();
+        startFlowExecutionButton.setText("Start!");
+        allMandatoryInputsFilled.set(false);
+        selectedFlow.set(flowName);
+        flowInputsFlowPane.getChildren().clear();
+        flowDetailsFlowPane.getChildren().clear();
+        executionDetailsFlowPane.getChildren().clear();
+        continuationDataFlowPane.getChildren().clear();
+        inputGUIControllers.clear();
+        flowProgression.set("");
     }
 
     public void checkFieldsAreFilled(){
