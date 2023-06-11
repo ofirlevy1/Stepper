@@ -85,11 +85,12 @@
               </content>
             </ScrollPane>
             <Label text="Flow Continuation Data" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <Button fx:id="startFlowExecutionButton" mnemonicParsing="false" onAction="#startFlowExecutionAction" text="Start!" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <Button fx:id="startFlowExecutionButton" mnemonicParsing="false" onAction="#startFlowExecutionAction" text="Start!" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets top="5.0" />
                </GridPane.margin>
             </Button>
+            <Label fx:id="flowProgressionLabel" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </center>

@@ -6,6 +6,7 @@ import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
 import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import MainStage.Components.Statistics.StatisticsController;
 import Stepper.StepperUIManager;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -52,6 +53,7 @@ public class MainStepperController {
 
     private Stage primaryStage;
     private StepperUIManager stepperUIManager;
+    private Thread historyAndStatisticsUpdater;
 
     public MainStepperController(){
         absoluteFilePath=new SimpleStringProperty("File Not Loaded");
@@ -79,9 +81,10 @@ public class MainStepperController {
         fileChooser.setTitle("Select xml file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        if (selectedFile == null) {
+        if (selectedFile == null)
             return;
-        }
+        if(historyAndStatisticsUpdater!=null)
+            historyAndStatisticsUpdater.interrupt();
         try {
             stepperUIManager.LoadStepperFromXmlFile(selectedFile.getAbsolutePath());
         }
@@ -92,6 +95,10 @@ public class MainStepperController {
             absoluteFilePath.set("File Not Loaded");
             fileLoaded.set(false);
             errorAlert.show();
+            if(historyAndStatisticsUpdater!=null) {
+                historyAndStatisticsUpdater = new Thread(this::updateHistoryAndStatistics);
+                historyAndStatisticsUpdater.start();
+            }
             return;
         }
         restartUIElements();
@@ -99,12 +106,28 @@ public class MainStepperController {
         String absolutPath=selectedFile.getAbsolutePath();
         absoluteFilePath.set(absolutPath);
         fileLoaded.set(true);
+        historyAndStatisticsUpdater=new Thread(this::updateHistoryAndStatistics);
+        historyAndStatisticsUpdater.start();
     }
 
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
         flowsExecutionController.loadFlowsExecutionInputs(flowName);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
+    }
+
+    public void updateHistoryAndStatistics(){
+        try{
+            while (true) {
+                Thread.sleep(1000);
+                if (stepperUIManager.getFlowsRunHistories() != null && !stepperUIManager.getFlowsRunHistories().isEmpty())
+                    Platform.runLater(() -> executionsHistoryController.updateExecutionsTable());
+                if (stepperUIManager.getFlowStatistics() != null && !stepperUIManager.getFlowStatistics().isEmpty())
+                    Platform.runLater(() -> statisticsController.updateStatisticsTables());
+            }
+        }
+        catch (InterruptedException e){
+        }
     }
 
     public void rerunFlow(String flowName, HashMap<String ,String> freeInputsMap){

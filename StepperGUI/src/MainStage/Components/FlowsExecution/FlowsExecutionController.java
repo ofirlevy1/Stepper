@@ -45,19 +45,25 @@ public class FlowsExecutionController {
     private FlowPane continuationDataFlowPane;
     @FXML
     private Button startFlowExecutionButton;
+    @FXML
+    private Label flowProgressionLabel;
 
 
     private MainStepperController mainStepperController;
     private HashMap<String, InputGUIController> inputGUIControllers;
+    private Thread statusThread;
 
     private SimpleBooleanProperty allMandatoryInputsFilled;
     private SimpleStringProperty selectedFlow;
+    private SimpleStringProperty flowProgression;
 
     @FXML
     public  void  initialize(){
         allMandatoryInputsFilled=new SimpleBooleanProperty(false);
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
         selectedFlow=new SimpleStringProperty("");
+        flowProgression=new SimpleStringProperty("");
+        flowProgressionLabel.textProperty().bind(flowProgression);
         inputGUIControllers =new HashMap<>();
     }
 
@@ -80,7 +86,10 @@ public class FlowsExecutionController {
             return;
         }
         runFlow();
-        new Thread(this::checkOnFlow).start();
+        if(statusThread!=null)
+            statusThread.interrupt();
+        statusThread=new Thread(this::checkOnFlow);
+        statusThread.start();
         startFlowExecutionButton.setText("Rerun Flow");
     }
 
@@ -97,19 +106,21 @@ public class FlowsExecutionController {
     }
 
     private void checkOnFlow(){
-        while(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter()<mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps())
-        {
+        try{
+            while (mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() < mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps()) {
+                Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + "steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
+                Thread.sleep(200);
+            }
+            Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + "steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
+            Thread.sleep(300);
+            //Platform.runLater(() -> mainStepperController.updatePastExecutionsTable());
+            //Platform.runLater(() -> mainStepperController.updateStatisticsTables());
+            Platform.runLater(this::updateFlowDetailsFlowPane);
+            Platform.runLater(this::updateContinuationDataFlowPane);
+        }
+        catch (InterruptedException e){
 
         }
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        Platform.runLater(()->mainStepperController.updatePastExecutionsTable());
-        Platform.runLater(()->mainStepperController.updateStatisticsTables());
-        Platform.runLater(this::updateFlowDetailsFlowPane);
-        Platform.runLater(this::updateContinuationDataFlowPane);
     }
 
     private void updateFlowDetailsFlowPane(){
@@ -173,12 +184,14 @@ public class FlowsExecutionController {
 
     public void loadFlowsExecutionInputs(String flowName){
         StepperUIManager stepperUIManager;
-
+        if(statusThread!=null)
+            statusThread.interrupt();
         startFlowExecutionButton.setText("Start!");
         allMandatoryInputsFilled.set(false);
         selectedFlow.set(flowName);
         flowInputsFlowPane.getChildren().clear();
         inputGUIControllers.clear();
+        flowProgression.set("");
 
         if(flowName.isEmpty())
             return;
