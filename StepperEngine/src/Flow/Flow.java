@@ -392,6 +392,7 @@ public class Flow {
         descriptor.setStepDescriptors(getStepDescriptors());
         descriptor.setFreeInputs(freeInputsDescriptors);
         descriptor.setOutputs(outputDescriptors);
+        descriptor.setNumberOfContinuations(continuations.size());
         return descriptor;
     }
 
