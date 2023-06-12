@@ -5,6 +5,8 @@ import MainStage.Components.Main.MainStepperController;
 import RunHistory.FlowRunHistory;
 import RunHistory.FreeInputHistory;
 import RunHistory.StepHistory;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -34,12 +36,22 @@ public class ExecutionsHistoryController {
     @FXML
     private Button rerunFlowButton;
     @FXML
-    private CheckBox successfulExecutionsFilterCheckBox;
+    private RadioButton allRadioButton;
+
+    @FXML
+    private RadioButton successfullRadioButton;
+
+    @FXML
+    private RadioButton warningRadioButton;
+
+    @FXML
+    private RadioButton failureRadioButton;
 
     private MainStepperController mainStepperController;
     private boolean filterCheckboxMarked;
     private FlowRunHistory currentlySelectedFlowRunHistory;
     private ObservableList<FlowRunHistory> flowRunHistoryObservableList;
+    private ToggleGroup flowStatusToggleGroup;
 
     @FXML
     public void initialize(){
@@ -47,10 +59,22 @@ public class ExecutionsHistoryController {
         timeStampColumn.setCellValueFactory(new PropertyValueFactory<>("timeStamp"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         flowNameColumn.setCellFactory(column -> new TableCellWithHyperlink<>());
-        filterCheckboxMarked=false;
         currentlySelectedFlowRunHistory=null;
         flowRunHistoryObservableList=FXCollections.observableArrayList();
         setColumnsComparators();
+        flowStatusToggleGroup=new ToggleGroup();
+        allRadioButton.setToggleGroup(flowStatusToggleGroup);
+        successfullRadioButton.setToggleGroup(flowStatusToggleGroup);
+        warningRadioButton.setToggleGroup(flowStatusToggleGroup);
+        failureRadioButton.setToggleGroup(flowStatusToggleGroup);
+        flowStatusToggleGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) {
+                RadioButton rb = (RadioButton)flowStatusToggleGroup.getSelectedToggle();
+                if (rb != null)
+                    pastExecutionsFilter(rb.getText());
+            }
+        });
+
     }
 
     @FXML
@@ -59,18 +83,25 @@ public class ExecutionsHistoryController {
             mainStepperController.rerunFlow(currentlySelectedFlowRunHistory.getFlowName(), currentlySelectedFlowRunHistory.getFreeInputsEnteredByUser());
     }
 
-    @FXML
-    void successfulPastExecutionsFilter(ActionEvent event) {
+    void pastExecutionsFilter(String str) {
         FilteredList<FlowRunHistory> flowRunHistories=new FilteredList<>(flowRunHistoryObservableList);
-        if(filterCheckboxMarked){
-            filterCheckboxMarked=false;
-            flowRunHistories.setPredicate(flowRunHistory -> true);
-            pastExecutionsTable.setItems(flowRunHistories);
-        }
-        else{
-            filterCheckboxMarked=true;
-            flowRunHistories.setPredicate(flowRunHistory -> flowRunHistory.getStatus()== Flow.Status.SUCCESS);
-            pastExecutionsTable.setItems(flowRunHistories);
+        switch (str) {
+            case "all":
+                flowRunHistories.setPredicate(flowRunHistory -> true);
+                pastExecutionsTable.setItems(flowRunHistories);
+                break;
+            case "successful":
+                flowRunHistories.setPredicate(flowRunHistory -> flowRunHistory.getStatus() == Flow.Status.SUCCESS);
+                pastExecutionsTable.setItems(flowRunHistories);
+                break;
+            case "warning":
+                flowRunHistories.setPredicate(flowRunHistory -> flowRunHistory.getStatus() == Flow.Status.WARNING);
+                pastExecutionsTable.setItems(flowRunHistories);
+                break;
+            case "failure":
+                flowRunHistories.setPredicate(flowRunHistory -> flowRunHistory.getStatus() == Flow.Status.FAILURE);
+                pastExecutionsTable.setItems(flowRunHistories);
+                break;
         }
     }
 
@@ -108,7 +139,7 @@ public class ExecutionsHistoryController {
         flowRunHistoryObservableList.addAll(mainStepperController.getStepperUIManager().getFlowsRunHistories());
         pastExecutionsTable.setItems(flowRunHistoryObservableList);
         filterCheckboxMarked=false;
-        successfulExecutionsFilterCheckBox.setSelected(false);
+        flowStatusToggleGroup.selectToggle(allRadioButton);
     }
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
@@ -143,7 +174,7 @@ public class ExecutionsHistoryController {
         this.flowRunHistoryObservableList.clear();
         this.flowDetailsFlowPane.getChildren().clear();
         this.executionElementsFlowPane.getChildren().clear();
-        this.successfulExecutionsFilterCheckBox.setSelected(false);
+        this.flowStatusToggleGroup.selectToggle(allRadioButton);
     }
 
     private class TableCellWithHyperlink<T> extends javafx.scene.control.TableCell<T, String> {

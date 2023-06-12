@@ -2,8 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -61,11 +61,6 @@
               </content>
             </ScrollPane>
             <Label text="Past Executions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <CheckBox fx:id="successfulExecutionsFilterCheckBox" mnemonicParsing="false" onAction="#successfulPastExecutionsFilter" text="show only successfull executions" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
-               <GridPane.margin>
-                  <Insets bottom="5.0" />
-               </GridPane.margin>
-            </CheckBox>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.rowSpan="3">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -92,6 +87,12 @@
               </content>
             </ScrollPane>
             <Button fx:id="rerunFlowButton" mnemonicParsing="false" onAction="#rerunFlowButtonAction" text="Rerun Flow" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
+            <Label text="Selected Past Flow Details" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Label text="Execution Element Details" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <RadioButton fx:id="allRadioButton" mnemonicParsing="false" text="all" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
+            <RadioButton fx:id="successfullRadioButton" mnemonicParsing="false" text="successful" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
+            <RadioButton fx:id="warningRadioButton" mnemonicParsing="false" text="warning" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
+            <RadioButton fx:id="failureRadioButton" mnemonicParsing="false" text="failure" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>
    </center>
