@@ -100,9 +100,12 @@ public class ExecutionsHistoryController {
     }
 
     public void updateExecutionsTable(){
-        FlowRunHistory flowRunHistory = mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
+        //FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
         //pastExecutionsTable.getItems().add(flowRunHistory);
-        flowRunHistoryObservableList.add(flowRunHistory);
+        if(flowRunHistoryObservableList.size()==mainStepperController.getStepperUIManager().getFlowsRunHistories().size())
+            return;
+        flowRunHistoryObservableList.clear();
+        flowRunHistoryObservableList.addAll(mainStepperController.getStepperUIManager().getFlowsRunHistories());
         pastExecutionsTable.setItems(flowRunHistoryObservableList);
         filterCheckboxMarked=false;
         successfulExecutionsFilterCheckBox.setSelected(false);

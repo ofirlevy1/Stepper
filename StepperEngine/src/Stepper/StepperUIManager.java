@@ -85,6 +85,7 @@ public class StepperUIManager {
     public boolean isFlowRan(){return  isFlowRan;}
     public boolean doesFlowHasContinuations(String flowName) {return stepper.doesFlowHaveContinuations(flowName);}
     public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
+    public HashMap<String,String> getFlowContinuationMap(String flowName, String targetFlowName){return stepper.getFlowContinuationMap(flowName, targetFlowName);}
     public void activateContinuation(String sourceFlowName, String targetFlowName) {activateContinuation(sourceFlowName, targetFlowName);}
     public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {return stepper.getFreeInputsCurrentValues(flowName);}
     public int getMostRecentFlowTotalSteps() {

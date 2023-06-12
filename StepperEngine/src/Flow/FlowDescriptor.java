@@ -10,12 +10,21 @@ public class FlowDescriptor {
     private String flowDescription;
     private HashSet<String> formalOutputNames; //maybe not needed? can be extracted from "outputs" member
     private boolean isReadonly;
+    private int numberOfContinuations;
     private ArrayList<StepDescriptor> stepDescriptors;
     private ArrayList<FreeInputDescriptor> freeInputs;
     private ArrayList<StepOutputDescriptor> outputs;
 
     public String getFlowName() {
         return flowName;
+    }
+
+    public int getNumberOfContinuations() {
+        return numberOfContinuations;
+    }
+
+    public void setNumberOfContinuations(int numberOfContinuations) {
+        this.numberOfContinuations = numberOfContinuations;
     }
 
     public void setFlowName(String flowName) {

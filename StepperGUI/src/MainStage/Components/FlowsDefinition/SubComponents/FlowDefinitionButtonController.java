@@ -60,7 +60,7 @@ public class FlowDefinitionButtonController {
         flowDescriptionStringProperty.set("Flow Description: "+flowDescriptor.getFlowDescription());
         numberOfStepsStringProperty.set("Number Of Steps: "+flowDescriptor.getStepDescriptors().size());
         numberOfFreeInputsStringProperty.set("Number Of Free Inputs: "+flowDescriptor.getFreeInputs().size());
-        numberOfContinuationsStringProperty.set("Number Of Continuations: "+"to be added");
+        numberOfContinuationsStringProperty.set("Number Of Continuations: "+flowDescriptor.getNumberOfContinuations());
     }
 
 
