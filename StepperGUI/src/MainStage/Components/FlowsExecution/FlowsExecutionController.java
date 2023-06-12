@@ -248,6 +248,15 @@ public class FlowsExecutionController {
         selectedFlow.set("");
         inputGUIControllers.clear();
         allMandatoryInputsFilled.set(false);
+        if(statusThread!=null)
+            statusThread.interrupt();
+        try {
+            if(statusThread!=null)
+                statusThread.join(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        flowProgression.set("");
     }
 
     public void loadFlowsExecutionInputsRerun(String flowName, HashMap<String, String> freeInputsMap) {
