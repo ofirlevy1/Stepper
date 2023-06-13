@@ -321,7 +321,7 @@ public class Flow {
         } catch (RuntimeException e) {
             status=Status.FAILURE;
             flowRunsummery=e.getMessage();
-            throw e;
+            createFlowHistory();
         }
 
         Instant finish=Instant.now();
@@ -356,23 +356,29 @@ public class Flow {
     }
 
     private void createFlowHistory(){
-        flowRunHistory=new FlowRunHistory();
-        flowRunHistory.setFlowId(flowLog.getFlowId());
-        flowRunHistory.setRunTime(runTime);
-        flowRunHistory.setFlowName(name);
-        flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
-        flowRunHistory.setStatus(status);
-        for(String freeInputString:freeInputs.keySet()){
-            for(DataType freeInput:freeInputs.get(freeInputString))
-                flowRunHistory.addFreeInput(freeInput);
+        try {
+            flowRunHistory = new FlowRunHistory();
+            flowRunHistory.setFlowId(flowLog.getFlowId());
+            flowRunHistory.setRunTime(runTime);
+            flowRunHistory.setFlowName(name);
+            flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
+            flowRunHistory.setStatus(status);
+            for (String freeInputString : freeInputs.keySet()) {
+                for (DataType freeInput : freeInputs.get(freeInputString))
+                    flowRunHistory.addFreeInput(freeInput);
+            }
+            for (Step step : steps)
+                flowRunHistory.addStep(step);
+            for (String outputString : outputs.keySet())
+                flowRunHistory.addOutput(outputs.get(outputString));
+            for (String freeInputName : freeInputs.keySet())
+                for (DataType freeInput : freeInputs.get(freeInputName))
+                    flowRunHistory.addFreeInputEnteredByUser(freeInput);
         }
-        for(Step step:steps)
-            flowRunHistory.addStep(step);
-        for(String outputString:outputs.keySet())
-            flowRunHistory.addOutput(outputs.get(outputString));
-        for(String freeInputName:freeInputs.keySet())
-            for(DataType freeInput:freeInputs.get(freeInputName))
-                flowRunHistory.addFreeInputEnteredByUser(freeInput);
+        catch(Exception e) {
+            System.out.println("Failure while creating FlowHistory: " + e.getMessage());
+            System.out.println(e.getStackTrace());
+        }
     }
 
     public FlowLog getFlowLog() {

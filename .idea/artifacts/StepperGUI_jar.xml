@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact name="StepperGUI:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/StepperGUI_jar</output-path>
+    <root id="root">
+      <element id="archive" name="StepperGUI.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/StepperConsoleUI/src/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="StepperGUI" />
+        <element id="module-output" name="StepperEngine" />
+      </element>
+    </root>
+  </artifact>
+</component>
