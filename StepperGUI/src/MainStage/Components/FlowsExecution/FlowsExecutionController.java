@@ -109,10 +109,16 @@ public class FlowsExecutionController {
     private void checkOnFlow(){
         try{
             while (mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() < mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps()) {
+                if(mainStepperController.getStepperUIManager().hasMostRecentFlowFailed()) {
+                    break;
+                }
                 Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + "steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
                 Thread.sleep(200);
             }
-            Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + "steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
+            if(mainStepperController.getStepperUIManager().hasMostRecentFlowFailed())
+                Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
+            else
+                Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + " steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
             Thread.sleep(300);
             //Platform.runLater(() -> mainStepperController.updatePastExecutionsTable());
             //Platform.runLater(() -> mainStepperController.updateStatisticsTables());
