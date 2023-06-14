@@ -57,8 +57,8 @@ public class StepperUIManager {
     }
 
     public void runFlow(String flowName) {
-        stepper.runFlow(flowName);
         mostRecentFlowName = flowName;
+        stepper.runFlow(flowName);
         isFlowRan=true;
     }
 
