@@ -73,9 +73,18 @@ public class Flow {
         fillOutputsDescriptorsArray();
         if(flow.getSTFlowLevelAliasing() != null && flow.getSTFlowLevelAliasing().getSTFlowLevelAlias() != null && !flow.getSTFlowLevelAliasing().getSTFlowLevelAlias().isEmpty())
             setFlowLevelAliases(flow.getSTFlowLevelAliasing());
-        if(flow.getSTInitialInputValues() != null && flow.getSTInitialInputValues().getSTInitialInputValue() != null && !flow.getSTInitialInputValues().getSTInitialInputValue().isEmpty())
-            loadAndSetInitialValues(flow.getSTInitialInputValues());
+
+
         setFlowMap(flow.getSTCustomMappings());
+
+
+        if(flow.getSTInitialInputValues() != null && flow.getSTInitialInputValues().getSTInitialInputValue() != null && !flow.getSTInitialInputValues().getSTInitialInputValue().isEmpty()) {
+            loadInitialValues(flow.getSTInitialInputValues());
+            validateInitialValues();
+            setInitialValues();
+        }
+
+
         findFreeInputs();
         formalOutputsValidation();
         setIsReadOnly();
@@ -554,8 +563,7 @@ public class Flow {
         return result;
     }
 
-    private void loadAndSetInitialValues(STInitialInputValues stInitialValues) {
-        loadInitialValues(stInitialValues);
+    private void setInitialValues() {
         ArrayList<DataType> stepDataTypes;
 
         // Go through all the steps, and insert the initial value on every DataType that's an input,
@@ -567,6 +575,14 @@ public class Flow {
                 if(dataType.isInput() && dataType instanceof UserFriendly && initialValues.containsKey(dataType.getEffectiveName())) {
                     ((UserFriendly)dataType).setData(initialValues.get(dataType.getEffectiveName()));
                 }
+            }
+        }
+    }
+
+    private void validateInitialValues() {
+        for(String name : initialValues.keySet()) {
+            if(!this.hasDataType(name)) {
+                throw new RuntimeException("Flow '" + this.name + "' defines an initial value for non-existent data type '" + name + "'");
             }
         }
     }
@@ -594,7 +610,11 @@ public class Flow {
     }
 
     public boolean hasDataType(String name) {
-        return outputs.containsKey(name) || freeInputs.containsKey(name);
+        for(Step step : steps) {
+            if(step.containsDataMember(name))
+                return true;
+        }
+        return false;
     }
 
     public boolean isFreeInput(String name) {
