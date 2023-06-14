@@ -592,4 +592,12 @@ public class Flow {
     public Status getStatus() {
         return status;
     }
+
+    public boolean hasDataType(String name) {
+        return outputs.containsKey(name) || freeInputs.containsKey(name);
+    }
+
+    public boolean isFreeInput(String name) {
+        return freeInputs.containsKey(name);
+    }
 }
