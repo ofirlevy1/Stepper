@@ -235,8 +235,8 @@ public class Flow {
         //for each of the step's outputs...
         for(DataType stepOutput : currentStepOutputs) {
             // if it's NOT a formal output
-            if(formalOutputsNames.contains(stepOutput.getEffectiveName()))
-                continue;
+            //if(formalOutputsNames.contains(stepOutput.getEffectiveName()))
+            //    continue;
             // search each following step for matching data types (matching = is input, not assigned yet, same type, same effectiveName)
             for(int i = stepIndex + 1; i < steps.size(); i++) {
                 List<DataType> stepDataMembers = steps.get(i).getAllData();
