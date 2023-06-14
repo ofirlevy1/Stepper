@@ -43,6 +43,7 @@ public class Flow {
     private boolean isReadOnly;
     private HashMap<String, HashSet<DataType>> freeInputs;
     private Flow.Status status;
+    private boolean isRunning;
     private String flowRunsummery;
     private  double durationAvgInMs = 0.0;
     private  long runTime=0;
@@ -307,6 +308,7 @@ public class Flow {
     }
 
     public synchronized FlowRunHistory execute(){
+        isRunning = true;
         flowRunsCounter++;
         completedStepsCounter = 0;
         clearAllStepsLogs();
@@ -324,7 +326,7 @@ public class Flow {
                         getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
                 }
             }
-
+            isRunning = false;
             flowRunsummery="flow execution ended successfully";
             setFlowStatus();
         } catch (RuntimeException e) {
@@ -338,6 +340,7 @@ public class Flow {
         calculateAvgRunTime();
         createFlowLog();
         createFlowHistory();
+        isRunning = false;
         return flowRunHistory;
     }
 
@@ -620,4 +623,6 @@ public class Flow {
     public boolean isFreeInput(String name) {
         return freeInputs.containsKey(name);
     }
+
+    public boolean isRunning() {return isRunning;}
 }
