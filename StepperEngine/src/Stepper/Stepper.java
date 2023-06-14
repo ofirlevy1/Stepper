@@ -196,4 +196,7 @@ public class Stepper {
         return getFlowByName(flowName).getCompletedStepsCounter();
     }
 
+    public boolean hasFlowMostRecentRunFailed(String flowName) {
+        return (getFlowByName(flowName).getStatus() != null && getFlowByName(flowName).getStatus() == Flow.Status.FAILURE);
+    }
 }

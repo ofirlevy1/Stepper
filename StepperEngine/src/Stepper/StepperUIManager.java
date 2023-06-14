@@ -97,4 +97,8 @@ public class StepperUIManager {
     public String getMostRecentFlowName() {
         return mostRecentFlowName;
     }
+
+    public boolean hasMostRecentFlowFailed() {
+        return stepper.hasFlowMostRecentRunFailed(mostRecentFlowName);
+    }
 }

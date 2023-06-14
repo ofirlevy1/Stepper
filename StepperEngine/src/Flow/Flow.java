@@ -588,4 +588,8 @@ public class Flow {
     public int getCompletedStepsCounter() {
         return completedStepsCounter;
     }
+
+    public Status getStatus() {
+        return status;
+    }
 }
