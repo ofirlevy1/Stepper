@@ -217,7 +217,7 @@ public class Stepper {
                                 throw new RuntimeException("Flow '" + flow.getName() + "' defined a non existing data type as a continuation source: '" + sourceDataType + "'");
                             }
                             if(!getFlowByName(continuationTarget).isFreeInput(customMap.get(sourceDataType))) {
-                                throw new RuntimeException("Flow '" + flow.getName() + "' defined a non existing data type as a continuation target: '" + customMap.get(sourceDataType) + "'");
+                                throw new RuntimeException("Flow '" + flow.getName() + "' defined a continuation target that either doesn't exists, or is not a free input: " + customMap.get(sourceDataType) + "'");
                             }
                         }
                     }
