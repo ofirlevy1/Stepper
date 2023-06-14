@@ -46,6 +46,7 @@ public class Stepper {
         flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
             flows.add(new Flow(stFlow));
+        validateContinuations();
         if(stStepper.getSTThreadPool() < 1)
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
         threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
@@ -198,5 +199,31 @@ public class Stepper {
 
     public boolean hasFlowMostRecentRunFailed(String flowName) {
         return (getFlowByName(flowName).getStatus() != null && getFlowByName(flowName).getStatus() == Flow.Status.FAILURE);
+    }
+
+    private void validateContinuations() {
+        for(Flow flow : flows) {
+            if(flow.hasContinuations()) {
+                for(String continuationTarget : flow.getContinuationTargets()) {
+                    // Making sure the target continuation flow actually exists in the XML
+                    if(!this.getFlowNames().contains(continuationTarget)) {
+                        throw new RuntimeException("Flow '" + flow.getName() + "' has an undefined continuation target: '" + continuationTarget + "'");
+                    }
+
+                    if(flow.getContinuation(continuationTarget).hasCustomContinuationDataMappings()) {
+                        HashMap<String, String> customMap = flow.getContinuation(continuationTarget).getDataMap();
+                        for(String sourceDataType : customMap.keySet()) {
+                            if(!flow.hasDataType(sourceDataType)) {
+                                throw new RuntimeException("Flow '" + flow.getName() + "' defined a non existing data type as a continuation source: '" + sourceDataType + "'");
+                            }
+                            if(!getFlowByName(continuationTarget).isFreeInput(customMap.get(sourceDataType))) {
+                                throw new RuntimeException("Flow '" + flow.getName() + "' defined a continuation target that either doesn't exists, or is not a free input: " + customMap.get(sourceDataType) + "'");
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }
