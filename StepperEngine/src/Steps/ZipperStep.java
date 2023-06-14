@@ -68,6 +68,9 @@ public class ZipperStep extends Step{
         else
             decompress(path);
         this.result.setData("Success");
+        this.setStatus(Status.Success);
+        this.setSummaryLine("success");
+        this.addLog("success");
     }
 
 
