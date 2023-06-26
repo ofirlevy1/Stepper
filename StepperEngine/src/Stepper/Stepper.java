@@ -32,7 +32,8 @@ import java.util.concurrent.Executors;
 
 public class Stepper {
 
-    HashSet<Flow> flows;
+    HashSet<FlowDefinition> flowsDefinitions;  // just the static characteristics of the flows.
+    Vector<Flow> flows; // flows that ARE running or HAS already run
     String exceptionString;
     Vector<FlowRunHistory> flowsRunHistories;
     ExecutorService threadPool;
@@ -42,10 +43,11 @@ public class Stepper {
         validatePathPointsToXMLFile(xmlFilePath);
         STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
-        flows = new HashSet<>();
+        flowsDefinitions = new HashSet<>();
+        flows = new Vector<Flow>();
         flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
-            flows.add(new Flow(stFlow));
+            flowsDefinitions.add(new FlowDefinition(stFlow));
         validateContinuations();
         if(stStepper.getSTThreadPool() < 1)
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");

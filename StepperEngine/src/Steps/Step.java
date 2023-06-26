@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class  Step {
+public abstract class Step {
     private String name;
     private String alias;
     private Boolean hasAlias;
