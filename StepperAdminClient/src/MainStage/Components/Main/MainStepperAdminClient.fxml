@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="930.0" prefWidth="1500.0" stylesheets="@MainStepperAdminClient.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="MainStage.Components.Main.MainStepperAdminClientController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="930.0" prefWidth="1500.0" stylesheets="@MainStepperAdminClient.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainStage.Components.Main.MainStepperAdminClientController">
   <content>
     <AnchorPane>
          <children>
@@ -63,7 +63,10 @@
                             </Tab>
                               <Tab text="Statistics">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <fx:include fx:id="statistics" source="../Statistics/Statistics.fxml" />
+                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                           </tabs>
