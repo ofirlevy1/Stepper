@@ -8,15 +8,14 @@ import java.util.Date;
 import java.util.UUID;
 
 public class FlowLog {
-    private String flowId;
+    private String flowID;
     private String flowName;
     private Flow.Status status;
     private String formalOutputsPresentation;
     private String timeStamp;
 
 
-    FlowLog(){
-        flowId= UUID.randomUUID().toString();
+    FlowLog(String flowID){
         timeStamp= new SimpleDateFormat("HH:mm:ss").format(new Date());
         formalOutputsPresentation="";
     }

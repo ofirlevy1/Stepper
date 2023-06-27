@@ -36,7 +36,7 @@ import java.util.*;
 
 public class Flow {
     private FlowDefinition flowDefinition;
-
+    String flowID = UUID.randomUUID().toString();
     private Flow.Status status;
     private String flowRunsummery;
     private  double durationAvgInMs = 0.0;
@@ -53,10 +53,12 @@ public class Flow {
 
     public Flow(FlowDefinition flowDefinition)
     {
+        this.flowID = UUID.randomUUID().toString();
         this.flowDefinition = flowDefinition;
-        this.flowLog = new FlowLog();
+        this.flowLog = new FlowLog(flowID);
         this.status = Status.NOT_RUN_YET;
         this.steps = flowDefinition.getStepsArrayCopy();
+
     }
 
     public synchronized FlowRunHistory execute(){
@@ -126,15 +128,15 @@ public class Flow {
             flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
             flowRunHistory.setStatus(status);
             for (String freeInputString : flowDefinition.getFreeInputs().keySet()) {
-                for (DataType freeInput : flowDefinition.getFreeInputs().get(freeInputString))
+                for (DataType freeInput : getFreeInputs().get(freeInputString))
                     flowRunHistory.addFreeInput(freeInput);
             }
             for (Step step : steps)
                 flowRunHistory.addStep(step);
-            for (String outputString : flowDefinition.getOutputs().keySet())
-                flowRunHistory.addOutput(flowDefinition.getOutputs().get(outputString));
-            for (String freeInputName : flowDefinition.getFreeInputs().keySet())
-                for (DataType freeInput : flowDefinition.getFreeInputs().get(freeInputName))
+            for (String outputString : getOutputs().keySet())
+                flowRunHistory.addOutput(getOutputs().get(outputString));
+            for (String freeInputName : getFreeInputs().keySet())
+                for (DataType freeInput : getFreeInputs().get(freeInputName))
                     flowRunHistory.addFreeInputEnteredByUser(freeInput);
         }
         catch(Exception e) {
@@ -151,51 +153,13 @@ public class Flow {
 //        return flowRunHistory;
 //    }
 
-    public FlowDescriptor getFlowDescriptor() {
-        FlowDescriptor descriptor = new FlowDescriptor();
-        descriptor.setFlowName(flowDefinition.getName());
-        descriptor.setFlowDescription(flowDefinition.getDescription());
-        descriptor.setFormalOutputNames((HashSet<String>) flowDefinition.getFormalOutputsNames().clone());
-        descriptor.setReadonly(flowDefinition.isReadOnly());
-        descriptor.setStepDescriptors(getStepDescriptors());
-        descriptor.setFreeInputs(flowDefinition.getFreeInputsDescriptors());
-        descriptor.setOutputs(flowDefinition.getOutputDescriptors());
-        descriptor.setNumberOfContinuations(flowDefinition.getContinuations().size());
-        return descriptor;
-    }
-
-
-
-    private ArrayList<StepDescriptor> getStepDescriptors() {
-        ArrayList<StepDescriptor> descriptors = new ArrayList<>();
-        for(Step step : steps) {
-            StepDescriptor stepDescriptor=step.getStepDescriptor();
-            if(flowDefinition.getMap().getMappingsByStep(step.getName())!=null) {
-                for (StepMap stepMap : flowDefinition.getMap().getMappingsByStep(step.getName())) {
-                    stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(), step.getOutputs(stepMap.getSourceDataName()).get(0).hasAlias(),step.getOutputs(stepMap.getSourceDataName()).get(0).getName(), stepMap.getTargetDataName(), stepMap.getTargetStepName()));
-                }
-            }
-            if(flowDefinition.getMap().getInputMappingsByStep(step.getName())!=null) {
-                for (StepMap stepMap : flowDefinition.getMap().getInputMappingsByStep(step.getName())) {
-                    stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), step.getSingleInput(stepMap.getTargetDataName()).get(0).hasAlias(), step.getSingleInput(stepMap.getTargetDataName()).get(0).getName(),stepMap.getSourceDataName(), stepMap.getSourceStepName()));
-                }
-            }
-
-            stepDescriptor.addUnconnectedDataMembers(step.getAllData());
-            descriptors.add(stepDescriptor);
-        }
-
-        return descriptors;
-    }
-
-
 
 
 
     public boolean areAllMandatoryFreeInputsSet()
     {
-        for(String freeInputName : flowDefinition.getFreeInputs().keySet())
-            for(DataType freeInput : flowDefinition.getFreeInputs().get(freeInputName)) {
+        for(String freeInputName : getFreeInputs().keySet())
+            for(DataType freeInput : getFreeInputs().get(freeInputName)) {
                 if(!freeInput.isDataSet() && freeInput.isMandatory())
                     return false;
             }
@@ -243,12 +207,6 @@ public class Flow {
     }
 
 
-
-
-    public int getTotalNumberOfSteps() {
-        return steps.size();
-    }
-
     public int getCompletedStepsCounter() {
         return completedStepsCounter;
     }
@@ -258,9 +216,34 @@ public class Flow {
     }
 
 
+    public String getFlowID() {
+        return flowID;
+    }
 
-    public boolean isFreeInput(String name) {
-        return freeInputs.containsKey(name);
+    public void setFreeInput(String inputEffectiveName, String dataStr) {
+        if(!freeInputs.keySet().contains(inputEffectiveName))
+            throw new RuntimeException("input '" + inputEffectiveName + " was not found in the Flow's free inputs");
+        for(DataType freeInput : freeInputs.get(inputEffectiveName)) {
+            if(!(freeInput instanceof UserFriendly))
+                throw new RuntimeException("An attempt was made to set a NONE user-friendly data type with a string");
+            ((UserFriendly) freeInput).setData(dataStr);
+        }
+    }
+
+    public String getName() {
+        return flowDefinition.getName();
+    }
+
+    public boolean hasContinuations() {
+        return flowDefinition.hasContinuations();
+    }
+
+    public ArrayList<String> getContinuationTargets() {
+        return flowDefinition.getContinuationTargets();
+    }
+
+    public Continuation getContinuation(String targetFlow) {
+        return flowDefinition.getContinuation(targetFlow);
     }
 
     public boolean isRunning() {return isRunning;}

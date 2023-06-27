@@ -3,7 +3,10 @@ package Flow;
 import DataTypes.DataType;
 import DataTypes.UserFriendly;
 import Generated.*;
+import StepConnections.InputConnections;
+import StepConnections.OutputConnections;
 import Steps.Step;
+import Steps.StepDescriptor;
 import Steps.StepFactory;
 
 import java.util.*;
@@ -324,15 +327,6 @@ public class FlowDefinition {
         return freeInputsDescriptors;
     }
 
-    public void setFreeInput(String inputEffectiveName, String dataStr) {
-        if(!freeInputs.keySet().contains(inputEffectiveName))
-            throw new RuntimeException("input '" + inputEffectiveName + " was not found in the Flow's free inputs");
-        for(DataType freeInput : freeInputs.get(inputEffectiveName)) {
-            if(!(freeInput instanceof UserFriendly))
-                throw new RuntimeException("An attempt was made to set a NONE user-friendly data type with a string");
-            ((UserFriendly) freeInput).setData(dataStr);
-        }
-    }
 
     private void formalOutputsValidation(){
         for(String formalOutput:formalOutputsNames){
@@ -435,4 +429,49 @@ public class FlowDefinition {
     public ArrayList<Continuation> getContinuations() {
         return continuations;
     }
+
+    public boolean isFreeInput(String name) {
+        return freeInputs.containsKey(name);
+    }
+    public int getTotalNumberOfSteps() {
+        return steps.size();
+    }
+    private ArrayList<StepDescriptor> getStepDescriptors() {
+        ArrayList<StepDescriptor> descriptors = new ArrayList<>();
+        for(Step step : steps) {
+            StepDescriptor stepDescriptor=step.getStepDescriptor();
+            if(getMap().getMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : getMap().getMappingsByStep(step.getName())) {
+                    stepDescriptor.addOutputConnections(new OutputConnections(stepMap.getSourceDataName(), step.getOutputs(stepMap.getSourceDataName()).get(0).hasAlias(),step.getOutputs(stepMap.getSourceDataName()).get(0).getName(), stepMap.getTargetDataName(), stepMap.getTargetStepName()));
+                }
+            }
+            if(getMap().getInputMappingsByStep(step.getName())!=null) {
+                for (StepMap stepMap : getMap().getInputMappingsByStep(step.getName())) {
+                    stepDescriptor.addInputConnections(new InputConnections(stepMap.getTargetDataName(), step.getSingleInput(stepMap.getTargetDataName()).get(0).hasAlias(), step.getSingleInput(stepMap.getTargetDataName()).get(0).getName(),stepMap.getSourceDataName(), stepMap.getSourceStepName()));
+                }
+            }
+
+            stepDescriptor.addUnconnectedDataMembers(step.getAllData());
+            descriptors.add(stepDescriptor);
+        }
+
+        return descriptors;
+    }
+
+    public FlowDescriptor getFlowDescriptor() {
+        FlowDescriptor descriptor = new FlowDescriptor();
+        descriptor.setFlowName(getName());
+        descriptor.setFlowDescription(getDescription());
+        descriptor.setFormalOutputNames((HashSet<String>) getFormalOutputsNames().clone());
+        descriptor.setReadonly(isReadOnly());
+        descriptor.setStepDescriptors(getStepDescriptors());
+        descriptor.setFreeInputs(getFreeInputsDescriptors());
+        descriptor.setOutputs(getOutputDescriptors());
+        descriptor.setNumberOfContinuations(getContinuations().size());
+        return descriptor;
+    }
+
+
+
+
 }
