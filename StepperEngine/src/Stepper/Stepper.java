@@ -154,10 +154,9 @@ public class Stepper {
         return getFlowDefinitionByName(flowName).getContinuationTargets();
     }
 
-    public HashMap<String, String> getFlowContinuationMap(String sourceFlowName, String targetFlowName){
+    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowName){
         HashMap<String,String> dataMap=new HashMap<>();
-        Flow sourcFlow=getFlowByName(sourceFlowName);
-        Flow targetFlow=getFlowByName(targetFlowName);
+        Flow sourcFlow=getFlowByID(sourceFlowID);
         Continuation continuation=sourcFlow.getContinuation(targetFlowName);
         if(!continuation.hasCustomContinuationDataMappings())
             return dataMap;

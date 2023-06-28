@@ -56,7 +56,7 @@ public class FlowDefinition {
         }
 
 
-        findFreeInputs();
+        freeInputs = getFreeInputs(steps);
         formalOutputsValidation();
         setIsReadOnly();
 
@@ -66,7 +66,6 @@ public class FlowDefinition {
     private FlowDefinition() {
         this.steps = new ArrayList<>();
         this.outputs = new HashMap<>();
-        this.freeInputs = new HashMap<>();
         this.map = new FlowMap();
         this.continuations = new ArrayList<>();
         this.initialValues = new HashMap<>();
@@ -267,28 +266,30 @@ public class FlowDefinition {
         }
     }
 
-    private void findFreeInputs(){
+    public HashMap<String, HashSet<DataType>> getFreeInputs(ArrayList<Step> steps){
+        HashMap<String, HashSet<DataType>> result = new HashMap<>();
         for(Step step:steps){
             for(DataType dataMember:step.getAllData()){
                 if(dataMember.isInput() && !dataMember.isAssigned() && !initialValues.containsKey(dataMember.getEffectiveName())) {
                     if(!(dataMember instanceof UserFriendly) && dataMember.isMandatory())throw new RuntimeException("The free input:"+dataMember.getEffectiveName()+" is not user friendly");
-                    addFreeInput(dataMember);
+                    addFreeInput(dataMember, result);
                     addFreeInputInformationToFreeInputDescriptorsArray(dataMember, step);
                 }
             }
         }
 
-        freeInputsValidation();
+        freeInputsValidation(result);
+        return result;
     }
 
-    public void addFreeInput(DataType input){
+    public void addFreeInput(DataType input, HashMap<String, HashSet<DataType>> freeInputs){
         if(!freeInputs.containsKey(input.getEffectiveName())){
             freeInputs.put(input.getEffectiveName(), new HashSet<DataType>());
         }
         freeInputs.get(input.getEffectiveName()).add(input);
     }
 
-    void freeInputsValidation(){
+    void freeInputsValidation(HashMap<String, HashSet<DataType>> freeInputs){
         Boolean firstElementEntered =false;
         HashSet<String> inputTypeset=new HashSet<>();
         for(String freeInputsSetName:freeInputs.keySet()){

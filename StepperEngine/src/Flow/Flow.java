@@ -46,6 +46,8 @@ public class Flow {
     private FlowRunHistory flowRunHistory;
     private ArrayList<Step> steps;
     private int completedStepsCounter;
+    private HashMap<String, HashSet<DataType>> freeInputs;
+    private HashMap<String, DataType> outputs;
 
     public enum Status {
         NOT_RUN_YET, RUNNING, SUCCESS, WARNING, FAILURE
@@ -57,15 +59,17 @@ public class Flow {
         this.flowDefinition = flowDefinition;
         this.flowLog = new FlowLog(flowID);
         this.status = Status.NOT_RUN_YET;
-        this.steps = flowDefinition.getStepsArrayCopy();
 
+        // Getting copies of the DYNAMIC data from the flowDefinition:
+        this.steps = flowDefinition.getStepsArrayCopy();
+        this.freeInputs = flowDefinition.getFreeInputs(steps);
     }
 
     public synchronized FlowRunHistory execute(){
         status = Status.RUNNING;
-        //flowRunsCounter++; // OFIR  - this should be removed because this class represent a flow that runs once
+        //flowRunsCounter++; // OFIR  - this should be removed because this class represents a flow that runs once
         completedStepsCounter = 0;
-        //clearAllStepsLogs(); // OFIR  - this should be removed because this class represent a flow that runs once
+        //clearAllStepsLogs(); // OFIR  - this should be removed because this class represents a flow that runs once
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNSET mandatory free inputs");
         Instant start=Instant.now();
@@ -112,7 +116,7 @@ public class Flow {
     }
 
     private void createFlowLog(){
-        flowLog=new FlowLog();
+        flowLog=new FlowLog(flowID);
         flowLog.setFlowName(flowDefinition.getName());
         flowLog.setStatus(status);
         for(String formalOutputName:flowDefinition.getFormalOutputsNames())
@@ -122,7 +126,7 @@ public class Flow {
     private void createFlowHistory(){
         try {
             flowRunHistory = new FlowRunHistory();
-            flowRunHistory.setFlowId(flowLog.getFlowId());
+            flowRunHistory.setFlowId(flowID);
             flowRunHistory.setRunTime(runTime);
             flowRunHistory.setFlowName(flowDefinition.getName());
             flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
