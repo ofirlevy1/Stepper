@@ -5,13 +5,14 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="930.0" prefWidth="1500.0" stylesheets="@MainStepperAdminClient.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainStage.Components.Main.MainStepperAdminClientController">
+<ScrollPane fx:id="mainStepper" fitToHeight="true" fitToWidth="true" prefHeight="930.0" prefWidth="1500.0" stylesheets="@MainStepperAdminClient.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainStage.Components.Main.MainStepperAdminClientController">
   <content>
     <AnchorPane>
          <children>
@@ -36,8 +37,10 @@
                         <Label text="Name:" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
                         <Label fx:id="adminNameLabel" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label styleClass="stepper-title" text="Stepper - Administrator" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Button mnemonicParsing="false" onAction="#loadFileButtonAction" styleClass="file-button" text="Load File Button" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                        <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFileButtonAction" styleClass="file-button" text="Load File Button" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                         <Label fx:id="selectedFileLabel" styleClass="file-label" text="File Not Loaded" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <TextField fx:id="userNameTextField" promptText="Enter User Name Here" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </top>

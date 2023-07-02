@@ -1,27 +1,34 @@
 package MainStage.Components.Main;
 
+import MainStage.Components.RolesManagement.UsersManagementController;
 import MainStage.Components.Statistics.StatisticsController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 public class MainStepperAdminClientController {
 
     @FXML
     private Label adminNameLabel;
-
+    @FXML
+    private TextField userNameTextField;
     @FXML
     private Label selectedFileLabel;
-
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Button loadFileButton;
     @FXML
     private TabPane selectionTabPane;
     @FXML
@@ -32,14 +39,25 @@ public class MainStepperAdminClientController {
     private BorderPane statistics;
     @FXML
     private StatisticsController statisticsController;
+    @FXML
+    private BorderPane usersManagement;
+    @FXML
+    private UsersManagementController usersManagementController;
 
     private Stage primaryStage;
     private SimpleStringProperty absoluteFilePath;
     private SimpleBooleanProperty fileLoaded;
+    private SimpleStringProperty userName;
 
     public MainStepperAdminClientController(){
         absoluteFilePath=new SimpleStringProperty("File Not Loaded");
         fileLoaded=new SimpleBooleanProperty(false);
+        userName=new SimpleStringProperty("");
+    }
+
+    @FXML
+    void loginButtonAction(ActionEvent event){
+        startLogin();
     }
 
     @FXML
@@ -76,13 +94,35 @@ public class MainStepperAdminClientController {
     private void initialize(){
         selectedFileLabel.textProperty().bind(absoluteFilePath);
         selectionTabPane.disableProperty().bind(fileLoaded.not());
-//        this.executionsHistoryController.setMainStepperController(this);
+        adminNameLabel.textProperty().bind(userName);
+        loadFileButton.setVisible(false);
+        selectedFileLabel.setVisible(false);
+//       this.executionsHistoryController.setMainStepperController(this);
        this.statisticsController.setMainStepperController(this);
+       this.usersManagementController.setMainStepperController(this);
+    }
+
+    private  void startLogin(){
+        if(userNameTextField.getText().isEmpty()){
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Error");
+            errorAlert.setContentText("User Name Is Empty");
+            errorAlert.show();
+        }
+        else{
+            //http request
+            userName.set(userNameTextField.getText());
+            this.loadFileButton.setVisible(true);
+            this.selectedFileLabel.setVisible(true);
+            this.loginButton.setVisible(false);
+            this.userNameTextField.setVisible(false);
+        }
     }
 
     public void restartUIElements(){
 //        this.executionsHistoryController.restartUIElements();
         this.statisticsController.restartUIElements();
+        this.usersManagementController.restartUIElements();
     }
 
 
