@@ -1,5 +1,7 @@
 package MainStage.Components.Main;
 
+import MainStage.Components.ExecutionsHistory.ExecutionsHistoryController;
+import MainStage.Components.RolesManagement.RolesManagementController;
 import MainStage.Components.UsersManagement.UsersManagementController;
 import MainStage.Components.Statistics.StatisticsController;
 import MainStage.Components.util.Constants;
@@ -38,8 +40,8 @@ public class MainStepperAdminClientController {
     private TabPane selectionTabPane;
     @FXML
     private BorderPane executionsHistory;
- //   @FXML
- //   private ExecutionsHistoryController executionsHistoryController;
+    @FXML
+    private ExecutionsHistoryController executionsHistoryController;
     @FXML
     private BorderPane statistics;
     @FXML
@@ -48,6 +50,10 @@ public class MainStepperAdminClientController {
     private BorderPane usersManagement;
     @FXML
     private UsersManagementController usersManagementController;
+    @FXML
+    private  BorderPane rolesManagement;
+    @FXML
+    private RolesManagementController rolesManagementController;
 
     private Stage primaryStage;
     private SimpleStringProperty absoluteFilePath;
@@ -102,9 +108,10 @@ public class MainStepperAdminClientController {
         adminNameLabel.textProperty().bind(userName);
         loadFileButton.setVisible(false);
         selectedFileLabel.setVisible(false);
-//       this.executionsHistoryController.setMainStepperController(this);
+       this.executionsHistoryController.setMainStepperController(this);
        this.statisticsController.setMainStepperController(this);
        this.usersManagementController.setMainStepperController(this);
+       this.rolesManagementController.setMainController(this);
     }
 
     private  void startLogin(){
