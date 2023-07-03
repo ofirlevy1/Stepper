@@ -1,4 +1,4 @@
-package MainStage.Components.RolesManagement;
+package MainStage.Components.UsersManagement;
 
 import MainStage.Components.Main.MainStepperAdminClientController;
 import javafx.event.ActionEvent;

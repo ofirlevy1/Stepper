@@ -1,21 +1,26 @@
 package MainStage.Components.Main;
 
-import MainStage.Components.RolesManagement.UsersManagementController;
+import MainStage.Components.UsersManagement.UsersManagementController;
 import MainStage.Components.Statistics.StatisticsController;
+import MainStage.Components.util.Constants;
+import MainStage.Components.util.HttpClientUtil;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class MainStepperAdminClientController {
 
@@ -110,12 +115,49 @@ public class MainStepperAdminClientController {
             errorAlert.show();
         }
         else{
-            //http request
-            userName.set(userNameTextField.getText());
-            this.loadFileButton.setVisible(true);
-            this.selectedFileLabel.setVisible(true);
-            this.loginButton.setVisible(false);
-            this.userNameTextField.setVisible(false);
+
+            String finalUrl = HttpUrl
+                    .parse(Constants.LOGIN_PAGE)
+                    .newBuilder()
+                    .addQueryParameter("username", userNameTextField.getText())
+                    .build()
+                    .toString();
+
+
+            HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText("Something went wrong: " + e.getMessage());
+                        errorAlert.show();
+                    });
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() != 200) {
+                        String responseBody = response.body().string();
+                        Platform.runLater(() -> {
+                            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                            errorAlert.setHeaderText("Error");
+                            errorAlert.setContentText("Something went wrong: " + responseBody);
+                            errorAlert.show();
+                        });
+                    }
+                    else {
+                        Platform.runLater(() -> {
+                            userName.set(userNameTextField.getText());
+                            loadFileButton.setVisible(true);
+                            selectedFileLabel.setVisible(true);
+                            loginButton.setVisible(false);
+                            userNameTextField.setVisible(false);
+                        });
+                    }
+                }
+            });
         }
     }
 
