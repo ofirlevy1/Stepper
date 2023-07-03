@@ -24,29 +24,32 @@ public class Main {
     }
 
     public static void testMultiThread() {
-        Stepper stepper = null;
+        StepperUIManager stepperUIManager = new StepperUIManager();
         try {
-            stepper = new Stepper("C:\\users\\ofir\\ex2.xml");
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
+            throw new RuntimeException();
         }
-        ArrayList<FreeInputDescriptor> arr = stepper.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
+        ArrayList<FreeInputDescriptor> arr = stepperUIManager.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
 
-        stepper.setFreeInput("Rename Files Zip Results", "FOLDER_NAME", "C:\\temp");
-        stepper.setFreeInput("Rename Files Zip Results", "PREFIX", "666");
-        stepper.setFreeInput("Rename Files Zip Results", "CSV_FILE_NAME", "C:\\temp\\dump.csv");
-        stepper.setFreeInput("Rename Files Zip Results", "PROP_FILE_NAME", "C:\\temp\\propdump.csv");
+        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results");
+
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "FOLDER_NAME", "C:\\temp");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "PREFIX", "666");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "CSV_FILE_NAME", "C:\\temp\\dump.csv");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "PROP_FILE_NAME", "C:\\temp\\propdump.csv");
         //stepper.setFreeInput("Rename Files Zip Results", "OPERATION", "ZIP");
 
-        System.out.println(("are all mandatory inputs set: " + stepper.areAllMandatoryFreeInputsSet("Rename Files Zip Results")));
+        System.out.println(("are all mandatory inputs set: " + stepperUIManager.areAllMandatoryFreeInputsSet(RenameFilesFlowID)));
 
-        stepper.runFlow("Rename Files Zip Results");
+        stepperUIManager.runFlow(RenameFilesFlowID);
 
-        while(stepper.getFlowNumberOfCompletedSteps("Rename Files Zip Results") < stepper.getFlowTotalNumberOfSteps("Rename Files Zip Results")) {
-            System.out.println("Completed Steps: " + stepper.getFlowNumberOfCompletedSteps("Rename Files Zip Results") + " \\ " + stepper.getFlowTotalNumberOfSteps("Rename Files Zip Results"));
+        while(stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) < stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID)) {
+            System.out.println("Completed Steps: " + stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) + " \\ " + stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID));
         }
-        System.out.println("Completed Steps: " + stepper.getFlowNumberOfCompletedSteps("Rename Files Zip Results") + " \\ " + stepper.getFlowTotalNumberOfSteps("Rename Files Zip Results"));
+        System.out.println("Completed Steps: " + stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) + " \\ " + stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID));
     }
 
 
@@ -115,7 +118,7 @@ public class Main {
 
         ArrayList<FreeInputDescriptor> freeInputDescriptors = uiManager.getFreeInputDescriptorsByFlow("Delete Matched Files");
 
-        uiManager.setFreeInput("Delete Matched Files", "FOLDER_NAME", "E:\\folderToDelete");
+        uiManager.setFreeInput("Delete Matched Files", "FOLDER_NAME", "C:\\temp\\temp");
         uiManager.setFreeInput("Delete Matched Files", "TIME_TO_SPEND", "3");
 
 

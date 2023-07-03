@@ -18,8 +18,6 @@ public class StepperUIManager {
     boolean isLoaded;
     boolean isFlowRan;
 
-    String mostRecentFlowName;
-
     public StepperUIManager() {
         isLoaded = false;
         isFlowRan=false;
@@ -48,17 +46,16 @@ public class StepperUIManager {
         return stepper.getFreeInputDescriptorsByFlow(flowName);
     }
 
-    public void setFreeInput(String flowName, String freeInputEffectiveName, String dataStr) {
-        stepper.setFreeInput(flowName, freeInputEffectiveName, dataStr);
+    public void setFreeInput(String flowID, String freeInputEffectiveName, String dataStr) {
+        stepper.setFreeInput(flowID, freeInputEffectiveName, dataStr);
     }
 
-    public boolean areAllMandatoryFreeInputsSet(String flowName) {
-        return stepper.areAllMandatoryFreeInputsSet(flowName);
+    public boolean areAllMandatoryFreeInputsSet(String flowID) {
+        return stepper.areAllMandatoryFreeInputsSet(flowID);
     }
 
-    public void runFlow(String flowName) {
-        mostRecentFlowName = flowName;
-        stepper.runFlow(flowName);
+    public void runFlow(String flowID) {
+        stepper.runFlow(flowID);
         isFlowRan=true;
     }
 
@@ -66,8 +63,8 @@ public class StepperUIManager {
         return stepper.getFlowsRunHistories();
     }
 
-    public FlowLog getFlowLog(String flowName) {
-        return stepper.getFlowLog(flowName);
+    public FlowLog getFlowLog(String flowID) {
+        return stepper.getFlowLog(flowID);
     }
 
     public ArrayList<FlowStatistics> getFlowStatistics() {
@@ -85,20 +82,21 @@ public class StepperUIManager {
     public boolean isFlowRan(){return  isFlowRan;}
     public boolean doesFlowHasContinuations(String flowName) {return stepper.doesFlowHaveContinuations(flowName);}
     public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
-    public HashMap<String,String> getFlowContinuationMap(String flowName, String targetFlowName){return stepper.getFlowContinuationMap(flowName, targetFlowName);}
+    public HashMap<String,String> getFlowContinuationMap(String flowID, String targetFlowID){return stepper.getFlowContinuationMap(flowID, targetFlowID);}
     public void activateContinuation(String sourceFlowName, String targetFlowName) {activateContinuation(sourceFlowName, targetFlowName);}
-    public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {return stepper.getFreeInputsCurrentValues(flowName);}
-    public int getMostRecentFlowTotalSteps() {
-        return stepper.getFlowTotalNumberOfSteps(mostRecentFlowName);
+    public HashMap<String, String> getFreeInputsCurrentValues(String flowID) {return stepper.getFreeInputsCurrentValues(flowID);}
+    public int getFlowTotalNumberOfSteps(String flowID) {
+        return stepper.getFlowTotalNumberOfSteps(flowID);
     }
-    public int getMostRecentFlowCompletedStepsCounter() {
-        return stepper.getFlowNumberOfCompletedSteps(mostRecentFlowName);
+    public int getFlowNumberOfCompletedSteps(String flowID) {
+        return stepper.getFlowNumberOfCompletedSteps(flowID);
     }
-    public String getMostRecentFlowName() {
-        return mostRecentFlowName;
-    }
+    public String createNewFlow(String flowName) {return stepper.createNewFlow(flowName);}
 
-    public boolean hasMostRecentFlowFailed() {
-        return stepper.hasFlowMostRecentRunFailed(mostRecentFlowName);
+    public String getFlowName(String flowID) {
+        return stepper.getFlowName(flowID);
+    }
+    public boolean hasFlowFailed(String flowID) {
+        return stepper.hasFlowFailed(flowID);
     }
 }
