@@ -32,20 +32,23 @@ import java.util.concurrent.Executors;
 
 public class Stepper {
 
-    HashSet<Flow> flows;
+    HashSet<Flow> flowsDefinitions; // These are used just for definition / data.
+    Vector<Flow> flows; // These are used at run time.
     String exceptionString;
     Vector<FlowRunHistory> flowsRunHistories;
     ExecutorService threadPool;
+    STStepper stStepper;
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
         validatePathPointsToXMLFile(xmlFilePath);
-        STStepper stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
+        stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
-        flows = new HashSet<>();
+        flowsDefinitions = new HashSet<>();
+        flows = new Vector<Flow>();
         flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
-            flows.add(new Flow(stFlow));
+            flowsDefinitions.add(new Flow(stFlow));
         validateContinuations();
         if(stStepper.getSTThreadPool() < 1)
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
@@ -53,11 +56,11 @@ public class Stepper {
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
-        return getFlowByName(flowName).getFlowDescriptor();
+        return getFlowDefinitionByName(flowName).getFlowDescriptor();
     }
 
-    private Flow getFlowByName(String flowName) {
-        for(Flow flow : flows) {
+    private Flow getFlowDefinitionByName(String flowName) {
+        for(Flow flow : flowsDefinitions) {
             if(flow.getName().equals(flowName))
                 return flow;
         }
@@ -72,17 +75,17 @@ public class Stepper {
 
     public ArrayList<String> getFlowNames(){
         ArrayList<String> flowNames = new ArrayList<>();
-        for(Flow flow : flows)
+        for(Flow flow : flowsDefinitions)
             flowNames.add(flow.getName());
         return flowNames;
     }
 
     public ArrayList<FreeInputDescriptor> getFreeInputDescriptorsByFlow(String flowName) {
-        return getFlowByName(flowName).getFreeInputsDescriptors();
+        return getFlowDefinitionByName(flowName).getFreeInputsDescriptors();
     }
 
-    public void setFreeInput(String flowName, String freeInputEffectiveName, String dataStr) {
-        getFlowByName(flowName).setFreeInput(freeInputEffectiveName, dataStr);
+    public void setFreeInput(String flowID, String freeInputEffectiveName, String dataStr) {
+        getFlowByID(flowID).setFreeInput(freeInputEffectiveName, dataStr);
     }
 
     public ArrayList<FlowStatistics> getFlowStatistics(){
@@ -105,12 +108,12 @@ public class Stepper {
         return  stepStatistics;
     }
 
-    public boolean areAllMandatoryFreeInputsSet(String flowName) {
-        return getFlowByName(flowName).areAllMandatoryFreeInputsSet();
+    public boolean areAllMandatoryFreeInputsSet(String flowID) {
+        return getFlowByID(flowID).areAllMandatoryFreeInputsSet();
     }
 
-    public void runFlow(String flowName) {
-        Flow flow = getFlowByName(flowName);
+    public void runFlow(String flowID) {
+        Flow flow = getFlowByID(flowID);
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -139,24 +142,24 @@ public class Stepper {
 
     }
 
-    public FlowLog getFlowLog(String flowName) {
-        return getFlowByName(flowName).getFlowLog();
+    public FlowLog getFlowLog(String flowID) {
+        return getFlowByID(flowID).getFlowLog();
     }
 
     public boolean doesFlowHaveContinuations(String flowName) {
-        return getFlowByName(flowName).hasContinuations();
+        return getFlowDefinitionByName(flowName).hasContinuations();
     }
 
     // This returns an array of the target flows names.
     public ArrayList<String> getFlowContinuationOptions(String flowName) {
-        return getFlowByName(flowName).getContinuationTargets();
+        return getFlowDefinitionByName(flowName).getContinuationTargets();
     }
 
-    public HashMap<String, String> getFlowContinuationMap(String sourceFlowName, String targetFlowName){
+    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowID){
         HashMap<String,String> dataMap=new HashMap<>();
-        Flow sourcFlow=getFlowByName(sourceFlowName);
-        Flow targetFlow=getFlowByName(targetFlowName);
-        Continuation continuation=sourcFlow.getContinuation(targetFlowName);
+        Flow sourcFlow=getFlowByID(sourceFlowID);
+        Flow targetFlow=getFlowByID(targetFlowID);
+        Continuation continuation=sourcFlow.getContinuation(targetFlowID);
         if(!continuation.hasCustomContinuationDataMappings())
             return dataMap;
         for(String sourceDataName:continuation.getDataMap().keySet()){
@@ -166,13 +169,13 @@ public class Stepper {
         return dataMap;
     }
 
-    public void activateContinuation(String sourceFlowName, String targetFlowName) {
-        Flow sourceFlow = getFlowByName(sourceFlowName);
-        Flow targetFlow = getFlowByName(targetFlowName);
-        if(!sourceFlow.hasContinuations() || !sourceFlow.getContinuationTargets().contains(targetFlowName))
+    public void activateContinuation(String sourceFlowID, String targetFlowID) {
+        Flow sourceFlow = getFlowByID(sourceFlowID);
+        Flow targetFlow = getFlowByID(targetFlowID);
+        if(!sourceFlow.hasContinuations() || !sourceFlow.getContinuationTargets().contains(targetFlow.getName()))
             throw new RuntimeException("An attempt was made to activate an undefined continuation");
 
-        Continuation continuation = sourceFlow.getContinuation(targetFlowName);
+        Continuation continuation = sourceFlow.getContinuation(targetFlow.getName());
         if(continuation.hasCustomContinuationDataMappings()) {
             HashMap<String, String> customDataMappings = continuation.getDataMap();
             for(String sourceDataName : customDataMappings.keySet()) {
@@ -185,24 +188,24 @@ public class Stepper {
         }
     }
 
-    public HashMap<String, String> getFreeInputsCurrentValues(String flowName) {
-        return getFlowByName(flowName).getFreeInputsCurrentValues();
+    public HashMap<String, String> getFreeInputsCurrentValues(String flowID) {
+        return getFlowByID(flowID).getFreeInputsCurrentValues();
     }
 
-    public int getFlowTotalNumberOfSteps(String flowName) {
-        return getFlowByName(flowName).getTotalNumberOfSteps();
+    public int getFlowTotalNumberOfSteps(String flowID) {
+        return getFlowByID(flowID).getTotalNumberOfSteps();
     }
 
-    public int getFlowNumberOfCompletedSteps(String flowName) {
-        return getFlowByName(flowName).getCompletedStepsCounter();
+    public int getFlowNumberOfCompletedSteps(String flowID) {
+        return getFlowByID(flowID).getCompletedStepsCounter();
     }
 
-    public boolean hasFlowMostRecentRunFailed(String flowName) {
-        return (!getFlowByName(flowName).isRunning()) && (getFlowByName(flowName).getStatus() != null && getFlowByName(flowName).getStatus() == Flow.Status.FAILURE);
+    public boolean hasFlowFailed(String flowID) {
+        return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
     }
 
     private void validateContinuations() {
-        for(Flow flow : flows) {
+        for(Flow flow : flowsDefinitions) {
             if(flow.hasContinuations()) {
                 for(String continuationTarget : flow.getContinuationTargets()) {
                     // Making sure the target continuation flow actually exists in the XML
@@ -216,7 +219,7 @@ public class Stepper {
                             if(!flow.hasDataType(sourceDataType)) {
                                 throw new RuntimeException("Flow '" + flow.getName() + "' defined a non existing data type as a continuation source: '" + sourceDataType + "'");
                             }
-                            if(!getFlowByName(continuationTarget).isFreeInput(customMap.get(sourceDataType))) {
+                            if(!getFlowDefinitionByName(continuationTarget).isFreeInput(customMap.get(sourceDataType))) {
                                 throw new RuntimeException("Flow '" + flow.getName() + "' defined a continuation target that either doesn't exists, or is not a free input: " + customMap.get(sourceDataType) + "'");
                             }
                         }
@@ -225,5 +228,28 @@ public class Stepper {
 
             }
         }
+    }
+
+    private Flow getFlowByID(String flowID) {
+        for(Flow flow : flows) {
+            if(flow.getID().equals(flowID))
+                return flow;
+        }
+        throw new RuntimeException("No flow was found with flowID: " + flowID);
+    }
+
+    public String createNewFlow(String flowName) {
+        for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
+            if(stFlow.getName().equals(flowName)) {
+                Flow newFlow = new Flow(stFlow);
+                flows.add(newFlow);
+                return newFlow.getID();
+            }
+        }
+        throw new RuntimeException("An attempt was made to create a new flow of non-existing flow name '" + flowName + "')");
+    }
+
+    public String getFlowName(String flowID) {
+        return getFlowByID(flowID).getName();
     }
 }

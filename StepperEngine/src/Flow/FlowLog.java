@@ -8,17 +8,17 @@ import java.util.Date;
 import java.util.UUID;
 
 public class FlowLog {
-    private String flowId;
+    private String flowID;
     private String flowName;
     private Flow.Status status;
     private String formalOutputsPresentation;
     private String timeStamp;
 
 
-    FlowLog(){
-        flowId= UUID.randomUUID().toString();
+    FlowLog(String flowID){
         timeStamp= new SimpleDateFormat("HH:mm:ss").format(new Date());
         formalOutputsPresentation="";
+        this.flowID = flowID;
     }
 
     public String getFlowName() {
@@ -38,7 +38,7 @@ public class FlowLog {
     }
 
     public String getFlowId() {
-        return flowId;
+        return flowID;
     }
 
     public String getFormalOutputsPresentation() {
@@ -54,6 +54,6 @@ public class FlowLog {
     }
 
     public String getFlowLogAsString(){
-        return "Flow ID: "+flowId+" Flow name:"+flowName+" Flow status: "+status+"\nFormal outputs:\n"+formalOutputsPresentation;
+        return "Flow ID: "+flowID+" Flow name:"+flowName+" Flow status: "+status+"\nFormal outputs:\n"+formalOutputsPresentation;
     }
 }

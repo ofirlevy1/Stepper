@@ -58,6 +58,7 @@ public class Flow {
     private ArrayList<StepOutputDescriptor> outputDescriptors;
     private boolean hasContinuations;
     private ArrayList<Continuation> continuations;
+    private String ID;
 
     private int completedStepsCounter;
     public Flow(STFlow flow)
@@ -94,11 +95,12 @@ public class Flow {
     }
 
     private Flow() {
+        this.ID = UUID.randomUUID().toString();
         this.steps = new ArrayList<>();
         this.outputs = new HashMap<>();
         this.freeInputs = new HashMap<>();
         this.map = new FlowMap();
-        this.flowLog=new FlowLog();
+        this.flowLog=new FlowLog(ID);
         this.continuations = new ArrayList<>();
         this.initialValues = new HashMap<>();
     }
@@ -360,7 +362,7 @@ public class Flow {
     }
 
     private void createFlowLog(){
-        flowLog=new FlowLog();
+        flowLog=new FlowLog(ID);
         flowLog.setFlowName(name);
         flowLog.setStatus(status);
         for(String formalOutputName:formalOutputsNames)
@@ -625,4 +627,8 @@ public class Flow {
     }
 
     public boolean isRunning() {return isRunning;}
+
+    public String getID() {
+        return ID;
+    }
 }
