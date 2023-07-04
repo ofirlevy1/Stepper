@@ -15,14 +15,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 public class MainStepperAdminClientController {
 
@@ -59,11 +57,13 @@ public class MainStepperAdminClientController {
     private SimpleStringProperty absoluteFilePath;
     private SimpleBooleanProperty fileLoaded;
     private SimpleStringProperty userName;
+    private String errorMessage;
 
     public MainStepperAdminClientController(){
         absoluteFilePath=new SimpleStringProperty("File Not Loaded");
         fileLoaded=new SimpleBooleanProperty(false);
         userName=new SimpleStringProperty("");
+        errorMessage="";
     }
 
     @FXML
@@ -79,22 +79,48 @@ public class MainStepperAdminClientController {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null)
             return;
-        try {
-           // stepperUIManager.LoadStepperFromXmlFile(selectedFile.getAbsolutePath());     servlet command
-        }
-        catch (Exception e) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("File Invalid");
-            errorAlert.setContentText(e.getMessage());
-            absoluteFilePath.set("File Not Loaded");
-            fileLoaded.set(false);
-            errorAlert.show();
-            return;
-        }
-        restartUIElements();
-        String absolutPath=selectedFile.getAbsolutePath();
-        absoluteFilePath.set(absolutPath);
-        fileLoaded.set(true);
+
+        loadXmlFile(selectedFile.getAbsolutePath());
+    }
+
+    private void loadXmlFile(String path){
+        String RESOURCE = "/upload-file";
+        File f = new File(path);
+        RequestBody body =
+                new MultipartBody.Builder()
+                        .addFormDataPart("file1", f.getName(), RequestBody.create(f, MediaType.parse("application/xml")))
+                        .build();
+        HttpClientUtil.runAsyncPost(Constants.BASE_DOMAIN + RESOURCE, body, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                fileLoaded.set(false);
+                errorMessage="something went wrong";
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("File Invalid");
+                errorAlert.setContentText(errorMessage);
+                absoluteFilePath.set("File Not Loaded");
+                errorAlert.show();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                fileLoaded.set(true);
+                restartUIElements();
+                absoluteFilePath.set(path);
+            }
+
+                else {
+                    fileLoaded.set(false);
+                    errorMessage="Error"+response.body().string();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("File Invalid");
+                    errorAlert.setContentText(errorMessage);
+                    absoluteFilePath.set("File Not Loaded");
+                    errorAlert.show();
+                }
+            }
+        });
     }
 
     public void setPrimaryStage(Stage primaryStage) {

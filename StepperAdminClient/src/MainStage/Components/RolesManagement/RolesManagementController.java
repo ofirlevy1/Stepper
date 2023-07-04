@@ -1,12 +1,21 @@
 package MainStage.Components.RolesManagement;
 
 import MainStage.Components.Main.MainStepperAdminClientController;
+import MainStage.Components.util.Constants;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RolesManagementController {
 
@@ -30,9 +39,17 @@ public class RolesManagementController {
     private TextField roleCreationDescriptionTextField;
 
     private MainStepperAdminClientController mainStepperAdminClientController;
+    private Timer timer;
+    private TimerTask rolesRefresher;
+    private BooleanProperty autoUpdate;
+
     @FXML
     private void initialize(){
 
+    }
+
+    public RolesManagementController(){
+        autoUpdate=new SimpleBooleanProperty();
     }
 
     @FXML
@@ -57,6 +74,38 @@ public class RolesManagementController {
 
     public void setMainController(MainStepperAdminClientController mainStepperAdminClientController){
         this.mainStepperAdminClientController=mainStepperAdminClientController;
+    }
+
+    public BooleanProperty autoUpdatesProperty() {
+        return autoUpdate;
+    }
+
+    public void loadRoleDetails(String roleName){
+
+    }
+
+    private void updateRolesList(List<String> rolesNames){
+        Platform.runLater(()->{
+            if(availableRolesFlowPane.getChildren().size()!=rolesNames.size()){
+                availableRolesFlowPane.getChildren().clear();
+                availableRolesFlowPane.setPrefWrapLength(200);
+                for(String roleName:rolesNames) {
+                    Button button = new Button(roleName);
+                    button.setOnAction(event -> loadRoleDetails(roleName));
+                    availableRolesFlowPane.getChildren().add(button);
+                    availableRolesFlowPane.setPrefWrapLength(availableRolesFlowPane.getPrefWrapLength()+150);
+                }
+            }
+
+        });
+    }
+
+    public void startAvailableRolesRefresher(){
+        rolesRefresher=new AvailableRolesRefresher(
+                autoUpdate,
+                this::updateRolesList);
+        timer=new Timer();
+        timer.schedule(rolesRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
 }
