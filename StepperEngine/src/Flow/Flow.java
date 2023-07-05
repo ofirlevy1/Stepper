@@ -45,9 +45,8 @@ public class Flow {
     private Flow.Status status;
     private boolean isRunning;
     private String flowRunsummery;
-    private  double durationAvgInMs = 0.0;
+    private ArrayList<Long> runDurations;
     private  long runTime=0;
-    private  int flowRunsCounter = 0;
     private FlowLog flowLog;
     private FlowRunHistory flowRunHistory;
     private HashMap<String, String> initialValues;
@@ -96,6 +95,7 @@ public class Flow {
 
     private Flow() {
         this.ID = UUID.randomUUID().toString();
+        this.status = Status.NOT_RUN_YET;
         this.steps = new ArrayList<>();
         this.outputs = new HashMap<>();
         this.freeInputs = new HashMap<>();
@@ -103,6 +103,7 @@ public class Flow {
         this.flowLog=new FlowLog(ID);
         this.continuations = new ArrayList<>();
         this.initialValues = new HashMap<>();
+        runDurations = new ArrayList<>();
     }
 
     // Input validation to do:
@@ -173,7 +174,7 @@ public class Flow {
     }
 
     public enum Status {
-        SUCCESS, WARNING, FAILURE
+        NOT_RUN_YET, SUCCESS, WARNING, FAILURE
     }
 
 
@@ -311,7 +312,6 @@ public class Flow {
 
     public synchronized FlowRunHistory execute(){
         isRunning = true;
-        flowRunsCounter++;
         completedStepsCounter = 0;
         clearAllStepsLogs();
         if(!areAllMandatoryFreeInputsSet())
@@ -330,16 +330,19 @@ public class Flow {
             }
             isRunning = false;
             flowRunsummery="flow execution ended successfully";
+            Instant finish=Instant.now();
+            runTime= Duration.between(start,finish).toMillis();
+            runDurations.add(runTime);
             setFlowStatus();
         } catch (RuntimeException e) {
             status=Status.FAILURE;
             flowRunsummery=e.getMessage();
+            Instant finish=Instant.now();
+            runTime= Duration.between(start,finish).toMillis();
+            runDurations.add(runTime);
             createFlowHistory();
         }
 
-        Instant finish=Instant.now();
-        runTime= Duration.between(start,finish).toMillis();
-        calculateAvgRunTime();
         createFlowLog();
         createFlowHistory();
         isRunning = false;
@@ -494,14 +497,6 @@ public class Flow {
         return true;
     }
 
-    private void calculateAvgRunTime(){
-        durationAvgInMs=durationAvgInMs+((runTime-durationAvgInMs)/flowRunsCounter);
-    }
-
-    public FlowStatistics getFlowStatistics(){
-        return new FlowStatistics(flowRunsCounter, durationAvgInMs, name);
-    }
-
     public void clearAllStepsDataMembers(){
         for(Step step:steps)
             step.clearDataMembers();
@@ -631,4 +626,8 @@ public class Flow {
     public String getID() {
         return ID;
     }
+    public ArrayList<Long> getRunDurations() {
+        return (ArrayList<Long>)runDurations.clone();
+    }
+
 }

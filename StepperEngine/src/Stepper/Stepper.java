@@ -89,10 +89,23 @@ public class Stepper {
     }
 
     public ArrayList<FlowStatistics> getFlowStatistics(){
-        ArrayList<FlowStatistics> flowStatistics=new ArrayList<>();
-        for(Flow flow:flows)
-            flowStatistics.add(flow.getFlowStatistics());
-        return flowStatistics;
+        HashMap<String, FlowStatistics> statistics = new HashMap<String, FlowStatistics>();
+        for(Flow flow:flows) {
+            if(statistics.containsKey(flow.getName()))
+                statistics.get(flow.getName()).addRunDurations(flow.getRunDurations());
+            else {
+                statistics.put(flow.getName(), new FlowStatistics());
+                statistics.get(flow.getName()).setFlowName(flow.getName());
+                statistics.get(flow.getName()).addRunDurations(flow.getRunDurations());
+            }
+        }
+
+        ArrayList<FlowStatistics> result = new ArrayList<>();
+        for(String flowName : statistics.keySet()) {
+            result.add(statistics.get(flowName));
+        }
+
+        return result;
     }
 
     public ArrayList<StepStatistics> getStepsStatistics(){

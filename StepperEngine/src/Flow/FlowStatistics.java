@@ -1,16 +1,14 @@
 package Flow;
 
+import java.util.ArrayList;
+
 public class FlowStatistics {
-    private int startUpCount;
-    private double avgDuration;
+    private ArrayList<Long> runDurations;
     private String flowName;
 
-    public FlowStatistics(int startupCount, double avgDuration, String flowName) {
-        this.startUpCount = startupCount;
-        this.avgDuration = avgDuration;
-        this.flowName = flowName;
+    public FlowStatistics() {
+        runDurations = new ArrayList<>();
     }
-
     public String getFlowName() {
         return flowName;
     }
@@ -19,26 +17,22 @@ public class FlowStatistics {
         this.flowName = flowName;
     }
 
-    public FlowStatistics(){}
-
-
     public int getStartUpCount() {
-        return startUpCount;
+        return runDurations.size();
     }
 
-    public void setStartUpCount(int startUpCount) {
-        this.startUpCount = startUpCount;
-    }
-
-    public double getAvgDuration() {
-        return avgDuration;
-    }
-
-    public void setAvgDuration(double avgDuration) {
-        this.avgDuration = avgDuration;
+    public long getAvgDuration() {
+        long sum = 0;
+        for(long duration : runDurations)
+            sum += duration;
+        return sum / (long)runDurations.size();
     }
 
     public String getFlowStatisticsAsString(){
-        return "'" + flowName + "' flow has run "+ startUpCount +" times, with an average run time of " + avgDuration + " ms";
+        return "'" + flowName + "' flow has run "+ getStartUpCount() +" times, with an average run time of " + getAvgDuration() + " ms";
+    }
+
+    public void addRunDurations(ArrayList<Long> runDurationsToAdd) {
+        runDurations.addAll(runDurationsToAdd);
     }
 }

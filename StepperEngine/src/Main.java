@@ -20,8 +20,45 @@ import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-        testMultiThread();
+        testStatistics();
     }
+
+
+    public static void testStatistics() {
+        testMultiThreadAndStatistics();
+    }
+
+    public static void testMultiThreadAndStatistics() {
+        StepperUIManager stepperUIManager = new StepperUIManager();
+        try {
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            throw new RuntimeException();
+        }
+        ArrayList<FreeInputDescriptor> arr = stepperUIManager.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
+
+        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results");
+
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "FOLDER_NAME", "C:\\temp");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "PREFIX", "666");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "CSV_FILE_NAME", "C:\\temp\\dump.csv");
+        stepperUIManager.setFreeInput(RenameFilesFlowID, "PROP_FILE_NAME", "C:\\temp\\propdump.csv");
+        //stepper.setFreeInput("Rename Files Zip Results", "OPERATION", "ZIP");
+
+        System.out.println(("are all mandatory inputs set: " + stepperUIManager.areAllMandatoryFreeInputsSet(RenameFilesFlowID)));
+
+        stepperUIManager.runFlow(RenameFilesFlowID);
+
+        while(stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) < stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID)) {
+            System.out.println("Completed Steps: " + stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) + " \\ " + stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID));
+        }
+        System.out.println("Completed Steps: " + stepperUIManager.getFlowNumberOfCompletedSteps(RenameFilesFlowID) + " \\ " + stepperUIManager.getFlowTotalNumberOfSteps(RenameFilesFlowID));
+
+        ArrayList<FlowStatistics> res = stepperUIManager.getFlowStatistics();
+    }
+
 
     public static void testMultiThread() {
         StepperUIManager stepperUIManager = new StepperUIManager();
