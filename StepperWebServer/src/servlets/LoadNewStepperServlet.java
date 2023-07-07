@@ -11,7 +11,7 @@ import utils.ServletUtils;
 import java.util.Base64.Decoder;
 import java.io.IOException;
 
-@WebServlet(name = "My First Servlet", urlPatterns = "/load_new_stepper")
+@WebServlet(name = "Load New Stepper File Servlet", urlPatterns = "/load_new_stepper")
 public class LoadNewStepperServlet extends HttpServlet {
 
     @Override
