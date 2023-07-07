@@ -330,4 +330,20 @@ public class Stepper {
         }
         throw new RuntimeException("An attempt was made to find a role that doesn't exist: '" + roleName + "'");
     }
+
+    public HashSet<String> getAllRolesNames() {
+        HashSet<String> rolesNames = new HashSet<>();
+        for(Role role : roles)
+            rolesNames.add(role.getName());
+        return rolesNames;
+    }
+
+    public HashSet<String> getAllUsersWithGivenRole(String roleName) {
+        HashSet<String> result = new HashSet<>();
+        for(User user : users) {
+            if(user.hasRole(roleName))
+                result.add(user.getName());
+        }
+        return result;
+    }
 }

@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Vector;
 
 public class StepperUIManager {
@@ -102,5 +103,13 @@ public class StepperUIManager {
     }
     public boolean hasFlowFailed(String flowID) {
         return stepper.hasFlowFailed(flowID);
+    }
+
+    public HashSet<String> getAllRolesNames() {
+        return stepper.getAllRolesNames();
+    }
+
+    public HashSet<String> getAllUsersWithGivenRole(String roleName) {
+        return stepper.getAllUsersWithGivenRole(roleName);
     }
 }

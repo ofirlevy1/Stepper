@@ -57,4 +57,11 @@ public class User {
         return (ArrayList<String>)executedFlowsIDs.clone();
     }
 
+    public boolean hasRole(String roleName) {
+        for(Role role : roles) {
+            if(role.getName().equals(roleName))
+                return true;
+        }
+        return false;
+    }
 }
