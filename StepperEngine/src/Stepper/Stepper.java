@@ -17,6 +17,9 @@ import Generated.STStepper;
 import RunHistory.FlowRunHistory;
 import Steps.*;
 import Exceptions.*;
+import Users.Role;
+import Users.User;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -29,15 +32,16 @@ import java.util.concurrent.Executors;
 
 public class Stepper {
 
-    HashSet<Flow> flowsDefinitions; // These are used just for definition / data.
-    Vector<Flow> flows; // These are used at run time.
-    String exceptionString;
-    Vector<FlowRunHistory> flowsRunHistories;
-    ExecutorService threadPool;
-    STStepper stStepper;
-    List<STFlow> stFlows; // used to create/load new dynamic (runnable) flows.
+    private HashSet<Flow> flowsDefinitions; // These are used just for definition / data.
+    private Vector<Flow> flows; // These are used at run time.
+    private String exceptionString;
+    private Vector<FlowRunHistory> flowsRunHistories;
+    private ExecutorService threadPool;
+    private STStepper stStepper;
+    private List<STFlow> stFlows; // used to create/load new dynamic (runnable) flows.
+    private HashSet<User> users;
+    private HashSet<Role> roles;
 
-    // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
         validatePathPointsToXMLFile(xmlFilePath);
         stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
@@ -52,6 +56,7 @@ public class Stepper {
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
         threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
         stFlows = stStepper.getSTFlows().getSTFlow();
+        initiatePredefinedRolesAndUsers();
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -267,10 +272,14 @@ public class Stepper {
 
     public void addFlowDefinitionsFromANewStepper(Stepper newStepper) {
         // Adding the new flows to the flow definitions & STFlows - only if no flows of the same name already exist.
+        // And add them to the readonly & all flows roles.
         for(Flow flow : newStepper.flowsDefinitions) {
             if(!doesFlowDefinitionExist(flow.getName())){
                 flowsDefinitions.add(flow);
                 stFlows.add(newStepper.getSTFlowObjectByName(flow.getName()));
+                getRoleByName("All Flows").addPermittedFlowName(flow.getName());
+                if(flow.isReadOnly())
+                    getRoleByName("Read Only Flows").addPermittedFlowName(flow.getName());
             }
         }
     }
@@ -288,5 +297,53 @@ public class Stepper {
                 return stFlow;
         }
         throw new RuntimeException("An attempt was made to get the STFlow object of not existing flow '" + flowName + "'");
+    }
+
+    private void initiatePredefinedRolesAndUsers() {
+        roles = new HashSet<>();
+        users = new HashSet<>();
+
+        Role readOnlyRole = new Role("Read Only Flows");
+        Role allFlowsRole = new Role("All Flows");
+
+        for(Flow flowDefinition : flowsDefinitions) {
+            allFlowsRole.addPermittedFlowName(flowDefinition.getName());
+            if(flowDefinition.isReadOnly())
+                readOnlyRole.addPermittedFlowName(flowDefinition.getName());
+        }
+
+        roles.add(readOnlyRole);
+        roles.add(allFlowsRole);
+
+        User adminUser = new User("admin");
+        adminUser.setManager(true);
+        adminUser.addRole(allFlowsRole);
+
+        users.add(adminUser);
+
+    }
+
+    private Role getRoleByName(String roleName) {
+        for(Role currentRole : roles) {
+            if(currentRole.getName().equals(roleName))
+                return currentRole;
+        }
+        throw new RuntimeException("An attempt was made to find a role that doesn't exist: '" + roleName + "'");
+    }
+
+    public HashSet<String> getAllRolesNames() {
+        HashSet<String> rolesNames = new HashSet<>();
+        for(Role role : roles)
+            rolesNames.add(role.getName());
+        return rolesNames;
+    }
+
+    public HashSet<String> getAllUsersWithGivenRole(String roleName) {
+        HashSet<String> result = new HashSet<>();
+        for(User user : users) {
+            if(user.hasRole(roleName))
+                result.add(user.getName());
+        }
+        return result;
     }
 }
