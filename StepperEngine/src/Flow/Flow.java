@@ -630,4 +630,5 @@ public class Flow {
         return (ArrayList<Long>)runDurations.clone();
     }
 
+    public boolean isReadOnly() {return isReadOnly;}
 }
