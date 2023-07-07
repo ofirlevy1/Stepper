@@ -6,6 +6,7 @@ package Stepper;
 import Flow.*;
 import RunHistory.FlowRunHistory;
 import Steps.*;
+import Users.User;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
@@ -112,4 +113,6 @@ public class StepperUIManager {
     public HashSet<String> getAllUsersWithGivenRole(String roleName) {
         return stepper.getAllUsersWithGivenRole(roleName);
     }
+
+    public HashSet<User> getAllUsers() { return stepper.getAllUsers();}
 }

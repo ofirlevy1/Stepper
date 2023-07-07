@@ -346,4 +346,8 @@ public class Stepper {
         }
         return result;
     }
+
+    public HashSet<User> getAllUsers() {
+        return (HashSet<User>)users.clone();
+    }
 }
