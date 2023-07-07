@@ -20,9 +20,27 @@ import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-        testStatistics();
+        testLoadingNewFlows();
     }
 
+
+    public static void testLoadingNewFlows() {
+        StepperUIManager stepperUIManager = new StepperUIManager();
+        try {
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            throw new RuntimeException();
+        }
+        try {
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2_newFlows.xml");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            throw new RuntimeException();
+        }
+    }
 
     public static void testStatistics() {
         testMultiThreadAndStatistics();
