@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="StepperWebServer:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/StepperWebServer_Web_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="StepperWebServer" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="artifact" artifact-name="StepperEngine:jar" />
+          <element id="library" level="project" name="gson-2.10.1" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="StepperWebServer/web/Web" />
+    </root>
+  </artifact>
+</component>

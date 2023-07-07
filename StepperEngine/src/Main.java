@@ -27,14 +27,14 @@ public class Main {
     public static void testLoadingNewFlows() {
         StepperUIManager stepperUIManager = new StepperUIManager();
         try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml", "admin");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
             throw new RuntimeException();
         }
         try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2_newFlows.xml");
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2_newFlows.xml", "admin");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
@@ -49,7 +49,7 @@ public class Main {
     public static void testMultiThreadAndStatistics() {
         StepperUIManager stepperUIManager = new StepperUIManager();
         try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml", "admin");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
@@ -81,7 +81,7 @@ public class Main {
     public static void testMultiThread() {
         StepperUIManager stepperUIManager = new StepperUIManager();
         try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml");
+            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml", "admin");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
@@ -111,7 +111,7 @@ public class Main {
     public static void testContinuation() {
         Stepper stepper = null;
         try {
-            stepper = new Stepper("C:\\users\\ofir\\ex2.xml");
+            stepper = new Stepper("C:\\users\\ofir\\ex2.xml", "admin");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
@@ -167,7 +167,7 @@ public class Main {
     public static void testDeleteMatchedFilesFlowExecution() throws FileNotFoundException, JAXBException
     {
         StepperUIManager uiManager = new StepperUIManager();
-        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml");
+        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml", "admin");
         System.out.println(uiManager.getFlowNames());
         FlowDescriptor flowDescriptor = uiManager.getFlowDescriptor("Delete Matched Files");
 
@@ -185,7 +185,7 @@ public class Main {
     public static void testRenameFilesFlowExecution() throws FileNotFoundException, JAXBException
     {
         StepperUIManager uiManager = new StepperUIManager();
-        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml");
+        uiManager.LoadStepperFromXmlFile("C:\\Users\\Ofir\\Downloads\\ex1(8).xml", "admin");
         System.out.println(uiManager.getFlowNames());
         FlowDescriptor flowDescriptor = uiManager.getFlowDescriptor("Rename Files");
 

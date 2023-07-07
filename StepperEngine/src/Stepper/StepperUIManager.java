@@ -25,9 +25,9 @@ public class StepperUIManager {
         isFlowRan=false;
     }
 
-    public synchronized void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
+    public synchronized void LoadStepperFromXmlFile(String xmlFilePath, String username) throws FileNotFoundException, JAXBException {
         // First assigning it to a new Stepper object, to not override anything in case of failure.
-        Stepper newStepper = new Stepper(xmlFilePath);
+        Stepper newStepper = new Stepper(xmlFilePath, username);
 
         // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
 
@@ -115,4 +115,8 @@ public class StepperUIManager {
     }
 
     public HashSet<User> getAllUsers() { return stepper.getAllUsers();}
+
+    public boolean isUserAllowedToLoadNewStepperFile(String username) {
+        return stepper.isUserAllowedToLoadNewStepperFile(username);
+    }
 }
