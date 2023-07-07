@@ -23,10 +23,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,6 +35,7 @@ public class Stepper {
     Vector<FlowRunHistory> flowsRunHistories;
     ExecutorService threadPool;
     STStepper stStepper;
+    List<STFlow> stFlows; // used to create/load new dynamic (runnable) flows.
 
     // attempting to load from an invalid file should NOT override any data.
     public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
@@ -53,6 +51,7 @@ public class Stepper {
         if(stStepper.getSTThreadPool() < 1)
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
         threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
+        stFlows = stStepper.getSTFlows().getSTFlow();
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -252,7 +251,7 @@ public class Stepper {
     }
 
     public String createNewFlow(String flowName) {
-        for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
+        for(STFlow stFlow : stFlows) {
             if(stFlow.getName().equals(flowName)) {
                 Flow newFlow = new Flow(stFlow);
                 flows.add(newFlow);
@@ -264,5 +263,30 @@ public class Stepper {
 
     public String getFlowName(String flowID) {
         return getFlowByID(flowID).getName();
+    }
+
+    public void addFlowDefinitionsFromANewStepper(Stepper newStepper) {
+        // Adding the new flows to the flow definitions & STFlows - only if no flows of the same name already exist.
+        for(Flow flow : newStepper.flowsDefinitions) {
+            if(!doesFlowDefinitionExist(flow.getName())){
+                flowsDefinitions.add(flow);
+                stFlows.add(newStepper.getSTFlowObjectByName(flow.getName()));
+            }
+        }
+    }
+
+    public boolean doesFlowDefinitionExist(String flowName) {
+        for(Flow flowDefinition : flowsDefinitions)
+            if(flowDefinition.getName().equals(flowName))
+                return true;
+        return false;
+    }
+
+    private STFlow getSTFlowObjectByName(String flowName) {
+        for(STFlow stFlow : stStepper.getSTFlows().getSTFlow()) {
+            if(stFlow.getName().equals(flowName))
+                return stFlow;
+        }
+        throw new RuntimeException("An attempt was made to get the STFlow object of not existing flow '" + flowName + "'");
     }
 }

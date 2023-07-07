@@ -23,15 +23,19 @@ public class StepperUIManager {
         isFlowRan=false;
     }
 
-    public void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
+    public synchronized void LoadStepperFromXmlFile(String xmlFilePath) throws FileNotFoundException, JAXBException {
         // First assigning it to a new Stepper object, to not override anything in case of failure.
-        Stepper stepperCpy = new Stepper(xmlFilePath);
+        Stepper newStepper = new Stepper(xmlFilePath);
 
         // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
-        // So now we can override the actual stepper:
-        this.stepper = stepperCpy;
-        isFlowRan = false;
-        isLoaded = true;
+
+        if(!isLoaded) {
+            stepper = newStepper;
+            isLoaded = true;
+        }
+        else
+            stepper.addFlowDefinitionsFromANewStepper(newStepper);
+
     }
 
     public ArrayList<String> getFlowNames(){
