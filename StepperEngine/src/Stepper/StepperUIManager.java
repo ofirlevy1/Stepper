@@ -119,4 +119,10 @@ public class StepperUIManager {
     public boolean isUserAllowedToLoadNewStepperFile(String username) {
         return stepper.isUserAllowedToLoadNewStepperFile(username);
     }
+
+    public boolean isUserExists(String username) {
+        return stepper.isUserExists(username);
+    }
+
+    public void addUser(String username) {stepper.addUser(username);}
 }

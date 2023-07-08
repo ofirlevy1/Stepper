@@ -2,6 +2,7 @@ package servlets;
 
 import Stepper.StepperUIManager;
 import com.sun.xml.internal.messaging.saaj.util.Base64;
+import constants.Constants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,7 @@ public class LoadNewStepperServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
+        String username = req.getParameter(Constants.USERNAME);
         String filePathBase64 = req.getParameter("file_path_base64");
 
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());

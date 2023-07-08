@@ -356,4 +356,18 @@ public class Stepper {
     public static boolean isUserAllowedToLoadNewStepperFile(String username) {
         return username.equals("admin");
     }
+
+    public boolean isUserExists(String username) {
+        for(User user : users) {
+            if(user.getName().equals(username))
+                return true;
+        }
+        return false;
+    }
+
+    public void addUser(String username) {
+        if(isUserExists(username))
+            throw new RuntimeException("An attempt was made to add a user that already exists in the system! ('" + username + "')");
+        users.add(new User(username));
+    }
 }
