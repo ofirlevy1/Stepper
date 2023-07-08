@@ -3,13 +3,21 @@ package MainStage.Components.Statistics;
 import Flow.FlowStatistics;
 import MainStage.Components.Main.MainStepperAdminClientController;
 import MainStage.Components.Main.MainStepperAdminClientController;
+import MainStage.Components.RolesManagement.AvailableRolesRefresher;
+import MainStage.Components.util.Constants;
 import Steps.StepStatistics;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StatisticsController {
 
@@ -34,6 +42,10 @@ public class StatisticsController {
     private ObservableList<FlowStatistics> flowStatisticsObservableList;
     private ObservableList<StepStatistics> stepStatisticsObservableList;
 
+    private Timer timer;
+    private TimerTask statisticsRefresher;
+    private BooleanProperty autoUpdate;
+
     @FXML
     public void initialize(){
         flowNameColumn.setCellValueFactory(new PropertyValueFactory<>("flowName"));
@@ -42,6 +54,7 @@ public class StatisticsController {
         stepNameColumn.setCellValueFactory(new PropertyValueFactory<>("stepName"));
         stepExecutionCounterColumn.setCellValueFactory(new PropertyValueFactory<>("startUpCount"));
         stepAverageRunTimeColumn.setCellValueFactory(new PropertyValueFactory<>("avgDuration"));
+        autoUpdate=new SimpleBooleanProperty();
         flowStatisticsObservableList= FXCollections.observableArrayList();
         stepStatisticsObservableList= FXCollections.observableArrayList();
     }
@@ -55,14 +68,29 @@ public class StatisticsController {
         stepStatisticsObservableList.clear();
     }
 
-    public void updateStatisticsTables(){
-        flowStatisticsObservableList.clear();
-        stepStatisticsObservableList.clear();
- //       StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
- //       flowStatisticsObservableList.addAll(stepperUIManager.getFlowStatistics());
- //       stepStatisticsObservableList.addAll(stepperUIManager.getStepsStatistics());
-        flowTableView.setItems(flowStatisticsObservableList);
-        stepTableView.setItems(stepStatisticsObservableList);
+    private void updateStepStatisticsTable(StepStatistics stepStatistics){
+        Platform.runLater(()->{
+            stepStatisticsObservableList.clear();
+            stepStatisticsObservableList.addAll(stepStatistics);
+            stepTableView.setItems(stepStatisticsObservableList);
+        });
+    }
+
+    private void updateFlowStatisticsTable(FlowStatistics flowStatistics){
+        Platform.runLater(()->{
+            flowStatisticsObservableList.clear();
+            flowStatisticsObservableList.addAll(flowStatistics);
+            flowTableView.setItems(flowStatisticsObservableList);
+        });
+    }
+
+    public void startAvailableRolesRefresher(){
+        statisticsRefresher=new StatisticsTableRefresher(
+                autoUpdate,
+                this::updateFlowStatisticsTable,
+                this::updateStepStatisticsTable);
+        timer=new Timer();
+        timer.schedule(statisticsRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
 }

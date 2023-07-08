@@ -4,7 +4,6 @@ import Flow.FlowDescriptor;
 import MainStage.Components.ExecutionsHistory.ExecutionsHistoryController;
 import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
 import MainStage.Components.FlowsExecution.FlowsExecutionController;
-import MainStage.Components.Statistics.StatisticsController;
 import Stepper.StepperUIManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -43,16 +42,11 @@ public class MainStepperController {
     private BorderPane executionsHistory;
     @FXML
     private ExecutionsHistoryController executionsHistoryController;
-    @FXML
-    private BorderPane statistics;
-    @FXML
-    private StatisticsController statisticsController;
 
     private SimpleStringProperty absoluteFilePath;
     private SimpleBooleanProperty fileLoaded;
 
     private Stage primaryStage;
-    private StepperUIManager stepperUIManager;
     private Thread historyAndStatisticsUpdater;
 
     public MainStepperController(){
@@ -62,7 +56,6 @@ public class MainStepperController {
 
     public void setPrimaryStage(Stage primaryStage){
         this.primaryStage=primaryStage;
-        stepperUIManager=new StepperUIManager();
     }
 
     @FXML
@@ -72,7 +65,6 @@ public class MainStepperController {
         this.flowsDefinitionController.setMainStepperController(this);
         this.flowsExecutionController.setMainStepperController(this);
         this.executionsHistoryController.setMainStepperController(this);
-        this.statisticsController.setMainStepperController(this);
     }
 
     @FXML
@@ -139,19 +131,6 @@ public class MainStepperController {
         this.flowsDefinitionController.restartUIElements();
         this.flowsExecutionController.restartUIElements();
         this.executionsHistoryController.restartUIElements();
-        this.statisticsController.restartUIElements();
-    }
-
-    public void updateStatisticsTables(){
-        this.statisticsController.updateStatisticsTables();
-    }
-
-    public StepperUIManager getStepperUIManager() {
-        return stepperUIManager;
-    }
-
-    public FlowDescriptor getFlowDescriptor(String flowName){
-        return stepperUIManager.getFlowDescriptor(flowName);
     }
 
     public void updatePastExecutionsTable(){

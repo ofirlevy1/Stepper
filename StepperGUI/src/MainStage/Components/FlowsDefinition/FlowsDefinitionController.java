@@ -53,7 +53,7 @@ public class FlowsDefinitionController {
         this.mainStepperController=mainStepperController;
     }
 
-    public void loadFlowsButtons(StepperUIManager stepperUIManager){
+    public void loadFlowsButtons(){
         flowsButtonsMap.clear();
         availableFlowsFlowPane.getChildren().clear();
 
@@ -79,7 +79,7 @@ public class FlowsDefinitionController {
 
     public void showFlowDetails(SimpleStringProperty flowName){
         currentSelectedFlow.set(flowName.get());
-        FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
+        //FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
         flowDetailsFlowPane.getChildren().clear();
         flowsDefinitionStepToolTipLabelControllerMap.clear();
 

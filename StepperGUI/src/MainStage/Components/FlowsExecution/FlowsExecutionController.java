@@ -70,7 +70,7 @@ public class FlowsExecutionController {
 
     @FXML
     void startFlowExecutionAction(ActionEvent event) {
-        StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
+        //StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
         String inputName="";
 
         try {
@@ -100,13 +100,13 @@ public class FlowsExecutionController {
 
     private void runFlow(){
         try{
-            mainStepperController.getStepperUIManager().runFlow(selectedFlow.get());
+            //mainStepperController.getStepperUIManager().runFlow(selectedFlow.get());
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
 
-    private void checkOnFlow(){
+    private void checkOnFlow(){// timer
         try{
             while (mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() < mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps()) {
                 if(mainStepperController.getStepperUIManager().hasMostRecentFlowFailed()) {
@@ -132,7 +132,7 @@ public class FlowsExecutionController {
 
     private void updateFlowDetailsFlowPane(){
         flowDetailsFlowPane.getChildren().clear();
-        FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
+        //FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
         flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
         flowDetailsFlowPane.getChildren().add(new Label());
         flowDetailsFlowPane.getChildren().add(new Label("Steps:"));
@@ -163,7 +163,7 @@ public class FlowsExecutionController {
     }
 
     private void updateContinuationDataFlowPane(){
-        StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
+        //StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
         if(!stepperUIManager.doesFlowHasContinuations(selectedFlow.get()))
             return;
         continuationDataFlowPane.getChildren().clear();
@@ -177,7 +177,7 @@ public class FlowsExecutionController {
     }
 
     private void loadFlowContinuation(String flowName){
-        HashMap<String ,String> dataMap=mainStepperController.getStepperUIManager().getFlowContinuationMap(selectedFlow.get(), flowName);
+      //  HashMap<String ,String> dataMap=mainStepperController.getStepperUIManager().getFlowContinuationMap(selectedFlow.get(), flowName);
         loadFlowsExecutionInputsRerun(flowName,dataMap);
     }
 
@@ -190,7 +190,7 @@ public class FlowsExecutionController {
     }
 
     public void loadFlowsExecutionInputs(String flowName){
-        StepperUIManager stepperUIManager;
+        //StepperUIManager stepperUIManager;
         setUpFlowExecutionGui(flowName);
         if(flowName.isEmpty())
             return;
