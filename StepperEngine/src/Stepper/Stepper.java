@@ -436,4 +436,11 @@ public class Stepper {
         validateThatRoleExists(roleName);
         return getRoleByName(roleName).getRoleDescriptor(getAllUsersWithGivenRole(roleName));
     }
+
+    public void addNewRole(String roleName, String description) {
+        if(isRoleExists(roleName))
+            throw new RuntimeException("An attempt was made to add a role that already exist! please choose a different role name");
+
+        roles.add(new Role(roleName, description));
+    }
 }

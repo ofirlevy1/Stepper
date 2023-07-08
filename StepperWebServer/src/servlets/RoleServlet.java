@@ -4,6 +4,8 @@ package servlets;
 import Stepper.StepperUIManager;
 import Users.RoleDescriptor;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -48,4 +50,33 @@ public class RoleServlet extends HttpServlet {
         Gson gson = new Gson();
         resp.getWriter().println(gson.toJson(roleDescriptor));
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = SessionUtils.getUsername(req);
+        StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
+
+        if (username == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("The client is not logged in! please login first (/login)");
+            return;
+        }
+
+        Gson gson = new Gson();
+
+        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
+
+        String roleName = requestBodyJsonObject.get("role_name").getAsString();
+        String roleDescription = requestBodyJsonObject.get("role_description").getAsString();
+
+        try {
+            stepperUIManager.addNewRole(roleName, roleDescription);
+        }
+        catch(Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println(e.getMessage());
+        }
+
+    }
+
 }
