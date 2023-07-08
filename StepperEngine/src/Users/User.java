@@ -64,4 +64,16 @@ public class User {
         }
         return false;
     }
+
+    public UserDescriptor getUserDescriptor() {
+        UserDescriptor userDescriptor = new UserDescriptor();
+        userDescriptor.setName(this.name);
+        userDescriptor.setNumberOfPermittedFlows(getAllPermittedFlowsNames().size());
+        userDescriptor.setNumberOfExecutedFlows(executedFlowsIDs.size());
+        HashSet<String> rolesNames = new HashSet<>();
+        for(Role role : roles)
+            rolesNames.add(role.getName());
+        userDescriptor.setRoles(rolesNames);
+        return userDescriptor;
+    }
 }

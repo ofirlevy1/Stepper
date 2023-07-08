@@ -7,6 +7,7 @@ import Flow.*;
 import RunHistory.FlowRunHistory;
 import Steps.*;
 import Users.User;
+import Users.UserDescriptor;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
@@ -140,4 +141,6 @@ public class StepperUIManager {
     }
 
     public void addUser(String username) {stepper.addUser(username);}
+
+    public UserDescriptor getUserDescriptor(String userName) {return stepper.getUserDescriptor(userName);}
 }

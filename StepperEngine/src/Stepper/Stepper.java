@@ -19,6 +19,7 @@ import Steps.*;
 import Exceptions.*;
 import Users.Role;
 import Users.User;
+import Users.UserDescriptor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -379,5 +380,19 @@ public class Stepper {
         if(isUserExists(username))
             throw new RuntimeException("An attempt was made to add a user that already exists in the system! ('" + username + "')");
         users.add(new User(username));
+    }
+
+    public UserDescriptor getUserDescriptor(String userName) {
+        if(!isUserExists(userName))
+            throw new RuntimeException("Client requested user information about a user that doesn't exist - '" + userName + "'");
+        return getUserByName(userName).getUserDescriptor();
+    }
+
+    private User getUserByName(String userName) {
+        for(User user : users) {
+            if(user.getName().equals(userName))
+                return user;
+        }
+        throw new RuntimeException("'getUserByName' was called on a user that doesn't exist - " + userName + "'");
     }
 }
