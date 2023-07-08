@@ -19,13 +19,12 @@ import Steps.*;
 import Exceptions.*;
 import Users.Role;
 import Users.User;
+import Users.UserDescriptor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,11 +41,11 @@ public class Stepper {
     private HashSet<User> users;
     private HashSet<Role> roles;
 
-    public Stepper(String xmlFilePath, String username) throws FileNotFoundException, JAXBException{
+    public Stepper(String xmlString, String username) throws FileNotFoundException, JAXBException{
         if(!isUserAllowedToLoadNewStepperFile(username))
             throw new RuntimeException("Non-admin user '" + username + " has tried to load a new file into the system.");
-        validatePathPointsToXMLFile(xmlFilePath);
-        stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
+        //validatePathPointsToXMLFile(xmlFilePath);
+        stStepper = deserializeFromInputStream(new ByteArrayInputStream(xmlString.getBytes()));
         validateFlowNames(stStepper);
         flowsDefinitions = new HashSet<>();
         flows = new Vector<Flow>();
@@ -74,6 +73,12 @@ public class Stepper {
     }
 
     private STStepper deserializeFrom(FileInputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance("Generated");
+        Unmarshaller u = jc.createUnmarshaller();
+        return (STStepper) u.unmarshal(in);
+    }
+
+    private STStepper deserializeFromInputStream(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance("Generated");
         Unmarshaller u = jc.createUnmarshaller();
         return (STStepper) u.unmarshal(in);
@@ -349,11 +354,75 @@ public class Stepper {
         return result;
     }
 
-    public HashSet<User> getAllUsers() {
-        return (HashSet<User>)users.clone();
+    public HashSet<String> getAllUsersNames() {
+
+        HashSet<String> userNames = new HashSet<>();
+        for(User user : users) {
+            userNames.add(user.getName());
+        }
+        return userNames;
     }
 
+    // This is static so that it can be called even when the Stepper object is not loaded yet (the first time).
     public static boolean isUserAllowedToLoadNewStepperFile(String username) {
         return username.equals("admin");
+    }
+
+    public boolean isUserExists(String username) {
+        for(User user : users) {
+            if(user.getName().equals(username))
+                return true;
+        }
+        return false;
+    }
+
+    public void addUser(String username) {
+        if(isUserExists(username))
+            throw new RuntimeException("An attempt was made to add a user that already exists in the system! ('" + username + "')");
+        users.add(new User(username));
+    }
+
+    public UserDescriptor getUserDescriptor(String userName) {
+        validateThatUserExists(userName);
+        return getUserByName(userName).getUserDescriptor();
+    }
+
+    private User getUserByName(String userName) {
+        for(User user : users) {
+            if(user.getName().equals(userName))
+                return user;
+        }
+        throw new RuntimeException("'getUserByName' was called on a user that doesn't exist - " + userName + "'");
+    }
+
+    public void assignRoleToUser(String username, String roleName) {
+        validateThatUserExists(username);
+        if(!isRoleExists(roleName))
+            throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
+
+        getUserByName(username).addRole(getRoleByName(roleName));
+    }
+
+    public boolean isRoleExists(String roleName) {
+        for(Role role : roles) {
+            if(role.getName().equals(roleName))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isUserManager(String userName) {
+        validateThatUserExists(userName);
+        return getUserByName(userName).isManager();
+    }
+
+    private void validateThatUserExists(String userName) {
+        if(!isUserExists(userName))
+            throw new RuntimeException("User '" + userName + "' does not exist!");
+    }
+
+    public void setManager(String username, boolean value) {
+        validateThatUserExists(username);
+        getUserByName(username).setManager(value);
     }
 }

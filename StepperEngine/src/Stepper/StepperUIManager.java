@@ -7,6 +7,7 @@ import Flow.*;
 import RunHistory.FlowRunHistory;
 import Steps.*;
 import Users.User;
+import Users.UserDescriptor;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
@@ -28,6 +29,21 @@ public class StepperUIManager {
     public synchronized void LoadStepperFromXmlFile(String xmlFilePath, String username) throws FileNotFoundException, JAXBException {
         // First assigning it to a new Stepper object, to not override anything in case of failure.
         Stepper newStepper = new Stepper(xmlFilePath, username);
+
+        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
+
+        if(!isLoaded) {
+            stepper = newStepper;
+            isLoaded = true;
+        }
+        else
+            stepper.addFlowDefinitionsFromANewStepper(newStepper);
+
+    }
+
+    public synchronized void LoadStepperFromXmlString(String xmlString, String username) throws FileNotFoundException, JAXBException {
+        // First assigning it to a new Stepper object, to not override anything in case of failure.
+        Stepper newStepper = new Stepper(xmlString, username);
 
         // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
 
@@ -114,9 +130,29 @@ public class StepperUIManager {
         return stepper.getAllUsersWithGivenRole(roleName);
     }
 
-    public HashSet<User> getAllUsers() { return stepper.getAllUsers();}
+    public HashSet<String> getAllUsersNames() { return stepper.getAllUsersNames();}
 
     public boolean isUserAllowedToLoadNewStepperFile(String username) {
         return stepper.isUserAllowedToLoadNewStepperFile(username);
     }
+
+    public boolean isUserExists(String username) {
+        return stepper.isUserExists(username);
+    }
+
+    public void addUser(String username) {stepper.addUser(username);}
+
+    public UserDescriptor getUserDescriptor(String userName) {return stepper.getUserDescriptor(userName);}
+
+    public void assignRoleToUser(String username, String roleName) {
+        stepper.assignRoleToUser(username, roleName);
+    }
+    public boolean isUserManager(String userName) {
+        return stepper.isUserManager(userName);
+    }
+    public void setManager(String username, boolean value) {
+        stepper.setManager(username, value);
+    }
+
+
 }
