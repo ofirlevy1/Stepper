@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
                 usernameFromParameter = usernameFromParameter.trim();
 
                 synchronized (this) {
-                    // user 'admin' is the only when that can create multiple sessions based on the same username
+                    // user 'admin' is the only one that can create multiple sessions based on the same username
                     // so that admin can login more than once and all it's data will be preserved.
                     if(usernameFromParameter.equals("admin")) {
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
