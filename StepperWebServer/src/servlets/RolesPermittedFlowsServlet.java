@@ -3,7 +3,6 @@ package servlets;
 
 import Stepper.StepperUIManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
@@ -15,10 +14,9 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
-import java.util.HashSet;
 
-@WebServlet(name = "User Servlet", urlPatterns = "/set_role_permitted_flows")
-public class SerRolePermittedFlowsServlet extends HttpServlet {
+@WebServlet(name = "Role's Permitted Flows Servlet", urlPatterns = "/roles_permitted_flows")
+public class RolesPermittedFlowsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);

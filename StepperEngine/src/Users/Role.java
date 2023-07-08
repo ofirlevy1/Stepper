@@ -44,10 +44,12 @@ public class Role {
         roleDescriptor.setName(this.name);
         roleDescriptor.setDescription(this.description);
         roleDescriptor.setUsersWithThisRole(allUsersWithRole);
+        roleDescriptor.setPermittedFlowsNames((HashSet<String>)this.permittedFlowsNames.clone());
         return roleDescriptor;
     }
 
     public void setPermittedFlows(String[] flowNames) {
         permittedFlowsNames = new HashSet<>(Arrays.asList(flowNames));
     }
+
 }

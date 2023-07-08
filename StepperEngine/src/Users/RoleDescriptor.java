@@ -6,6 +6,7 @@ public class RoleDescriptor {
     private String name;
     private String description;
     private HashSet<String> usersWithThisRole;
+    private HashSet<String> permittedFlowsNames;
 
     public String getName() {
         return name;
@@ -29,5 +30,13 @@ public class RoleDescriptor {
 
     public void setUsersWithThisRole(HashSet<String> usersWithThisRole) {
         this.usersWithThisRole = usersWithThisRole;
+    }
+
+    public HashSet<String> getPermittedFlowsNames() {
+        return permittedFlowsNames;
+    }
+
+    public void setPermittedFlowsNames(HashSet<String> permittedFlowsNames) {
+        this.permittedFlowsNames = permittedFlowsNames;
     }
 }
