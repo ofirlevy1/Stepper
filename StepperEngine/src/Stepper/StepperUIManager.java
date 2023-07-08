@@ -143,4 +143,8 @@ public class StepperUIManager {
     public void addUser(String username) {stepper.addUser(username);}
 
     public UserDescriptor getUserDescriptor(String userName) {return stepper.getUserDescriptor(userName);}
+
+    public void assignRoleToUser(String username, String roleName) {
+        stepper.assignRoleToUser(username, roleName);
+    }
 }

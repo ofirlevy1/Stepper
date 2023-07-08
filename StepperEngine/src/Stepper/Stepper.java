@@ -395,4 +395,21 @@ public class Stepper {
         }
         throw new RuntimeException("'getUserByName' was called on a user that doesn't exist - " + userName + "'");
     }
+
+    public void assignRoleToUser(String username, String roleName) {
+        if(!isUserExists(username))
+            throw new RuntimeException("An attempt was made to assign a tole to a user that doesn't exist - '" + username + "'");
+        if(!isRoleExists(roleName))
+            throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
+
+        getUserByName(username).addRole(getRoleByName(roleName));
+    }
+
+    public boolean isRoleExists(String roleName) {
+        for(Role role : roles) {
+            if(role.getName().equals(roleName))
+                return true;
+        }
+        return false;
+    }
 }
