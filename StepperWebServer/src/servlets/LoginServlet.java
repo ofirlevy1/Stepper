@@ -42,7 +42,6 @@ public class LoginServlet extends HttpServlet {
 
                         //set the username in a session so that it will be available on each request
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
-
                         response.setStatus(HttpServletResponse.SC_OK);
                     }
                 }

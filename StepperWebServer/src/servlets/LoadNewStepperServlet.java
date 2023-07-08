@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
+import utils.SessionUtils;
+
 import java.util.Base64.Decoder;
 import java.io.IOException;
 
@@ -17,14 +19,14 @@ public class LoadNewStepperServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter(Constants.USERNAME);
+        String username = SessionUtils.getUsername(req);
         String filePathBase64 = req.getParameter("file_path_base64");
 
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
 
         if (username == null || filePathBase64 == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().println("either 'username' or 'file_path' parameters are missing in the request!");
+            resp.getWriter().println("either 'username'(or active session), or 'file_path' parameters are missing in the request!");
             return;
         }
 

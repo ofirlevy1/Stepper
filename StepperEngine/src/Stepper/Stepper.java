@@ -353,6 +353,7 @@ public class Stepper {
         return (HashSet<User>)users.clone();
     }
 
+    // This is static so that it can be called even when the Stepper object is not loaded yet (the first time).
     public static boolean isUserAllowedToLoadNewStepperFile(String username) {
         return username.equals("admin");
     }
