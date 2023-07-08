@@ -147,7 +147,7 @@ public class MainMenu {
             if(doesStringRepresentANumber(userInput, 0))
                 return;
             try {
-                stepperUIManager.LoadStepperFromXmlFile(userInput);
+                stepperUIManager.LoadStepperFromXmlFile(userInput, "admin");
             }
             catch(PathDoesNotPointToXMLFileException e) {
                 System.out.println("The given path is not an XML file! Please enter a valid path");

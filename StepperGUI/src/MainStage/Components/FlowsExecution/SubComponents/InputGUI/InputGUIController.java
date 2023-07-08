@@ -1,6 +1,6 @@
 package MainStage.Components.FlowsExecution.SubComponents.InputGUI;
 
-import MainStage.Components.FlowsExecution.FlowsExecutionController;
+//import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -16,7 +16,7 @@ public class InputGUIController {
     @FXML
     private Label inputNameLabel;
 
-    private FlowsExecutionController flowsExecutionController;
+//    private FlowsExecutionController flowsExecutionController;
 
     private SimpleStringProperty inputName;
     private int inputIndex;
@@ -28,9 +28,9 @@ public class InputGUIController {
         inputNameLabel.textProperty().bind(inputName);
     }
 
-    public void setFlowsExecutionController(FlowsExecutionController flowsExecutionController) {
-        this.flowsExecutionController = flowsExecutionController;
-    }
+//    public void setFlowsExecutionController(FlowsExecutionController flowsExecutionController) {
+////        this.flowsExecutionController = flowsExecutionController;
+//    }
 
     public void setInputLabel(String name){
         inputName.set(name);

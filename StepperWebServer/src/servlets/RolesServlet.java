@@ -2,6 +2,7 @@ package servlets;
 
 
 import Stepper.StepperUIManager;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -34,7 +35,8 @@ public class RolesServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
         }
-
-        resp.getWriter().println(rolesNames);
+        Gson gson = new Gson();
+        resp.setContentType("application/json");
+        resp.getWriter().println(gson.toJson(rolesNames));
     }
 }

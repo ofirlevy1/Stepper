@@ -3,7 +3,7 @@ package MainStage.Components.Main;
 import Flow.FlowDescriptor;
 import MainStage.Components.ExecutionsHistory.ExecutionsHistoryController;
 import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
-import MainStage.Components.FlowsExecution.FlowsExecutionController;
+//import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import MainStage.Components.Statistics.StatisticsController;
 import Stepper.StepperUIManager;
 import javafx.application.Platform;
@@ -37,8 +37,8 @@ public class MainStepperController {
     private FlowsDefinitionController flowsDefinitionController;
     @FXML
     private BorderPane flowsExecution;
-    @FXML
-    private FlowsExecutionController flowsExecutionController;
+    //@FXML
+    //private FlowsExecutionController flowsExecutionController;
     @FXML
     private BorderPane executionsHistory;
     @FXML
@@ -70,7 +70,7 @@ public class MainStepperController {
         filePathLabel.textProperty().bind(absoluteFilePath);
         selectionTabPane.disableProperty().bind(fileLoaded.not());
         this.flowsDefinitionController.setMainStepperController(this);
-        this.flowsExecutionController.setMainStepperController(this);
+        //this.flowsExecutionController.setMainStepperController(this);
         this.executionsHistoryController.setMainStepperController(this);
         this.statisticsController.setMainStepperController(this);
     }
@@ -86,7 +86,7 @@ public class MainStepperController {
         if(historyAndStatisticsUpdater!=null)
             historyAndStatisticsUpdater.interrupt();
         try {
-            stepperUIManager.LoadStepperFromXmlFile(selectedFile.getAbsolutePath());
+            stepperUIManager.LoadStepperFromXmlFile(selectedFile.getAbsolutePath(), "admin");
         }
         catch (Exception e) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -112,8 +112,8 @@ public class MainStepperController {
 
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
-        flowsExecutionController.loadFlowsExecutionInputs(flowName);
-        flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
+//        flowsExecutionController.loadFlowsExecutionInputs(flowName);
+//        flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
     }
 
     public void updateHistoryAndStatistics(){
@@ -132,12 +132,12 @@ public class MainStepperController {
 
     public void rerunFlow(String flowName, HashMap<String ,String> freeInputsMap){
         selectionTabPane.getSelectionModel().select(Tabs.FlowsExecutionTab.ordinal());
-        flowsExecutionController.loadFlowsExecutionInputsRerun(flowName, freeInputsMap);
+//        flowsExecutionController.loadFlowsExecutionInputsRerun(flowName, freeInputsMap);
     }
 
     public void restartUIElements(){
         this.flowsDefinitionController.restartUIElements();
-        this.flowsExecutionController.restartUIElements();
+//        this.flowsExecutionController.restartUIElements();
         this.executionsHistoryController.restartUIElements();
         this.statisticsController.restartUIElements();
     }
@@ -158,9 +158,9 @@ public class MainStepperController {
         this.executionsHistoryController.updateExecutionsTable();
     }
 
-    public ObservableList<Node> getFlowRunHistoryChildrenNodesFromFlowsExecution(){
-        return this.flowsExecutionController.getExecutionDetailsFlowPaneChildrenNodes();
-    }
+//    public ObservableList<Node> getFlowRunHistoryChildrenNodesFromFlowsExecution(){
+//        return this.flowsExecutionController.getExecutionDetailsFlowPaneChildrenNodes();
+//    }
 
     public enum Tabs{
         FlowsDefinitionTab,
