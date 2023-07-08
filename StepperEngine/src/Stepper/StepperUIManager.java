@@ -40,6 +40,21 @@ public class StepperUIManager {
 
     }
 
+    public synchronized void LoadStepperFromXmlString(String xmlString, String username) throws FileNotFoundException, JAXBException {
+        // First assigning it to a new Stepper object, to not override anything in case of failure.
+        Stepper newStepper = new Stepper(xmlString, username);
+
+        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
+
+        if(!isLoaded) {
+            stepper = newStepper;
+            isLoaded = true;
+        }
+        else
+            stepper.addFlowDefinitionsFromANewStepper(newStepper);
+
+    }
+
     public ArrayList<String> getFlowNames(){
         return stepper.getFlowNames();
     }

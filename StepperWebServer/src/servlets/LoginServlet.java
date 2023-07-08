@@ -37,6 +37,7 @@ public class LoginServlet extends HttpServlet {
                     if(usernameFromParameter.equals("admin")) {
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
                         response.setStatus(HttpServletResponse.SC_OK);
+                        return;
                     }
                     if (stepperUIManager.isUserExists(usernameFromParameter)) {
                         response.setStatus(HttpServletResponse.SC_CONFLICT);

@@ -23,9 +23,7 @@ import Users.User;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,11 +40,11 @@ public class Stepper {
     private HashSet<User> users;
     private HashSet<Role> roles;
 
-    public Stepper(String xmlFilePath, String username) throws FileNotFoundException, JAXBException{
+    public Stepper(String xmlString, String username) throws FileNotFoundException, JAXBException{
         if(!isUserAllowedToLoadNewStepperFile(username))
             throw new RuntimeException("Non-admin user '" + username + " has tried to load a new file into the system.");
-        validatePathPointsToXMLFile(xmlFilePath);
-        stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
+        //validatePathPointsToXMLFile(xmlFilePath);
+        stStepper = deserializeFromInputStream(new ByteArrayInputStream(xmlString.getBytes()));
         validateFlowNames(stStepper);
         flowsDefinitions = new HashSet<>();
         flows = new Vector<Flow>();
@@ -74,6 +72,12 @@ public class Stepper {
     }
 
     private STStepper deserializeFrom(FileInputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance("Generated");
+        Unmarshaller u = jc.createUnmarshaller();
+        return (STStepper) u.unmarshal(in);
+    }
+
+    private STStepper deserializeFromInputStream(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance("Generated");
         Unmarshaller u = jc.createUnmarshaller();
         return (STStepper) u.unmarshal(in);
