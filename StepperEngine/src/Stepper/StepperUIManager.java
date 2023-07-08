@@ -147,4 +147,12 @@ public class StepperUIManager {
     public void assignRoleToUser(String username, String roleName) {
         stepper.assignRoleToUser(username, roleName);
     }
+    public boolean isUserManager(String userName) {
+        return stepper.isUserManager(userName);
+    }
+    public void setManager(String username, boolean value) {
+        stepper.setManager(username, value);
+    }
+
+
 }

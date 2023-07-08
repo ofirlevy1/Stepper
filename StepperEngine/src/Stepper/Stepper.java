@@ -383,8 +383,7 @@ public class Stepper {
     }
 
     public UserDescriptor getUserDescriptor(String userName) {
-        if(!isUserExists(userName))
-            throw new RuntimeException("Client requested user information about a user that doesn't exist - '" + userName + "'");
+        validateThatUserExists(userName);
         return getUserByName(userName).getUserDescriptor();
     }
 
@@ -397,8 +396,7 @@ public class Stepper {
     }
 
     public void assignRoleToUser(String username, String roleName) {
-        if(!isUserExists(username))
-            throw new RuntimeException("An attempt was made to assign a tole to a user that doesn't exist - '" + username + "'");
+        validateThatUserExists(username);
         if(!isRoleExists(roleName))
             throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
 
@@ -411,5 +409,20 @@ public class Stepper {
                 return true;
         }
         return false;
+    }
+
+    public boolean isUserManager(String userName) {
+        validateThatUserExists(userName);
+        return getUserByName(userName).isManager();
+    }
+
+    private void validateThatUserExists(String userName) {
+        if(!isUserExists(userName))
+            throw new RuntimeException("User '" + userName + "' does not exist!");
+    }
+
+    public void setManager(String username, boolean value) {
+        validateThatUserExists(username);
+        getUserByName(username).setManager(value);
     }
 }
