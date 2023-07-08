@@ -158,4 +158,8 @@ public class StepperUIManager {
     public RoleDescriptor getRoleDescriptor(String roleName) {return stepper.getRoleDescriptor(roleName);}
 
     public void addNewRole(String roleName, String description) {stepper.addNewRole(roleName, description);}
+
+    public void setPermittedFlowsForRole(String roleName, String[] flowNames) {
+        stepper.setPermittedFlowsForRole(roleName, flowNames);
+    }
 }

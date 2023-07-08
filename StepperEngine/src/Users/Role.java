@@ -1,6 +1,7 @@
 package Users;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class Role {
@@ -44,5 +45,9 @@ public class Role {
         roleDescriptor.setDescription(this.description);
         roleDescriptor.setUsersWithThisRole(allUsersWithRole);
         return roleDescriptor;
+    }
+
+    public void setPermittedFlows(String[] flowNames) {
+        permittedFlowsNames = new HashSet<>(Arrays.asList(flowNames));
     }
 }

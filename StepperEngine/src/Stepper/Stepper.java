@@ -412,6 +412,14 @@ public class Stepper {
         return false;
     }
 
+    public boolean isFlowExists(String flowName) {
+        for(Flow flow : flowsDefinitions) {
+            if(flow.getName().equals(flowName))
+                return true;
+        }
+        return false;
+    }
+
     public boolean isUserManager(String userName) {
         validateThatUserExists(userName);
         return getUserByName(userName).isManager();
@@ -426,6 +434,12 @@ public class Stepper {
         if(!isRoleExists(roleName))
             throw new RuntimeException("Role '" + roleName + "' does not exist!");
     }
+
+    private void validateThatFlowExists(String flowName) {
+        if(!isFlowExists(flowName))
+            throw new RuntimeException("Flow '" + flowName + "' does not exist!");
+    }
+
 
     public void setManager(String username, boolean value) {
         validateThatUserExists(username);
@@ -442,5 +456,13 @@ public class Stepper {
             throw new RuntimeException("An attempt was made to add a role that already exist! please choose a different role name");
 
         roles.add(new Role(roleName, description));
+    }
+
+    public void setPermittedFlowsForRole(String roleName, String[] flowNames) {
+        validateThatRoleExists(roleName);
+        for(String flowName : flowNames) {
+            validateThatFlowExists(flowName);
+        }
+        getRoleByName(roleName).setPermittedFlows(flowNames);
     }
 }
