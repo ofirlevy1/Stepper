@@ -18,6 +18,7 @@ import RunHistory.FlowRunHistory;
 import Steps.*;
 import Exceptions.*;
 import Users.Role;
+import Users.RoleDescriptor;
 import Users.User;
 import Users.UserDescriptor;
 
@@ -310,8 +311,8 @@ public class Stepper {
         roles = new HashSet<>();
         users = new HashSet<>();
 
-        Role readOnlyRole = new Role("Read Only Flows");
-        Role allFlowsRole = new Role("All Flows");
+        Role readOnlyRole = new Role("Read Only Flows", "This role have access to all the Read-Only flows (flows that doesn't make changes in the system).");
+        Role allFlowsRole = new Role("All Flows", "This role has access to all of the flows in the system.");
 
         for(Flow flowDefinition : flowsDefinitions) {
             allFlowsRole.addPermittedFlowName(flowDefinition.getName());
@@ -421,8 +422,18 @@ public class Stepper {
             throw new RuntimeException("User '" + userName + "' does not exist!");
     }
 
+    private void validateThatRoleExists(String roleName) {
+        if(!isRoleExists(roleName))
+            throw new RuntimeException("Role '" + roleName + "' does not exist!");
+    }
+
     public void setManager(String username, boolean value) {
         validateThatUserExists(username);
         getUserByName(username).setManager(value);
+    }
+
+    public RoleDescriptor getRoleDescriptor(String roleName) {
+        validateThatRoleExists(roleName);
+        return getRoleByName(roleName).getRoleDescriptor(getAllUsersWithGivenRole(roleName));
     }
 }
