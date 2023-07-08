@@ -24,6 +24,9 @@ public class Constants {
     public final static String GET_ROLES = FULL_SERVER_PATH + "/roles";
     public final static String GET_USERS = FULL_SERVER_PATH + "/users";
 
+
+    public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/flow_descriptors";
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }

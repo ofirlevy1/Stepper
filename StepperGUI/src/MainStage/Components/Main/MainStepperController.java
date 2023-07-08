@@ -23,11 +23,12 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class MainStepperController {
-
     @FXML
-    private Label filePathLabel;
+    private Label userNameLabel;
     @FXML
-    private Button loadFileButton;
+    private Label isManagerLabel;
+    @FXML
+    private Label rolesLabel;
     @FXML
     private TabPane selectionTabPane;
     @FXML
@@ -43,15 +44,10 @@ public class MainStepperController {
     @FXML
     private ExecutionsHistoryController executionsHistoryController;
 
-    private SimpleStringProperty absoluteFilePath;
-    private SimpleBooleanProperty fileLoaded;
-
     private Stage primaryStage;
-    private Thread historyAndStatisticsUpdater;
+
 
     public MainStepperController(){
-        absoluteFilePath=new SimpleStringProperty("File Not Loaded");
-        fileLoaded=new SimpleBooleanProperty(false);
     }
 
     public void setPrimaryStage(Stage primaryStage){
@@ -60,46 +56,9 @@ public class MainStepperController {
 
     @FXML
     private void initialize(){
-        filePathLabel.textProperty().bind(absoluteFilePath);
-        selectionTabPane.disableProperty().bind(fileLoaded.not());
         this.flowsDefinitionController.setMainStepperController(this);
         this.flowsExecutionController.setMainStepperController(this);
         this.executionsHistoryController.setMainStepperController(this);
-    }
-
-    @FXML
-    void loadFileButtonAction(ActionEvent event) {
-        FileChooser fileChooser=new FileChooser();
-        fileChooser.setTitle("Select xml file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        if (selectedFile == null)
-            return;
-        if(historyAndStatisticsUpdater!=null)
-            historyAndStatisticsUpdater.interrupt();
-        try {
-            stepperUIManager.LoadStepperFromXmlFile(selectedFile.getAbsolutePath());
-        }
-        catch (Exception e) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("File Invalid");
-            errorAlert.setContentText(e.getMessage());
-            absoluteFilePath.set("File Not Loaded");
-            fileLoaded.set(false);
-            errorAlert.show();
-            if(historyAndStatisticsUpdater!=null) {
-                historyAndStatisticsUpdater = new Thread(this::updateHistoryAndStatistics);
-                historyAndStatisticsUpdater.start();
-            }
-            return;
-        }
-        restartUIElements();
-        flowsDefinitionController.loadFlowsButtons(stepperUIManager); //need to obtain all the flow descriptors;
-        String absolutPath=selectedFile.getAbsolutePath();
-        absoluteFilePath.set(absolutPath);
-        fileLoaded.set(true);
-        historyAndStatisticsUpdater=new Thread(this::updateHistoryAndStatistics);
-        historyAndStatisticsUpdater.start();
     }
 
     public void switchTabs(Tabs tab,String flowName){
@@ -109,17 +68,6 @@ public class MainStepperController {
     }
 
     public void updateHistoryAndStatistics(){
-        try{
-            while (true) {
-                Thread.sleep(1000);
-                if (stepperUIManager.getFlowsRunHistories() != null && !stepperUIManager.getFlowsRunHistories().isEmpty())
-                    Platform.runLater(() -> executionsHistoryController.updateExecutionsTable());
-                if (stepperUIManager.getFlowStatistics() != null && !stepperUIManager.getFlowStatistics().isEmpty())
-                    Platform.runLater(() -> statisticsController.updateStatisticsTables());
-            }
-        }
-        catch (InterruptedException e){
-        }
     }
 
     public void rerunFlow(String flowName, HashMap<String ,String> freeInputsMap){
