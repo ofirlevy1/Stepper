@@ -32,6 +32,12 @@ public class LoginServlet extends HttpServlet {
                 usernameFromParameter = usernameFromParameter.trim();
 
                 synchronized (this) {
+                    // user 'admin' is the only when that can create multiple sessions based on the same username
+                    // so that admin can login more than once and all it's data will be preserved.
+                    if(usernameFromParameter.equals("admin")) {
+                        request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    }
                     if (stepperUIManager.isUserExists(usernameFromParameter)) {
                         response.setStatus(HttpServletResponse.SC_CONFLICT);
                         response.getWriter().println("Username " + usernameFromParameter + " already exists. Please enter a different username.");
