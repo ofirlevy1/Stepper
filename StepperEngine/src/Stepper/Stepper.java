@@ -353,8 +353,13 @@ public class Stepper {
         return result;
     }
 
-    public HashSet<User> getAllUsers() {
-        return (HashSet<User>)users.clone();
+    public HashSet<String> getAllUsersNames() {
+
+        HashSet<String> userNames = new HashSet<>();
+        for(User user : users) {
+            userNames.add(user.getName());
+        }
+        return userNames;
     }
 
     // This is static so that it can be called even when the Stepper object is not loaded yet (the first time).

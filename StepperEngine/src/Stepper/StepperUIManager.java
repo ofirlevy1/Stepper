@@ -129,7 +129,7 @@ public class StepperUIManager {
         return stepper.getAllUsersWithGivenRole(roleName);
     }
 
-    public HashSet<User> getAllUsers() { return stepper.getAllUsers();}
+    public HashSet<String> getAllUsersNames() { return stepper.getAllUsersNames();}
 
     public boolean isUserAllowedToLoadNewStepperFile(String username) {
         return stepper.isUserAllowedToLoadNewStepperFile(username);
