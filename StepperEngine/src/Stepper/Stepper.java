@@ -42,7 +42,9 @@ public class Stepper {
     private HashSet<User> users;
     private HashSet<Role> roles;
 
-    public Stepper(String xmlFilePath) throws FileNotFoundException, JAXBException{
+    public Stepper(String xmlFilePath, String username) throws FileNotFoundException, JAXBException{
+        if(!isUserAllowedToLoadNewStepperFile(username))
+            throw new RuntimeException("Non-admin user '" + username + " has tried to load a new file into the system.");
         validatePathPointsToXMLFile(xmlFilePath);
         stStepper = deserializeFrom(new FileInputStream(new File(xmlFilePath)));
         validateFlowNames(stStepper);
@@ -345,5 +347,13 @@ public class Stepper {
                 result.add(user.getName());
         }
         return result;
+    }
+
+    public HashSet<User> getAllUsers() {
+        return (HashSet<User>)users.clone();
+    }
+
+    public static boolean isUserAllowedToLoadNewStepperFile(String username) {
+        return username.equals("admin");
     }
 }
