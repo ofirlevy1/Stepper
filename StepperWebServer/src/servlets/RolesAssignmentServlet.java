@@ -2,6 +2,9 @@ package servlets;
 
 
 import Stepper.StepperUIManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,15 +15,12 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "Roles Assignment Servlet", urlPatterns = "/assign_role")
+@WebServlet(name = "Roles Assignment Servlet", urlPatterns = "/set_user_assigned_roles")
 public class RolesAssignmentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
-
-        String targetUser = req.getParameter("target_user");
-        String roleToAssign = req.getParameter("role_to_assign");
 
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -28,15 +28,14 @@ public class RolesAssignmentServlet extends HttpServlet {
             return;
         }
 
-        if( targetUser == null || roleToAssign == null) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().println("Either 'target_user' or 'role_to_assign' query parameters are missing in the request.");
-            return;
-        }
-
+        Gson gson = new Gson();
+        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
+        String targetUser = requestBodyJsonObject.get("username").getAsString();
+        JsonElement rolesJsonElement = requestBodyJsonObject.get("roles_to_assign");
+        String[] rolesToAssign = gson.fromJson(rolesJsonElement, String[].class);
 
         try {
-            stepperUIManager.assignRoleToUser(targetUser, roleToAssign);
+            stepperUIManager.setUsersAssignedRoles(targetUser, rolesToAssign);
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

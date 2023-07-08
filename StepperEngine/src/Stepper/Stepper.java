@@ -465,4 +465,15 @@ public class Stepper {
         }
         getRoleByName(roleName).setPermittedFlows(flowNames);
     }
+
+    public void setUsersAssignedRoles(String username, String[] rolesNames) {
+        validateThatUserExists(username);
+        HashSet<Role> roles = new HashSet<>();
+        for(String roleName : rolesNames) {
+            validateThatRoleExists(roleName);
+            roles.add(getRoleByName(roleName));
+        }
+        getUserByName(username).setRoles(roles);
+
+    }
 }

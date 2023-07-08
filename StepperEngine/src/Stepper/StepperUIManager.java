@@ -163,4 +163,7 @@ public class StepperUIManager {
         stepper.setPermittedFlowsForRole(roleName, flowNames);
     }
 
+    public void setUsersAssignedRoles(String username, String[] rolesToAssign) {
+        stepper.setUsersAssignedRoles(username, rolesToAssign);
+    }
 }
