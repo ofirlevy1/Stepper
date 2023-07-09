@@ -46,6 +46,7 @@ public class FlowDescriptorServlet extends HttpServlet {
         }
 
         Gson gson = new Gson();
+        resp.setContentType("application/json");
         resp.getWriter().println(gson.toJson(flowDescriptor));
     }
 }
