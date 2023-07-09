@@ -15,8 +15,8 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "Roles Assignment Servlet", urlPatterns = "/set_user_assigned_roles")
-public class RolesAssignmentServlet extends HttpServlet {
+@WebServlet(name = "Role's Permitted Flows Servlet", urlPatterns = "/roles_permitted_flows")
+public class RolesPermittedFlowsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
@@ -29,18 +29,22 @@ public class RolesAssignmentServlet extends HttpServlet {
         }
 
         Gson gson = new Gson();
+
         JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
-        String targetUser = requestBodyJsonObject.get("username").getAsString();
-        JsonElement rolesJsonElement = requestBodyJsonObject.get("roles_to_assign");
-        String[] rolesToAssign = gson.fromJson(rolesJsonElement, String[].class);
+
+        String roleName = requestBodyJsonObject.get("role_name").getAsString();
+        JsonElement permittedFlowsJsonString = requestBodyJsonObject.get("permitted_flows");
+
+        String[] permittedFlows = gson.fromJson(permittedFlowsJsonString, String[].class);
+
+
 
         try {
-            stepperUIManager.setUsersAssignedRoles(targetUser, rolesToAssign);
+            stepperUIManager.setPermittedFlowsForRole(roleName, permittedFlows);
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
-            resp.getWriter().println(e.getStackTrace());
         }
     }
 }

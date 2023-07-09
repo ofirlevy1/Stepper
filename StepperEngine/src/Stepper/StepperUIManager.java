@@ -6,6 +6,7 @@ package Stepper;
 import Flow.*;
 import RunHistory.FlowRunHistory;
 import Steps.*;
+import Users.RoleDescriptor;
 import Users.User;
 import Users.UserDescriptor;
 
@@ -154,5 +155,15 @@ public class StepperUIManager {
         stepper.setManager(username, value);
     }
 
+    public RoleDescriptor getRoleDescriptor(String roleName) {return stepper.getRoleDescriptor(roleName);}
 
+    public void addNewRole(String roleName, String description) {stepper.addNewRole(roleName, description);}
+
+    public void setPermittedFlowsForRole(String roleName, String[] flowNames) {
+        stepper.setPermittedFlowsForRole(roleName, flowNames);
+    }
+
+    public void setUsersAssignedRoles(String username, String[] rolesToAssign) {
+        stepper.setUsersAssignedRoles(username, rolesToAssign);
+    }
 }

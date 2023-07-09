@@ -2,9 +2,6 @@ package servlets;
 
 
 import Stepper.StepperUIManager;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,13 +11,15 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.HashSet;
 
-@WebServlet(name = "Roles Assignment Servlet", urlPatterns = "/set_user_assigned_roles")
-public class RolesAssignmentServlet extends HttpServlet {
+@WebServlet(name = "Roles Servlet", urlPatterns = "/roles")
+public class RolesServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
+        HashSet<String> rolesNames = new HashSet<>();
 
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -28,19 +27,14 @@ public class RolesAssignmentServlet extends HttpServlet {
             return;
         }
 
-        Gson gson = new Gson();
-        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
-        String targetUser = requestBodyJsonObject.get("username").getAsString();
-        JsonElement rolesJsonElement = requestBodyJsonObject.get("roles_to_assign");
-        String[] rolesToAssign = gson.fromJson(rolesJsonElement, String[].class);
-
         try {
-            stepperUIManager.setUsersAssignedRoles(targetUser, rolesToAssign);
+            rolesNames = stepperUIManager.getAllRolesNames();
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
-            resp.getWriter().println(e.getStackTrace());
         }
+
+        resp.getWriter().println(rolesNames);
     }
 }

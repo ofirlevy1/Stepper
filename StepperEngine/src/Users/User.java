@@ -1,6 +1,7 @@
 package Users;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class User {
@@ -75,5 +76,9 @@ public class User {
             rolesNames.add(role.getName());
         userDescriptor.setRoles(rolesNames);
         return userDescriptor;
+    }
+
+    public void setRoles(HashSet<Role> roles) {
+        this.roles = (HashSet<Role>) roles.clone();
     }
 }
