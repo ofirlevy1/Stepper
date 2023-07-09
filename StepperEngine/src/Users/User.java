@@ -67,13 +67,16 @@ public class User {
     }
 
     public UserDescriptor getUserDescriptor() {
+        HashSet<String> permittedFlowsNames = new HashSet<>();
         UserDescriptor userDescriptor = new UserDescriptor();
         userDescriptor.setName(this.name);
-        userDescriptor.setNumberOfPermittedFlows(getAllPermittedFlowsNames().size());
         userDescriptor.setNumberOfExecutedFlows(executedFlowsIDs.size());
         HashSet<String> rolesNames = new HashSet<>();
-        for(Role role : roles)
+        for(Role role : roles) {
             rolesNames.add(role.getName());
+            permittedFlowsNames.addAll(role.getPermittedFlowsNames());
+        }
+        userDescriptor.setPermittedFlowsNames(permittedFlowsNames);
         userDescriptor.setRoles(rolesNames);
         return userDescriptor;
     }
