@@ -84,7 +84,7 @@ public class MainStepperAdminClientController {
     }
 
     private void loadXmlFile(String path){
-        String RESOURCE = "/upload-file";
+        String RESOURCE = "/upload_file";
         File f = new File(path);
         RequestBody body =
                 new MultipartBody.Builder()

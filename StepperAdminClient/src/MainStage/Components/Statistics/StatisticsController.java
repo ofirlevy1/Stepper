@@ -57,6 +57,7 @@ public class StatisticsController {
         autoUpdate=new SimpleBooleanProperty();
         flowStatisticsObservableList= FXCollections.observableArrayList();
         stepStatisticsObservableList= FXCollections.observableArrayList();
+        this.autoUpdate=new SimpleBooleanProperty(true);
     }
 
     public void setMainStepperController(MainStepperAdminClientController mainStepperController){

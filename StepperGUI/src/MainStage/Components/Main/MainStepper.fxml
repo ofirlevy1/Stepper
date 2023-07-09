@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -38,24 +40,26 @@
                               <Insets left="10.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label styleClass="stepper-title" text="Name: " GridPane.columnIndex="1" />
+                        <Label fx:id="userNameNameLabel" styleClass="stepper-title" text="Name: " GridPane.columnIndex="1" />
                         <Label fx:id="userNameLabel" GridPane.columnIndex="1">
                            <padding>
                               <Insets left="60.0" />
                            </padding>
                         </Label>
-                        <Label styleClass="stepper-title" text="Is Manager: " GridPane.columnIndex="2" />
+                        <Label fx:id="isManagerNameLabel" styleClass="stepper-title" text="Is Manager: " GridPane.columnIndex="2" />
                         <Label fx:id="isManagerLabel" GridPane.columnIndex="2">
                            <padding>
                               <Insets left="100.0" />
                            </padding>
                         </Label>
-                        <Label styleClass="stepper-title" text="Roles:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="rolesNameLabel" styleClass="stepper-title" text="Roles:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label fx:id="rolesLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets left="60.0" />
                            </GridPane.margin>
                         </Label>
+                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <TextField fx:id="userNameTextField" promptText="Enter Username Here" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </top>

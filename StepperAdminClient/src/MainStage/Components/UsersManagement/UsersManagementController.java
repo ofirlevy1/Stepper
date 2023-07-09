@@ -4,6 +4,7 @@ import MainStage.Components.Main.MainStepperAdminClientController;
 import MainStage.Components.util.Constants;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -28,6 +29,11 @@ public class UsersManagementController {
     private Timer timer;
     private TimerTask usersRefresher;
     private BooleanProperty autoUpdate;
+
+    @FXML
+    private void initialize(){
+        this.autoUpdate=new SimpleBooleanProperty(true);
+    }
 
     @FXML
     void saveButtonAction(ActionEvent event) {

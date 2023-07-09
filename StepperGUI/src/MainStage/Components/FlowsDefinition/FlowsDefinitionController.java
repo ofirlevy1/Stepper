@@ -7,28 +7,20 @@ import MainStage.Components.FlowsDefinition.SubComponents.FlowDefinitionButtonCo
 import MainStage.Components.FlowsDefinition.SubComponents.FlowsDefinitionStepToolTipLabelController;
 import MainStage.Components.Main.MainStepperController;
 import MainStage.Components.util.Constants;
-import MainStage.Components.util.HttpClientUtil;
 import Steps.StepDescriptor;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
-
-import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
 public class FlowsDefinitionController {
 
@@ -52,6 +44,7 @@ public class FlowsDefinitionController {
 
     @FXML
     private void initialize(){
+        autoUpdate=new SimpleBooleanProperty(true);
         flowsButtonsMap=new HashMap<>();
         flowsDefinitionStepToolTipLabelControllerMap =new HashMap<>();
         currentSelectedFlow=new SimpleStringProperty("");
@@ -95,7 +88,7 @@ public class FlowsDefinitionController {
         });
     }
 
-    public void startAvailableRolesRefresher(){
+    public void startAvailableFlowsRefresher(){
         flowsDefinitionRefresher=new FlowsDefinitionRefresher(
                 autoUpdate,
                 this::updateFlowsDefinitionList);

@@ -1,5 +1,6 @@
 package MainStage.Components.ExecutionsHistory;
 
+import Flow.FlowDescriptor;
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
 import RunHistory.FlowRunHistory;
@@ -17,11 +18,11 @@ import java.util.function.Consumer;
 
 import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
-public class ExecutionsHistoryRefresher extends TimerTask {
+public class FlowHistoriesRefresher extends TimerTask {
     private Consumer<List<FlowRunHistory>> flowHistoriesListConsumer;
     private BooleanProperty shouldUpdate;
 
-    public  ExecutionsHistoryRefresher(BooleanProperty autoUpdate, Consumer<List<FlowRunHistory>> updateFlowsList){
+    public  FlowHistoriesRefresher(BooleanProperty autoUpdate, Consumer<List<FlowRunHistory>> updateFlowsList){
         this.shouldUpdate=autoUpdate;
         this.flowHistoriesListConsumer=updateFlowsList;
     }

@@ -1,8 +1,7 @@
-package MainStage.Components.ExecutionsHistory;
+package MainStage.Components.Main;
 
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
-import RunHistory.FlowRunHistory;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -17,13 +16,13 @@ import java.util.function.Consumer;
 
 import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
-public class ExecutionsHistoryRefresher extends TimerTask {
-    private Consumer<List<FlowRunHistory>> flowHistoriesListConsumer;
+public class UserRolesPresentationRefresher  extends TimerTask {
+    private Consumer<List<String>> rolesNamesConsumer;
     private BooleanProperty shouldUpdate;
 
-    public  ExecutionsHistoryRefresher(BooleanProperty autoUpdate, Consumer<List<FlowRunHistory>> updateFlowsList){
+    public  UserRolesPresentationRefresher(BooleanProperty autoUpdate, Consumer<List<String>> updateRolesNames){
         this.shouldUpdate=autoUpdate;
-        this.flowHistoriesListConsumer=updateFlowsList;
+        this.rolesNamesConsumer =updateRolesNames;
     }
     @Override
     public void run() {
@@ -37,9 +36,9 @@ public class ExecutionsHistoryRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfFlowHistories =response.body().string();
-                FlowRunHistory[] flowRunHistories = GSON_INSTANCE.fromJson(jsonArrayOfFlowHistories,FlowRunHistory[].class);
-                flowHistoriesListConsumer.accept(Arrays.asList(flowRunHistories));
+                String jsonArrayOfString =response.body().string();
+                String[] rolesNames = GSON_INSTANCE.fromJson(jsonArrayOfString,String[].class);
+                rolesNamesConsumer.accept(Arrays.asList(rolesNames));
             }
         });
     }

@@ -4,6 +4,8 @@ import Flow.Continuation;
 import Flow.FreeInputDescriptor;
 import MainStage.Components.FlowsExecution.SubComponents.InputGUI.InputGUIController;
 import MainStage.Components.Main.MainStepperController;
+import MainStage.Components.util.Constants;
+import MainStage.Components.util.HttpClientUtil;
 import RunHistory.FlowRunHistory;
 import RunHistory.FreeInputHistory;
 import RunHistory.OutputHistory;
@@ -26,13 +28,14 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
 public class FlowsExecutionController {
 
@@ -68,34 +71,55 @@ public class FlowsExecutionController {
         inputGUIControllers =new HashMap<>();
     }
 
-    @FXML
-    void startFlowExecutionAction(ActionEvent event) {
-        //StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
-        String inputName="";
-
-        try {
-            for (String inputGUIController : inputGUIControllers.keySet()) {
-                inputName=inputGUIControllers.get(inputGUIController).getInputName();
-                stepperUIManager.setFreeInput(selectedFlow.get(), inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
-            }
-        }
-        catch (Exception e){
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("Input Invalid");
-            errorAlert.setContentText("Input: "+inputName+" "+e.getMessage());
-            errorAlert.show();
-            return;
-        }
-        runFlow();
-        if(statusThread!=null)
-            statusThread.interrupt();
-        statusThread=new Thread(this::checkOnFlow);
-        statusThread.start();
-        startFlowExecutionButton.setText("Rerun Flow");
-    }
-
     public void setMainStepperController(MainStepperController mainStepperController){
         this.mainStepperController=mainStepperController;
+    }
+
+    @FXML
+    void startFlowExecutionAction(ActionEvent event) {
+        Map<String, Object> httpBody = new HashMap<>();
+
+        for (String inputGUIController : inputGUIControllers.keySet()) {
+           //stepperUIManager.setFreeInput(selectedFlow.get(), inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
+           httpBody.put(inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
+        }
+
+        String json = GSON_INSTANCE.toJson(httpBody);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
+        String finalUrl = HttpUrl
+               .parse(Constants.CREATE_FLOW)
+               .newBuilder()
+               .addQueryParameter("flow_name", selectedFlow.get())
+               .build()
+               .toString();
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("Input Invalid");
+                    errorAlert.setContentText("Input: "+e.getMessage());
+                    errorAlert.show();
+                });
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText("Something went wrong: " + responseBody);
+                        errorAlert.show();
+                    });
+                }
+                else {
+                    runFlow();
+                }
+            }
+        });
+        startFlowExecutionButton.setText("Rerun Flow");
     }
 
     private void runFlow(){

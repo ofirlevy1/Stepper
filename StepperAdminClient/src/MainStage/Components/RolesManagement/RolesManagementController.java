@@ -45,7 +45,7 @@ public class RolesManagementController {
 
     @FXML
     private void initialize(){
-
+        this.autoUpdate=new SimpleBooleanProperty(true);
     }
 
     public RolesManagementController(){
