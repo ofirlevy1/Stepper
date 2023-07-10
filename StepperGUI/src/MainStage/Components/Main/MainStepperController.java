@@ -8,10 +8,8 @@ import MainStage.Components.util.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -170,7 +168,7 @@ public class MainStepperController {
 
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
-        flowsExecutionController.loadFlowsExecutionInputs(flowName);
+        flowsExecutionController.loadFlowsExecutionInputsHttpCall(flowName);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
     }
 

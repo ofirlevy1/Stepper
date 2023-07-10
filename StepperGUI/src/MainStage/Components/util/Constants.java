@@ -27,6 +27,11 @@ public class Constants {
     public final static String FLOW_HISTORIES=  FULL_SERVER_PATH + "/flows_histories";
     public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/flow_descriptors";
     public final static String CREATE_FLOW= FULL_SERVER_PATH + "/create_flow";
+    public final static String RUN_FLOW= FULL_SERVER_PATH + "/run_flow";
+    public final static String FLOW_STATUS= FULL_SERVER_PATH + "/flow_status";
+    public final static String CONTINUATION= FULL_SERVER_PATH + "/continuation";
+    public final static String CONTINUATION_MAP= FULL_SERVER_PATH + "/continuation_map";
+
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }

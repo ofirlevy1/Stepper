@@ -1,6 +1,5 @@
 package MainStage.Components.FlowsExecution;
 
-import Flow.Continuation;
 import Flow.FreeInputDescriptor;
 import MainStage.Components.FlowsExecution.SubComponents.InputGUI.InputGUIController;
 import MainStage.Components.Main.MainStepperController;
@@ -10,18 +9,14 @@ import RunHistory.FlowRunHistory;
 import RunHistory.FreeInputHistory;
 import RunHistory.OutputHistory;
 import RunHistory.StepHistory;
-import Stepper.StepperUIManager;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -32,8 +27,8 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
@@ -59,13 +54,20 @@ public class FlowsExecutionController {
 
     private SimpleBooleanProperty allMandatoryInputsFilled;
     private SimpleStringProperty selectedFlow;
+    private SimpleStringProperty flowID;
     private SimpleStringProperty flowProgression;
+
+    private Timer timer;
+    private TimerTask flowExecutionStatusRefresher;
+    private BooleanProperty autoUpdate;
 
     @FXML
     public  void  initialize(){
+        autoUpdate=new SimpleBooleanProperty(true);
         allMandatoryInputsFilled=new SimpleBooleanProperty(false);
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
         selectedFlow=new SimpleStringProperty("");
+        flowID=new SimpleStringProperty("");
         flowProgression=new SimpleStringProperty("");
         flowProgressionLabel.textProperty().bind(flowProgression);
         inputGUIControllers =new HashMap<>();
@@ -79,10 +81,8 @@ public class FlowsExecutionController {
     void startFlowExecutionAction(ActionEvent event) {
         Map<String, Object> httpBody = new HashMap<>();
 
-        for (String inputGUIController : inputGUIControllers.keySet()) {
-           //stepperUIManager.setFreeInput(selectedFlow.get(), inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
+        for (String inputGUIController : inputGUIControllers.keySet())
            httpBody.put(inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
-        }
 
         String json = GSON_INSTANCE.toJson(httpBody);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
@@ -115,48 +115,69 @@ public class FlowsExecutionController {
                     });
                 }
                 else {
-                    runFlow();
+                    String flowIDResponse =response.body().string();
+                    flowID.set(flowIDResponse);
+                    Platform.runLater(()->runFlow());
                 }
             }
         });
-        startFlowExecutionButton.setText("Rerun Flow");
     }
 
     private void runFlow(){
-        try{
-            //mainStepperController.getStepperUIManager().runFlow(selectedFlow.get());
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void checkOnFlow(){// timer
-        try{
-            while (mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() < mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps()) {
-                if(mainStepperController.getStepperUIManager().hasMostRecentFlowFailed()) {
-                    break;
-                }
-                Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + "steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
-                Thread.sleep(200);
+        autoUpdate.set(true);
+        startFlowExecutionButton.setText("Rerun Flow");
+        String finalUrl = HttpUrl
+                .parse(Constants.RUN_FLOW)
+                .newBuilder()
+                .addQueryParameter("flow_id", flowID.get())
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                autoUpdate.set(false);
+                Platform.runLater(() -> Platform.runLater(() -> flowProgression.set("Something went wrong")));
             }
-            if(mainStepperController.getStepperUIManager().hasMostRecentFlowFailed())
-                Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
-            else
-                Platform.runLater(() -> flowProgression.set(mainStepperController.getStepperUIManager().getMostRecentFlowCompletedStepsCounter() + " steps out of " + mainStepperController.getStepperUIManager().getMostRecentFlowTotalSteps() + " steps completed"));
-            Thread.sleep(300);
-            //Platform.runLater(() -> mainStepperController.updatePastExecutionsTable());
-            //Platform.runLater(() -> mainStepperController.updateStatisticsTables());
-            Platform.runLater(this::updateFlowDetailsFlowPane);
-            Platform.runLater(this::updateContinuationDataFlowPane);
-        }
-        catch (InterruptedException e){
-
-        }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                autoUpdate.set(false);
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
+                }
+                else {
+                    String flowRunHistoryInJson=response.body().string();
+                    FlowRunHistory flowRunHistory=GSON_INSTANCE.fromJson(flowRunHistoryInJson,FlowRunHistory.class);
+                    Platform.runLater(()-> {
+                        flowProgression.set("The Flow has ended execution");
+                        updateFlowDetailsFlowPane(flowRunHistory);
+                        updateContinuationDataFlowPane();
+                    });
+                }
+            }
+        });
+        startFlowExecutionStatusRefresher();
     }
 
-    private void updateFlowDetailsFlowPane(){
+    public void startFlowExecutionStatusRefresher(){
+        flowExecutionStatusRefresher=new FlowExecutionStatusRefresher(
+                autoUpdate,
+                this::checkOnFlow,
+                this::clearStatus,
+                flowID.get());
+        timer=new Timer();
+        timer.schedule(flowExecutionStatusRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+    private void checkOnFlow(List<Integer> flowStatus){
+        Platform.runLater(() -> flowProgression.set(flowStatus.get(0) + "steps out of " + flowStatus.get(1) + " steps completed"));
+    }
+    private void clearStatus(String  str){
+        Platform.runLater(()->flowProgression.set(str));
+    }
+
+    private void updateFlowDetailsFlowPane(FlowRunHistory flowRunHistory){
         flowDetailsFlowPane.getChildren().clear();
-        //FlowRunHistory flowRunHistory=mainStepperController.getStepperUIManager().getFlowsRunHistories().get(mainStepperController.getStepperUIManager().getFlowsRunHistories().size()-1);
         flowDetailsFlowPane.getChildren().add(new Label(flowRunHistory.showGUIFlowHistory()));
         flowDetailsFlowPane.getChildren().add(new Label());
         flowDetailsFlowPane.getChildren().add(new Label("Steps:"));
@@ -187,22 +208,59 @@ public class FlowsExecutionController {
     }
 
     private void updateContinuationDataFlowPane(){
-        //StepperUIManager stepperUIManager=mainStepperController.getStepperUIManager();
-        if(!stepperUIManager.doesFlowHasContinuations(selectedFlow.get()))
-            return;
-        continuationDataFlowPane.getChildren().clear();
-        continuationDataFlowPane.setPrefWrapLength(200);
-        for(String flow:stepperUIManager.getFlowContinuationOptions(selectedFlow.get())){
-            Button button=new Button(flow);
-            button.setOnAction(event -> loadFlowContinuation(flow));
-            continuationDataFlowPane.getChildren().add(button);
-            continuationDataFlowPane.setPrefWrapLength(continuationDataFlowPane.getPrefWrapLength()+150);
+        String finalUrl = HttpUrl
+                .parse(Constants.CONTINUATION)
+                .newBuilder()
+                .addQueryParameter("flow_id", flowID.get())
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    String continuationOptionsJson=response.body().string();
+                    List<String> continuationOptions=Arrays.asList(GSON_INSTANCE.fromJson(continuationOptionsJson,String[].class));
+                    Platform.runLater(()-> {
+                        continuationDataFlowPane.getChildren().clear();
+                        continuationDataFlowPane.setPrefWrapLength(200);
+                        for(String flow:continuationOptions) {
+                            Button button = new Button(flow);
+                            button.setOnAction(event -> loadFlowContinuation(flow));
+                            continuationDataFlowPane.getChildren().add(button);
+                            continuationDataFlowPane.setPrefWrapLength(continuationDataFlowPane.getPrefWrapLength() + 150);
+                        }
+                    });
+                }
+            }
+        });
         }
-    }
 
     private void loadFlowContinuation(String flowName){
-      //  HashMap<String ,String> dataMap=mainStepperController.getStepperUIManager().getFlowContinuationMap(selectedFlow.get(), flowName);
-        loadFlowsExecutionInputsRerun(flowName,dataMap);
+        String finalUrl = HttpUrl
+                .parse(Constants.CONTINUATION_MAP)
+                .newBuilder()
+                .addQueryParameter("flow_id", flowID.get())
+                .addQueryParameter("target_flow_name", flowName)
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    String continuationMapJson=response.body().string();
+                    Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+                    HashMap<String,String> dataMap=GSON_INSTANCE.fromJson(continuationMapJson,type);
+                    Platform.runLater(()-> loadFlowsExecutionInputsRerun(flowName,dataMap));
+                }
+            }
+        });
+
     }
 
     public void loadFlowsExecutionFlowDetails(String flowName){
@@ -213,14 +271,35 @@ public class FlowsExecutionController {
 //        }
     }
 
-    public void loadFlowsExecutionInputs(String flowName){
-        //StepperUIManager stepperUIManager;
+    public void loadFlowsExecutionInputsHttpCall(String flowName){
         setUpFlowExecutionGui(flowName);
         if(flowName.isEmpty())
             return;
-        stepperUIManager = mainStepperController.getStepperUIManager();
         flowInputsFlowPane.setPrefWrapLength(0);
-        for(FreeInputDescriptor freeInputDescriptor:stepperUIManager.getFreeInputDescriptorsByFlow(flowName)){
+
+        String finalUrl = HttpUrl
+                .parse(Constants.CONTINUATION_MAP)
+                .newBuilder()
+                .addQueryParameter("flow_name", flowName)
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    String freeInputDescriptorsJson=response.body().string();
+                    List<FreeInputDescriptor> freeInputDescriptors=Arrays.asList(GSON_INSTANCE.fromJson(freeInputDescriptorsJson,FreeInputDescriptor[].class));
+                    Platform.runLater(()-> loadFlowsExecutionInputs(freeInputDescriptors));
+                }
+            }
+        });
+    }
+
+    private void loadFlowsExecutionInputs(List<FreeInputDescriptor> freeInputDescriptors){
+        for(FreeInputDescriptor freeInputDescriptor:freeInputDescriptors){
             try {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGUI.fxml"));
@@ -266,10 +345,6 @@ public class FlowsExecutionController {
                 .allMatch(inputGUIController -> !inputGUIControllers.get(inputGUIController).isMandatory() || !inputGUIControllers.get(inputGUIController).getInputTextField().getText().isEmpty()));
     }
 
-    public ObservableList<Node> getExecutionDetailsFlowPaneChildrenNodes() {
-        return executionDetailsFlowPane.getChildren();
-    }
-
     public void restartUIElements() {
         flowDetailsFlowPane.getChildren().clear();
         flowInputsFlowPane.getChildren().clear();
@@ -290,7 +365,7 @@ public class FlowsExecutionController {
     }
 
     public void loadFlowsExecutionInputsRerun(String flowName, HashMap<String, String> freeInputsMap) {
-        loadFlowsExecutionInputs(flowName);
+        loadFlowsExecutionInputsHttpCall(flowName);
         for(String freeInput:freeInputsMap.keySet()){
             inputGUIControllers.get(freeInput).setInput(freeInputsMap.get(freeInput));
         }
