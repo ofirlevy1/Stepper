@@ -1,7 +1,9 @@
 package servlets;
 
 
+import Flow.FlowDescriptor;
 import Stepper.StepperUIManager;
+import Users.UserDescriptor;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,15 +14,16 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-@WebServlet(name = "Flows Servlet", urlPatterns = "/flows")
-public class FlowsServlet extends HttpServlet {
+@WebServlet(name = "User Servlet", urlPatterns = "/flow")
+public class FlowDescriptorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
-        ArrayList<String> flowsNames = null;
+        FlowDescriptor flowDescriptor = null;
+
+        String flowName = req.getParameter("flow_name");
 
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -28,16 +31,22 @@ public class FlowsServlet extends HttpServlet {
             return;
         }
 
+        if (flowName == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Required 'flow_name' query parameter was not found in the request.");
+            return;
+        }
+
         try {
-            flowsNames = stepperUIManager.getFlowNames();
-            Gson gson = new Gson();
-            resp.setContentType("application/json");
-            resp.getWriter().println(gson.toJson(flowsNames));
+            flowDescriptor = stepperUIManager.getFlowDescriptor(flowName);
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
         }
 
+        Gson gson = new Gson();
+        resp.setContentType("application/json");
+        resp.getWriter().println(gson.toJson(flowDescriptor));
     }
 }

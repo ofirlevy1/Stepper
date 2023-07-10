@@ -5,7 +5,7 @@ import java.util.HashSet;
 public class UserDescriptor {
     private String name;
     private HashSet<String> rolesNames;
-    private int numberOfPermittedFlows;
+    private HashSet<String> permittedFlowsNames;
     private int numberOfExecutedFlows;
 
     public String getName() {
@@ -24,19 +24,19 @@ public class UserDescriptor {
         this.rolesNames = roles;
     }
 
-    public int getNumberOfPermittedFlows() {
-        return numberOfPermittedFlows;
-    }
-
-    public void setNumberOfPermittedFlows(int numberOfPermittedFlows) {
-        this.numberOfPermittedFlows = numberOfPermittedFlows;
-    }
-
     public int getNumberOfExecutedFlows() {
         return numberOfExecutedFlows;
     }
 
     public void setNumberOfExecutedFlows(int numberOfExecutedFlows) {
         this.numberOfExecutedFlows = numberOfExecutedFlows;
+    }
+
+    public HashSet<String> getPermittedFlowsNames() {
+        return permittedFlowsNames;
+    }
+
+    public void setPermittedFlowsNames(HashSet<String> permittedFlowsNames) {
+        this.permittedFlowsNames = permittedFlowsNames;
     }
 }
