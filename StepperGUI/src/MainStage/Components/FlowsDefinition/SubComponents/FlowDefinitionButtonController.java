@@ -32,6 +32,8 @@ public class FlowDefinitionButtonController {
     private SimpleStringProperty numberOfFreeInputsStringProperty;
     private SimpleStringProperty numberOfContinuationsStringProperty;
 
+    private FlowDescriptor flowDescriptor;
+
     @FXML
     public void initialize(){
         this.flowNameStringProperty=new SimpleStringProperty();
@@ -48,7 +50,7 @@ public class FlowDefinitionButtonController {
 
     @FXML
     void flowButtonAction(ActionEvent event) {
-        flowsDefinitionController.showFlowDetails(flowNameStringProperty);
+        flowsDefinitionController.showFlowDetails(flowDescriptor);
     }
 
     public void setFlowsDefinitionsController(FlowsDefinitionController flowsDefinitionController){
@@ -56,6 +58,7 @@ public class FlowDefinitionButtonController {
     }
 
     public void setFlowButtonText(FlowDescriptor flowDescriptor){
+        this.flowDescriptor=flowDescriptor;
         flowNameStringProperty.set(flowDescriptor.getFlowName());
         flowDescriptionStringProperty.set("Flow Description: "+flowDescriptor.getFlowDescription());
         numberOfStepsStringProperty.set("Number Of Steps: "+flowDescriptor.getStepDescriptors().size());

@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -21,10 +22,12 @@
                   <GridPane alignment="CENTER" styleClass="stepper-main-grid-pane">
                     <columnConstraints>
                       <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -32,20 +35,31 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="stepper-title" text="Stepper" GridPane.columnIndex="2">
-                           <GridPane.margin>
-                              <Insets left="30.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="filePathLabel" styleClass="file-label" text="File Not Loaded" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
-                           <padding>
-                              <Insets left="5.0" right="5.0" />
-                           </padding>
+                        <Label styleClass="stepper-title" text="Stepper-Client" GridPane.columnIndex="4" GridPane.halignment="LEFT">
                            <GridPane.margin>
                               <Insets left="10.0" />
                            </GridPane.margin>
                         </Label>
-                        <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFileButtonAction" styleClass="file-button" text="Load File Button" textAlignment="CENTER" GridPane.rowIndex="1" />
+                        <Label fx:id="userNameNameLabel" styleClass="stepper-title" text="Name: " GridPane.columnIndex="1" />
+                        <Label fx:id="userNameLabel" GridPane.columnIndex="1">
+                           <padding>
+                              <Insets left="60.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="isManagerNameLabel" styleClass="stepper-title" text="Is Manager: " GridPane.columnIndex="2" />
+                        <Label fx:id="isManagerLabel" GridPane.columnIndex="2">
+                           <padding>
+                              <Insets left="100.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="rolesNameLabel" styleClass="stepper-title" text="Roles:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="rolesLabel" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets left="60.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <TextField fx:id="userNameTextField" promptText="Enter Username Here" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </top>
@@ -79,14 +93,6 @@
                                           <fx:include fx:id="executionsHistory" source="../ExecutionsHistory/ExecutionsHistory.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                </content>
-                              </Tab>
-                              <Tab text="Statistics">
-                                <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="900.0">
-                                       <children>
-                                          <fx:include fx:id="statistics" source="../Statistics/Statistics.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                           </tabs>

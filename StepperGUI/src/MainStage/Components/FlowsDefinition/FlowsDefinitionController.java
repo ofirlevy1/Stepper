@@ -6,8 +6,11 @@ import Flow.StepOutputDescriptor;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowDefinitionButtonController;
 import MainStage.Components.FlowsDefinition.SubComponents.FlowsDefinitionStepToolTipLabelController;
 import MainStage.Components.Main.MainStepperController;
-import Stepper.StepperUIManager;
+import MainStage.Components.util.Constants;
 import Steps.StepDescriptor;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 public class FlowsDefinitionController {
 
@@ -30,14 +33,18 @@ public class FlowsDefinitionController {
     private Button executeFlowButton;
 
     private MainStepperController mainStepperController;
-
     private SimpleStringProperty currentSelectedFlow;
+
+    private Timer timer;
+    private TimerTask flowsDefinitionRefresher;
+    private BooleanProperty autoUpdate;
 
     private HashMap<String,FlowDefinitionButtonController> flowsButtonsMap;
     private HashMap<String, FlowsDefinitionStepToolTipLabelController> flowsDefinitionStepToolTipLabelControllerMap;
 
     @FXML
     private void initialize(){
+        autoUpdate=new SimpleBooleanProperty(true);
         flowsButtonsMap=new HashMap<>();
         flowsDefinitionStepToolTipLabelControllerMap =new HashMap<>();
         currentSelectedFlow=new SimpleStringProperty("");
@@ -53,38 +60,71 @@ public class FlowsDefinitionController {
         this.mainStepperController=mainStepperController;
     }
 
-    public void loadFlowsButtons(StepperUIManager stepperUIManager){
-        flowsButtonsMap.clear();
-        availableFlowsFlowPane.getChildren().clear();
+    private void updateFlowsDefinitionList(List<FlowDescriptor> flowDescriptors){
+        Platform.runLater(()->{
+            if(availableFlowsFlowPane.getChildren().size()!= flowDescriptors.size()){
+                availableFlowsFlowPane.getChildren().clear();
+                availableFlowsFlowPane.setPrefWrapLength(200);
+                for(FlowDescriptor flowDescriptor:flowDescriptors){
+                    try {
+                        FXMLLoader loader=new FXMLLoader();
+                        loader.setLocation(getClass().getResource("/MainStage/Components/FlowsDefinition/SubComponents/FlowDefinitionButton.fxml"));
+                        Button flowButton=loader.load();
 
-        for(String flowName:stepperUIManager.getFlowNames()){
-            try {
-                FXMLLoader loader=new FXMLLoader();
-                loader.setLocation(getClass().getResource("/MainStage/Components/FlowsDefinition/SubComponents/FlowDefinitionButton.fxml"));
-                Button flowButton=loader.load();
+                        FlowDefinitionButtonController flowDefinitionButtonController = loader.getController();
+                        flowDefinitionButtonController.setFlowsDefinitionsController(this);
+                        flowDefinitionButtonController.setFlowButtonText(flowDescriptor);
 
-                FlowDefinitionButtonController flowDefinitionButtonController = loader.getController();
-                flowDefinitionButtonController.setFlowsDefinitionsController(this);
-                flowDefinitionButtonController.setFlowButtonText(stepperUIManager.getFlowDescriptor(flowName));
+                        availableFlowsFlowPane.setPrefWrapLength(availableFlowsFlowPane.getPrefWrapLength()+100);
+                        availableFlowsFlowPane.getChildren().add(flowButton);
+                        flowsButtonsMap.put(flowDescriptor.getFlowName(),flowDefinitionButtonController);
 
-                availableFlowsFlowPane.setPrefWrapLength(availableFlowsFlowPane.getPrefWrapLength()+100);
-                availableFlowsFlowPane.getChildren().add(flowButton);
-                flowsButtonsMap.put(flowName,flowDefinitionButtonController);
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
+
+        });
     }
 
-    public void showFlowDetails(SimpleStringProperty flowName){
-        currentSelectedFlow.set(flowName.get());
-        FlowDescriptor flowDescriptor= mainStepperController.getFlowDescriptor(flowName.get());
+    public void startAvailableFlowsRefresher(){
+        flowsDefinitionRefresher=new FlowsDefinitionRefresher(
+                autoUpdate,
+                this::updateFlowsDefinitionList);
+        timer=new Timer();
+        timer.schedule(flowsDefinitionRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
+
+//    public void loadFlowsButtons(){
+//        flowsButtonsMap.clear();
+//        availableFlowsFlowPane.getChildren().clear();
+//
+//        for(String flowName:stepperUIManager.getFlowNames()){
+//            try {
+//                FXMLLoader loader=new FXMLLoader();
+//                loader.setLocation(getClass().getResource("/MainStage/Components/FlowsDefinition/SubComponents/FlowDefinitionButton.fxml"));
+//                Button flowButton=loader.load();
+//
+//                FlowDefinitionButtonController flowDefinitionButtonController = loader.getController();
+//                flowDefinitionButtonController.setFlowsDefinitionsController(this);
+//                flowDefinitionButtonController.setFlowButtonText(stepperUIManager.getFlowDescriptor(flowName));
+//
+//                availableFlowsFlowPane.setPrefWrapLength(availableFlowsFlowPane.getPrefWrapLength()+100);
+//                availableFlowsFlowPane.getChildren().add(flowButton);
+//                flowsButtonsMap.put(flowName,flowDefinitionButtonController);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    public void showFlowDetails(FlowDescriptor flowDescriptor){
+        currentSelectedFlow.set(flowDescriptor.getFlowName());
         flowDetailsFlowPane.getChildren().clear();
         flowsDefinitionStepToolTipLabelControllerMap.clear();
-
         flowDetailsFlowPane.setPrefWrapLength(900);
-
         flowDetailsFlowPane.getChildren().add(new Label("Flow Name: " + flowDescriptor.getFlowName()));
         flowDetailsFlowPane.getChildren().add(new Label("Flow Description: " + flowDescriptor.getFlowDescription()));
         flowDetailsFlowPane.getChildren().add(new Label("Formal Outputs: " + flowDescriptor.getFormalOutputNames().toString()));

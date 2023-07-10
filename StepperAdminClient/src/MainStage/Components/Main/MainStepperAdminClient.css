@@ -1,0 +1,68 @@
+.stepper-title {
+    -fx-text-fill: #4a4ada;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.file-label{
+    -fx-background-color: #e0a93a;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
+.button{
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.file-button{
+    -fx-background-color: #76e06e;
+}
+
+.file-button:hover{
+    -fx-opacity: 0.7;
+    -fx-background-color: #1fbd15;
+    -fx-animated: 1;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane {
+    -fx-tab-min-width:90px;
+}
+
+.tab{
+    -fx-background-insets: 0 1 0 1,0,0;
+}
+.tab-pane .tab {
+    -fx-background-color: #e6e6e6;
+
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #3c3c3c;
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #828282;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #96b946;
+}
+
+.tab-header-area{
+    -fx-background-color: white;
+}
+
+.stepper-main-grid-pane{
+    -fx-background-color: white;
+}
+
