@@ -15,17 +15,17 @@ public class Constants {
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
-    private final static String CONTEXT_PATH = "/stepper";
+    private final static String CONTEXT_PATH = "/StepperWebServer_Web";
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
-    public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
+    public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
     public final static String FLOW_STATISTICS = FULL_SERVER_PATH + "/flowStatistics";
     public final static String STEP_STATISTICS=FULL_SERVER_PATH+"/stepStatistics";
     public final static String GET_ROLES = FULL_SERVER_PATH + "/roles";
     public final static String GET_USERS = FULL_SERVER_PATH + "/users";
 
     public final static String FLOW_HISTORIES=  FULL_SERVER_PATH + "/flows_histories";
-    public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/flow_descriptors";
+    public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/flow";
     public final static String CREATE_FLOW= FULL_SERVER_PATH + "/create_flow";
     public final static String RUN_FLOW= FULL_SERVER_PATH + "/run_flow";
     public final static String FLOW_STATUS= FULL_SERVER_PATH + "/flow_status";

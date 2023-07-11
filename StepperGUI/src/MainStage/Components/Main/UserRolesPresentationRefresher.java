@@ -28,7 +28,7 @@ public class UserRolesPresentationRefresher  extends TimerTask {
     public void run() {
         if(!shouldUpdate.get())
             return;
-        HttpClientUtil.runAsync(Constants.FLOW_HISTORIES, new Callback() {
+        HttpClientUtil.runAsync(Constants.GET_ROLES, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
