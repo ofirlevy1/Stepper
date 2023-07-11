@@ -263,10 +263,12 @@ public class Stepper {
         throw new RuntimeException("No flow was found with flowID: " + flowID);
     }
 
-    public String createNewFlow(String flowName) {
+    public String createNewFlow(String flowName, String username) {
+        validateThatUserExists(username);
         for(STFlow stFlow : stFlows) {
             if(stFlow.getName().equals(flowName)) {
                 Flow newFlow = new Flow(stFlow);
+                newFlow.setOwner(username);
                 flows.add(newFlow);
                 return newFlow.getID();
             }
