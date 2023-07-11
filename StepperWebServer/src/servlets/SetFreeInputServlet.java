@@ -29,9 +29,10 @@ public class SetFreeInputServlet extends HttpServlet {
 
         JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
 
-        ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "flow_id", resp);
-        ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "free_input_name", resp);
-        ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "value", resp);
+        if(!ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "flow_id", resp) ||
+           !ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "free_input_name", resp) ||
+           !ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "value", resp))
+            return;
 
         String flowID = requestBodyJsonObject.get("flow_id").getAsString();
         String freeInputName = requestBodyJsonObject.get("free_input_name").getAsString();
