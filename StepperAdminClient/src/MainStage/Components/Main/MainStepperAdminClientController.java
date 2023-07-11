@@ -84,40 +84,46 @@ public class MainStepperAdminClientController {
     }
 
     private void loadXmlFile(String path){
-        String RESOURCE = "/upload_file";
         File f = new File(path);
         RequestBody body =
                 new MultipartBody.Builder()
                         .addFormDataPart("file1", f.getName(), RequestBody.create(f, MediaType.parse("application/xml")))
                         .build();
-        HttpClientUtil.runAsyncPost(Constants.BASE_DOMAIN + RESOURCE, body, new Callback() {
+        HttpClientUtil.runAsyncPost(Constants.LOAD_XML_FILE, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                fileLoaded.set(false);
                 errorMessage="something went wrong";
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setHeaderText("File Invalid");
-                errorAlert.setContentText(errorMessage);
-                absoluteFilePath.set("File Not Loaded");
-                errorAlert.show();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                fileLoaded.set(true);
-                restartUIElements();
-                absoluteFilePath.set(path);
-            }
-
-                else {
+                Platform.runLater(()->{
                     fileLoaded.set(false);
-                    errorMessage="Error"+response.body().string();
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setHeaderText("File Invalid");
                     errorAlert.setContentText(errorMessage);
                     absoluteFilePath.set("File Not Loaded");
                     errorAlert.show();
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Platform.runLater(()->{
+                        fileLoaded.set(true);
+                        restartUIElements();
+                        absoluteFilePath.set(path);
+                    });
+            }
+
+                else {
+                    errorMessage="Error"+response.body().string();
+                    Platform.runLater(()->{
+                        fileLoaded.set(false);
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Something Went Wrong");
+                        errorAlert.setContentText(errorMessage);
+                        absoluteFilePath.set("File Not Loaded");
+                        errorAlert.show();
+                    });
+
                 }
             }
         });

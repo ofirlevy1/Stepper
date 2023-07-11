@@ -160,10 +160,12 @@ public class MainStepperController {
     }
 
     private void updateUserRolesPresentation(List<String> rolesNames){
-        StringBuilder rolesNamesListAsString= new StringBuilder();
-        for(String roleName:rolesNames)
-            rolesNamesListAsString.append(roleName).append(" ");
-        rolesLabel.textProperty().set(rolesNamesListAsString.toString());
+        Platform.runLater(()->{
+            StringBuilder rolesNamesListAsString= new StringBuilder();
+            for(String roleName:rolesNames)
+                rolesNamesListAsString.append(roleName).append(" ");
+            rolesLabel.textProperty().set(rolesNamesListAsString.toString());
+        });
     }
 
     public void switchTabs(Tabs tab,String flowName){
