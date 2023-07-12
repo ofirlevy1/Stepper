@@ -67,6 +67,11 @@ public class RoleServlet extends HttpServlet {
 
         JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
 
+
+        if(!ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "role_name", resp) ||
+                !ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "role_description", resp))
+            return;
+
         String roleName = requestBodyJsonObject.get("role_name").getAsString();
         String roleDescription = requestBodyJsonObject.get("role_description").getAsString();
 

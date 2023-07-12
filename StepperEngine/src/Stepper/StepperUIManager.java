@@ -114,7 +114,7 @@ public class StepperUIManager {
     public int getFlowNumberOfCompletedSteps(String flowID) {
         return stepper.getFlowNumberOfCompletedSteps(flowID);
     }
-    public String createNewFlow(String flowName) {return stepper.createNewFlow(flowName);}
+    public String createNewFlow(String flowName, String username) {return stepper.createNewFlow(flowName, username);}
 
     public String getFlowName(String flowID) {
         return stepper.getFlowName(flowID);

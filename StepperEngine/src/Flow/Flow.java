@@ -50,7 +50,7 @@ public class Flow {
     private FlowLog flowLog;
     private FlowRunHistory flowRunHistory;
     private HashMap<String, String> initialValues;
-
+    private String owner;
     private FlowMap map;
 
     private ArrayList<FreeInputDescriptor> freeInputsDescriptors;
@@ -631,4 +631,12 @@ public class Flow {
     }
 
     public boolean isReadOnly() {return isReadOnly;}
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 }
