@@ -25,7 +25,7 @@ public class Constants {
     public final static String GET_USERS = FULL_SERVER_PATH + "/users";
     public final static String GET_USER_DESCRIPTION = FULL_SERVER_PATH +"/user";
     public final static String MANAGER =  FULL_SERVER_PATH + "/user/manager";
-    public final static String ASSIGN_ROLES = FULL_SERVER_PATH + "/assign_role";
+    public final static String ASSIGN_ROLES = FULL_SERVER_PATH + "/set_user_assigned_roles";
     public final static String LOAD_XML_FILE = FULL_SERVER_PATH + "/upload_stepper_file";
 
 

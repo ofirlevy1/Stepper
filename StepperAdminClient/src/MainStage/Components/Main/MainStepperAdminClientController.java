@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.rmi.RemoteException;
 
 public class MainStepperAdminClientController {
 
@@ -110,6 +109,10 @@ public class MainStepperAdminClientController {
                         fileLoaded.set(true);
                         restartUIElements();
                         absoluteFilePath.set(path);
+                        //statisticsController.startStatisticsRefresher();
+                        rolesManagementController.startAvailableRolesRefresher();
+                        usersManagementController.startAvailableUsersRefresher();
+                        //executionsHistoryController
                     });
             }
 
@@ -201,7 +204,7 @@ public class MainStepperAdminClientController {
     }
 
     public void restartUIElements(){
-//        this.executionsHistoryController.restartUIElements();
+        this.executionsHistoryController.restartUIElements();
         this.statisticsController.restartUIElements();
         this.usersManagementController.restartUIElements();
     }

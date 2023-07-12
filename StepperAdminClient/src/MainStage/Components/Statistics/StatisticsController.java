@@ -2,8 +2,6 @@ package MainStage.Components.Statistics;
 
 import Flow.FlowStatistics;
 import MainStage.Components.Main.MainStepperAdminClientController;
-import MainStage.Components.Main.MainStepperAdminClientController;
-import MainStage.Components.RolesManagement.AvailableRolesRefresher;
 import MainStage.Components.util.Constants;
 import Steps.StepStatistics;
 import javafx.application.Platform;
@@ -85,7 +83,7 @@ public class StatisticsController {
         });
     }
 
-    public void startAvailableRolesRefresher(){
+    public void startStatisticsRefresher(){
         statisticsRefresher=new StatisticsTableRefresher(
                 autoUpdate,
                 this::updateFlowStatisticsTable,
