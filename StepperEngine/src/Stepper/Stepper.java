@@ -96,6 +96,12 @@ public class Stepper {
         return getFlowDefinitionByName(flowName).getFreeInputsDescriptors();
     }
 
+    public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
+        for(String freeInputEffectiveName : valuesMap.keySet()) {
+            setFreeInput(flowID, freeInputEffectiveName, valuesMap.get(freeInputEffectiveName));
+        }
+    }
+
     public void setFreeInput(String flowID, String freeInputEffectiveName, String dataStr) {
         getFlowByID(flowID).setFreeInput(freeInputEffectiveName, dataStr);
     }

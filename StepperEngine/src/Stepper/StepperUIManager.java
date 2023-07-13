@@ -166,4 +166,8 @@ public class StepperUIManager {
     public void setUsersAssignedRoles(String username, String[] rolesToAssign) {
         stepper.setUsersAssignedRoles(username, rolesToAssign);
     }
+
+    public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
+        stepper.setFreeInputs(flowID, valuesMap);
+    }
 }

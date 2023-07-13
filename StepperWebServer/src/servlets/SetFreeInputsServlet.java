@@ -13,9 +13,10 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 
-@WebServlet(name = "Set Free Input Servlet", urlPatterns = "/set_free_input")
-public class SetFreeInputServlet extends HttpServlet {
+@WebServlet(name = "Set Free Inputs Servlet", urlPatterns = "/set_free_inputs")
+public class SetFreeInputsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
@@ -27,20 +28,23 @@ public class SetFreeInputServlet extends HttpServlet {
             return;
         }
 
-        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
+        HashMap<String, String> map = new HashMap<>();
 
-        if(!ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "flow_id", resp) ||
-           !ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "free_input_name", resp) ||
-           !ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "value", resp))
+        map = new Gson().fromJson(ServletUtils.getRequestBodyAsString(req), map.getClass());
+
+        if(!map.containsKey("flow_id")) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Requires key 'flow_id' was not found in the request.");
             return;
+        }
 
-        String flowID = requestBodyJsonObject.get("flow_id").getAsString();
-        String freeInputName = requestBodyJsonObject.get("free_input_name").getAsString();
-        String freeInputValue = requestBodyJsonObject.get("value").getAsString();
+        String flowID = map.get("flow_id");
+        map.remove("flow_id");
 
         try {
-            stepperUIManager.setFreeInput(flowID, freeInputName, freeInputValue);
+            stepperUIManager.setFreeInputs(flowID, map);
         }
+
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());

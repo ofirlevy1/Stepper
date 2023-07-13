@@ -21,13 +21,17 @@ public class ServletUtils {
         return (StepperUIManager)(servletContext.getAttribute("stepperUIManager"));
     }
 
-    public static JsonObject getRequestBodyAsJsonObject(HttpServletRequest request) {
+    public static String getRequestBodyAsString(HttpServletRequest request) {
         try {
-            // reading the whole request body from the buffer into a string, then parsing it into a Json Object
-            return JsonParser.parseString(request.getReader().lines().collect(Collectors.joining())).getAsJsonObject();
+            // reading the whole request body from the buffer into a string.
+            return request.getReader().lines().collect(Collectors.joining());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static JsonObject getRequestBodyAsJsonObject(HttpServletRequest request) {
+        return JsonParser.parseString(getRequestBodyAsString(request)).getAsJsonObject();
     }
 
     public static boolean VerifyRequestJsonBodyHasMember(JsonObject body, String memberName, HttpServletResponse response) {
