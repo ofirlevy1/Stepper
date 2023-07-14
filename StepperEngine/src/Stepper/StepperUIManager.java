@@ -172,4 +172,7 @@ public class StepperUIManager {
     }
 
     public void deleteRole(String roleName) { stepper.deleteRole(roleName); }
+
+    public ArrayList<String> getFlowPermittedContinuationTargetForUser(String flowID, String username) {
+        return stepper.getFlowPermittedContinuationTargetForUser(flowID, username);}
 }

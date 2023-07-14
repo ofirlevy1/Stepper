@@ -542,4 +542,23 @@ public class Stepper {
             roles.remove(roleToDelete);
         }
     }
+
+    public ArrayList<String> getFlowPermittedContinuationTargetForUser(String flowID, String username) {
+        validateThatUserExists(username);
+        ValidateThatFlowExist(flowID);
+
+        Flow flow = getFlowByID(flowID);
+        User user = getUserByName(username);
+
+        ArrayList<String> continuationOptions = getFlowContinuationOptions(flow.getName());
+        ArrayList<String> unpermittedContinuationOptions = new ArrayList<>();
+
+        for(String continuationOption : continuationOptions) {
+            if(!user.isAuthorizedToRunFlow(continuationOption))
+                unpermittedContinuationOptions.add(continuationOption);
+        }
+
+        continuationOptions.removeAll(unpermittedContinuationOptions);
+        return continuationOptions;
+    }
 }
