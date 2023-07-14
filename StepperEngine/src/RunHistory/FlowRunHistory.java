@@ -10,10 +10,10 @@ import java.util.HashMap;
 public class FlowRunHistory {
     private String flowId;
     private String flowName;
+    private String owner;
     private Flow.Status status;
     private double runTime;
     private String timeStamp;
-
     private ArrayList<FreeInputHistory> freeInputHistories;
     private ArrayList<OutputHistory> outputHistories;
     private ArrayList<StepHistory> stepHistories;
@@ -168,5 +168,13 @@ public class FlowRunHistory {
 
     public void setFreeInputsEnteredByUser(HashMap<String,String> freeInputsEnteredByUser) {
         this.freeInputsEnteredByUser = freeInputsEnteredByUser;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

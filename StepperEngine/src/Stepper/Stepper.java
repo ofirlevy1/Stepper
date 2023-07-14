@@ -162,8 +162,21 @@ public class Stepper {
         });
     }
 
-    public Vector<FlowRunHistory> getFlowsRunHistories() {
-        return flowsRunHistories;
+    public Vector<FlowRunHistory> getFlowsRunHistories(String username) {
+        validateThatUserExists(username);
+
+        if(getUserByName(username).isManager())
+            return (Vector<FlowRunHistory>) flowsRunHistories.clone();
+
+        // This will hold only the histories of flows that the user has run.
+        Vector<FlowRunHistory> userFlowsHistories = new Vector<>();
+
+        for(FlowRunHistory flowRunHistory : flowsRunHistories) {
+            if(flowRunHistory.getOwner().equals(username))
+                userFlowsHistories.add(flowRunHistory);
+        }
+
+        return userFlowsHistories;
     }
 
     private void validatePathPointsToXMLFile(String path) {

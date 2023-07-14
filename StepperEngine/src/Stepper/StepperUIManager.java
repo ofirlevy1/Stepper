@@ -82,8 +82,8 @@ public class StepperUIManager {
         isFlowRan=true; //problem with this##################################################### is even needed?
     }
 
-    public Vector<FlowRunHistory> getFlowsRunHistories() {
-        return stepper.getFlowsRunHistories();
+    public Vector<FlowRunHistory> getFlowsRunHistories(String username) {
+        return stepper.getFlowsRunHistories(username);
     }
 
     public FlowLog getFlowLog(String flowID) {
