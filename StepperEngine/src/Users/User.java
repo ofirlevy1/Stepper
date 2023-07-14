@@ -84,4 +84,8 @@ public class User {
     public void setRoles(HashSet<Role> roles) {
         this.roles = (HashSet<Role>) roles.clone();
     }
+
+    public boolean isAuthorizedToRunFlow(String flowName) {
+        return this.getAllPermittedFlowsNames().contains(flowName);
+    }
 }
