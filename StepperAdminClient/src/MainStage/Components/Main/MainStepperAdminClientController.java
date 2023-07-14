@@ -109,6 +109,7 @@ public class MainStepperAdminClientController {
                         fileLoaded.set(true);
                         restartUIElements();
                         absoluteFilePath.set(path);
+                        rolesManagementController.updateFlows();
                         //statisticsController.startStatisticsRefresher();
                         rolesManagementController.startAvailableRolesRefresher();
                         usersManagementController.startAvailableUsersRefresher();
