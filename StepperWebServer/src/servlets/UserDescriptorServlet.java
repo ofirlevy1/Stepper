@@ -14,14 +14,13 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "User Servlet", urlPatterns = "/user")
-public class UserServlet extends HttpServlet {
+@WebServlet(name = "User Descriptor Servlet", urlPatterns = "/user")
+public class UserDescriptorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
         UserDescriptor userDescriptor = null;
-
         String targetUser = req.getParameter("target_user");
 
         if (username == null) {
@@ -36,16 +35,15 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+
         try {
             userDescriptor = stepperUIManager.getUserDescriptor(targetUser);
+            resp.getWriter().println(new Gson().toJson(userDescriptor));
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
+            return;
         }
-
-        Gson gson = new Gson();
-        resp.setContentType("application/json");
-        resp.getWriter().println(gson.toJson(userDescriptor));
     }
 }
