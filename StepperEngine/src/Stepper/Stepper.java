@@ -96,6 +96,12 @@ public class Stepper {
         return getFlowDefinitionByName(flowName).getFreeInputsDescriptors();
     }
 
+    public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
+        for(String freeInputEffectiveName : valuesMap.keySet()) {
+            setFreeInput(flowID, freeInputEffectiveName, valuesMap.get(freeInputEffectiveName));
+        }
+    }
+
     public void setFreeInput(String flowID, String freeInputEffectiveName, String dataStr) {
         getFlowByID(flowID).setFreeInput(freeInputEffectiveName, dataStr);
     }
@@ -137,8 +143,15 @@ public class Stepper {
         return getFlowByID(flowID).areAllMandatoryFreeInputsSet();
     }
 
-    public void runFlow(String flowID) {
+    public void runFlow(String flowID, String username) {
+        ValidateThatFlowExist(flowID);
+        validateThatUserExists(username);
         Flow flow = getFlowByID(flowID);
+        User user = getUserByName(username);
+
+        if(!flow.getOwner().equals(username))
+            throw new RuntimeException("Flow '" + flow.getName() +"' owner is '" + flow.getOwner() + "' but user '" + username + "' has attempted to run it!");
+
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -265,6 +278,11 @@ public class Stepper {
 
     public String createNewFlow(String flowName, String username) {
         validateThatUserExists(username);
+        ValidateThatFlowDefinitionExists(flowName);
+
+        if(!getUserByName(username).isAuthorizedToRunFlow(flowName))
+            throw new RuntimeException("User '" + username + "' is not authorized to create the flow '" + flowName +"'");
+
         for(STFlow stFlow : stFlows) {
             if(stFlow.getName().equals(flowName)) {
                 Flow newFlow = new Flow(stFlow);
@@ -414,7 +432,7 @@ public class Stepper {
         return false;
     }
 
-    public boolean isFlowExists(String flowName) {
+    public boolean isFlowDefinitionExists(String flowName) {
         for(Flow flow : flowsDefinitions) {
             if(flow.getName().equals(flowName))
                 return true;
@@ -437,11 +455,23 @@ public class Stepper {
             throw new RuntimeException("Role '" + roleName + "' does not exist!");
     }
 
-    private void validateThatFlowExists(String flowName) {
-        if(!isFlowExists(flowName))
+    private void ValidateThatFlowDefinitionExists(String flowName) {
+        if(!isFlowDefinitionExists(flowName))
             throw new RuntimeException("Flow '" + flowName + "' does not exist!");
     }
 
+    private void ValidateThatFlowExist(String flowID) {
+        if(!isFlowExist(flowID))
+            throw new RuntimeException("Flow '" + flowID + "' does not exist!");
+    }
+
+    private boolean isFlowExist(String flowID) {
+        for(Flow flow : flows) {
+            if(flow.getID().equals(flowID))
+                return true;
+        }
+        return false;
+    }
 
     public void setManager(String username, boolean value) {
         validateThatUserExists(username);
@@ -463,7 +493,7 @@ public class Stepper {
     public void setPermittedFlowsForRole(String roleName, String[] flowNames) {
         validateThatRoleExists(roleName);
         for(String flowName : flowNames) {
-            validateThatFlowExists(flowName);
+            ValidateThatFlowDefinitionExists(flowName);
         }
         getRoleByName(roleName).setPermittedFlows(flowNames);
     }

@@ -77,9 +77,9 @@ public class StepperUIManager {
         return stepper.areAllMandatoryFreeInputsSet(flowID);
     }
 
-    public void runFlow(String flowID) {
-        stepper.runFlow(flowID);
-        isFlowRan=true;
+    public void runFlow(String flowID, String username) {
+        stepper.runFlow(flowID, username);
+        isFlowRan=true; //problem with this##################################################### is even needed?
     }
 
     public Vector<FlowRunHistory> getFlowsRunHistories() {
@@ -165,5 +165,9 @@ public class StepperUIManager {
 
     public void setUsersAssignedRoles(String username, String[] rolesToAssign) {
         stepper.setUsersAssignedRoles(username, rolesToAssign);
+    }
+
+    public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
+        stepper.setFreeInputs(flowID, valuesMap);
     }
 }
