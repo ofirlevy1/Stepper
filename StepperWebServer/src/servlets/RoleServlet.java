@@ -85,4 +85,34 @@ public class RoleServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = SessionUtils.getUsername(req);
+        StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
+
+        if (username == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("The client is not logged in! please login first (/login)");
+            return;
+        }
+
+        Gson gson = new Gson();
+
+        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
+
+
+        if(!ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "role_name", resp))
+            return;
+
+        String roleName = requestBodyJsonObject.get("role_name").getAsString();
+
+        try {
+            stepperUIManager.deleteRole(roleName);
+        }
+        catch(Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println(e.getMessage());
+        }
+    }
+
 }

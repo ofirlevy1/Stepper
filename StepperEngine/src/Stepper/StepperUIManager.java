@@ -170,4 +170,6 @@ public class StepperUIManager {
     public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
         stepper.setFreeInputs(flowID, valuesMap);
     }
+
+    public void deleteRole(String roleName) { stepper.deleteRole(roleName); }
 }

@@ -38,6 +38,7 @@ public class UserDescriptorServlet extends HttpServlet {
 
         try {
             userDescriptor = stepperUIManager.getUserDescriptor(targetUser);
+            resp.setContentType("application/json");
             resp.getWriter().println(new Gson().toJson(userDescriptor));
         }
         catch(Exception e) {

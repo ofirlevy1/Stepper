@@ -6,7 +6,6 @@ import java.util.HashSet;
 
 public class Role {
     private String name; // Acts as the unique identifier
-
     private String description;
     private HashSet<String> permittedFlowsNames;
 
@@ -51,5 +50,4 @@ public class Role {
     public void setPermittedFlows(String[] flowNames) {
         permittedFlowsNames = new HashSet<>(Arrays.asList(flowNames));
     }
-
 }
