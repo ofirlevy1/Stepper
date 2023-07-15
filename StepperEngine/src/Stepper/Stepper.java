@@ -41,6 +41,7 @@ public class Stepper {
     private List<STFlow> stFlows; // used to create/load new dynamic (runnable) flows.
     private HashSet<User> users;
     private HashSet<Role> roles;
+    private Object rolesLock;
 
     public Stepper(String xmlString, String username) throws FileNotFoundException, JAXBException{
         if(!isUserAllowedToLoadNewStepperFile(username))
@@ -59,6 +60,7 @@ public class Stepper {
         threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
         stFlows = stStepper.getSTFlows().getSTFlow();
         initiatePredefinedRolesAndUsers();
+        this.rolesLock = new Object();
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -156,12 +158,26 @@ public class Stepper {
             @Override
             public void run() {
                 flowsRunHistories.add(flow.execute());
+                user.addExecutedFlowID(flowID);
             }
         });
     }
 
-    public Vector<FlowRunHistory> getFlowsRunHistories() {
-        return flowsRunHistories;
+    public Vector<FlowRunHistory> getFlowsRunHistories(String username) {
+        validateThatUserExists(username);
+
+        if(getUserByName(username).isManager())
+            return (Vector<FlowRunHistory>) flowsRunHistories.clone();
+
+        // This will hold only the histories of flows that the user has run.
+        Vector<FlowRunHistory> userFlowsHistories = new Vector<>();
+
+        for(FlowRunHistory flowRunHistory : flowsRunHistories) {
+            if(flowRunHistory.getOwner().equals(username))
+                userFlowsHistories.add(flowRunHistory);
+        }
+
+        return userFlowsHistories;
     }
 
     private void validatePathPointsToXMLFile(String path) {
@@ -352,27 +368,33 @@ public class Stepper {
     }
 
     private Role getRoleByName(String roleName) {
-        for(Role currentRole : roles) {
-            if(currentRole.getName().equals(roleName))
-                return currentRole;
+        synchronized(rolesLock) {
+            for(Role currentRole : roles) {
+                if(currentRole.getName().equals(roleName))
+                    return currentRole;
+            }
+            throw new RuntimeException("An attempt was made to find a role that doesn't exist: '" + roleName + "'");
         }
-        throw new RuntimeException("An attempt was made to find a role that doesn't exist: '" + roleName + "'");
     }
 
     public HashSet<String> getAllRolesNames() {
-        HashSet<String> rolesNames = new HashSet<>();
-        for(Role role : roles)
-            rolesNames.add(role.getName());
-        return rolesNames;
+        synchronized(rolesLock) {
+            HashSet<String> rolesNames = new HashSet<>();
+            for(Role role : roles)
+                rolesNames.add(role.getName());
+            return rolesNames;
+        }
     }
 
     public HashSet<String> getAllUsersWithGivenRole(String roleName) {
-        HashSet<String> result = new HashSet<>();
-        for(User user : users) {
-            if(user.hasRole(roleName))
-                result.add(user.getName());
+        synchronized(rolesLock) {
+            HashSet<String> result = new HashSet<>();
+            for(User user : users) {
+                if(user.hasRole(roleName))
+                    result.add(user.getName());
+            }
+            return result;
         }
-        return result;
     }
 
     public HashSet<String> getAllUsersNames() {
@@ -417,19 +439,23 @@ public class Stepper {
     }
 
     public void assignRoleToUser(String username, String roleName) {
-        validateThatUserExists(username);
-        if(!isRoleExists(roleName))
-            throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
+        synchronized(rolesLock) {
+            validateThatUserExists(username);
+            if(!isRoleExists(roleName))
+                throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
 
-        getUserByName(username).addRole(getRoleByName(roleName));
+            getUserByName(username).addRole(getRoleByName(roleName));
+        }
     }
 
     public boolean isRoleExists(String roleName) {
-        for(Role role : roles) {
-            if(role.getName().equals(roleName))
-                return true;
+        synchronized(rolesLock) {
+            for(Role role : roles) {
+                if(role.getName().equals(roleName))
+                    return true;
+            }
+            return false;
         }
-        return false;
     }
 
     public boolean isFlowDefinitionExists(String flowName) {
@@ -451,8 +477,10 @@ public class Stepper {
     }
 
     private void validateThatRoleExists(String roleName) {
-        if(!isRoleExists(roleName))
-            throw new RuntimeException("Role '" + roleName + "' does not exist!");
+        synchronized(rolesLock) {
+            if(!isRoleExists(roleName))
+                throw new RuntimeException("Role '" + roleName + "' does not exist!");
+        }
     }
 
     private void ValidateThatFlowDefinitionExists(String flowName) {
@@ -479,33 +507,72 @@ public class Stepper {
     }
 
     public RoleDescriptor getRoleDescriptor(String roleName) {
-        validateThatRoleExists(roleName);
-        return getRoleByName(roleName).getRoleDescriptor(getAllUsersWithGivenRole(roleName));
+        synchronized(rolesLock) {
+            validateThatRoleExists(roleName);
+            return getRoleByName(roleName).getRoleDescriptor(getAllUsersWithGivenRole(roleName));
+        }
     }
 
     public void addNewRole(String roleName, String description) {
-        if(isRoleExists(roleName))
-            throw new RuntimeException("An attempt was made to add a role that already exist! please choose a different role name");
+        synchronized(rolesLock) {
+            if(isRoleExists(roleName))
+                throw new RuntimeException("An attempt was made to add a role that already exist! please choose a different role name");
 
-        roles.add(new Role(roleName, description));
+            roles.add(new Role(roleName, description));
+        }
     }
 
     public void setPermittedFlowsForRole(String roleName, String[] flowNames) {
-        validateThatRoleExists(roleName);
-        for(String flowName : flowNames) {
-            ValidateThatFlowDefinitionExists(flowName);
+        synchronized(rolesLock) {
+            validateThatRoleExists(roleName);
+            for(String flowName : flowNames) {
+                ValidateThatFlowDefinitionExists(flowName);
+            }
+            getRoleByName(roleName).setPermittedFlows(flowNames);
         }
-        getRoleByName(roleName).setPermittedFlows(flowNames);
     }
 
     public void setUsersAssignedRoles(String username, String[] rolesNames) {
-        validateThatUserExists(username);
-        HashSet<Role> roles = new HashSet<>();
-        for(String roleName : rolesNames) {
-            validateThatRoleExists(roleName);
-            roles.add(getRoleByName(roleName));
+        synchronized (rolesLock) {
+            validateThatUserExists(username);
+            HashSet<Role> roles = new HashSet<>();
+            for(String roleName : rolesNames) {
+                validateThatRoleExists(roleName);
+                roles.add(getRoleByName(roleName));
+            }
+            getUserByName(username).setRoles(roles);
         }
-        getUserByName(username).setRoles(roles);
+    }
 
+    public void deleteRole(String roleName) {
+        validateThatRoleExists(roleName);
+        Role roleToDelete = getRoleByName(roleName);
+
+        synchronized(rolesLock) {
+            for(User user : users) {
+                if(user.hasRole(roleName))
+                    throw new RuntimeException("Role '" + roleName + "' cannot be deleted because it's currently associated with one or more users");
+            }
+            roles.remove(roleToDelete);
+        }
+    }
+
+    public ArrayList<String> getFlowPermittedContinuationTargetForUser(String flowID, String username) {
+        validateThatUserExists(username);
+        ValidateThatFlowExist(flowID);
+
+        Flow flow = getFlowByID(flowID);
+        User user = getUserByName(username);
+
+        ArrayList<String> continuationOptions = getFlowContinuationOptions(flow.getName());
+        ArrayList<String> unpermittedContinuationOptions = new ArrayList<>();
+
+        for(String continuationOption : continuationOptions) {
+            if(!user.isAuthorizedToRunFlow(continuationOption))
+                unpermittedContinuationOptions.add(continuationOption);
+        }
+
+        continuationOptions.removeAll(unpermittedContinuationOptions);
+        return continuationOptions;
     }
 }

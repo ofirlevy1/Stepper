@@ -1,9 +1,8 @@
 package servlets;
 
-
+import Flow.FlowLog;
 import Stepper.StepperUIManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,10 +14,10 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "Role's Permitted Flows Servlet", urlPatterns = "/role_permitted_flows")
-public class RolesPermittedFlowsServlet extends HttpServlet {
+@WebServlet(name = "FlowRunStatusServlet", urlPatterns = "/completed_steps_count")
+public class FlowNumberOfCompletedStepsServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
 
@@ -28,23 +27,20 @@ public class RolesPermittedFlowsServlet extends HttpServlet {
             return;
         }
 
-        Gson gson = new Gson();
-
         JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
+        ServletUtils.VerifyRequestJsonBodyHasMember(requestBodyJsonObject, "flow_id", resp);
 
-        String roleName = requestBodyJsonObject.get("role_name").getAsString();
-        JsonElement permittedFlowsJsonString = requestBodyJsonObject.get("permitted_flows");
-
-        String[] permittedFlows = gson.fromJson(permittedFlowsJsonString, String[].class);
-
-
+        String flowID = requestBodyJsonObject.get("flow_id").getAsString();
 
         try {
-            stepperUIManager.setPermittedFlowsForRole(roleName, permittedFlows);
+            int completedSteps = stepperUIManager.getFlowNumberOfCompletedSteps(flowID);
+            resp.setContentType("application/json");
+            resp.getWriter().println("{\"completed_Steps\": \"" + completedSteps +"\"}");
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
+            return;
         }
     }
 }

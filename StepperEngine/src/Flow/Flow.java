@@ -378,6 +378,7 @@ public class Flow {
             flowRunHistory.setFlowId(flowLog.getFlowId());
             flowRunHistory.setRunTime(runTime);
             flowRunHistory.setFlowName(name);
+            flowRunHistory.setOwner(owner);
             flowRunHistory.setTimeStamp(flowLog.getTimeStamp());
             flowRunHistory.setStatus(status);
             for (String freeInputString : freeInputs.keySet()) {

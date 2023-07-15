@@ -82,8 +82,8 @@ public class StepperUIManager {
         isFlowRan=true; //problem with this##################################################### is even needed?
     }
 
-    public Vector<FlowRunHistory> getFlowsRunHistories() {
-        return stepper.getFlowsRunHistories();
+    public Vector<FlowRunHistory> getFlowsRunHistories(String username) {
+        return stepper.getFlowsRunHistories(username);
     }
 
     public FlowLog getFlowLog(String flowID) {
@@ -115,7 +115,6 @@ public class StepperUIManager {
         return stepper.getFlowNumberOfCompletedSteps(flowID);
     }
     public String createNewFlow(String flowName, String username) {return stepper.createNewFlow(flowName, username);}
-
     public String getFlowName(String flowID) {
         return stepper.getFlowName(flowID);
     }
@@ -170,4 +169,9 @@ public class StepperUIManager {
     public void setFreeInputs(String flowID, HashMap<String, String> valuesMap) {
         stepper.setFreeInputs(flowID, valuesMap);
     }
+
+    public void deleteRole(String roleName) { stepper.deleteRole(roleName); }
+
+    public ArrayList<String> getFlowPermittedContinuationTargetForUser(String flowID, String username) {
+        return stepper.getFlowPermittedContinuationTargetForUser(flowID, username);}
 }

@@ -2,9 +2,8 @@ package servlets;
 
 
 import Stepper.StepperUIManager;
+import Users.UserDescriptor;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,12 +14,14 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "Role's Permitted Flows Servlet", urlPatterns = "/role_permitted_flows")
-public class RolesPermittedFlowsServlet extends HttpServlet {
+@WebServlet(name = "User Descriptor Servlet", urlPatterns = "/user")
+public class UserDescriptorServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
+        UserDescriptor userDescriptor = null;
+        String targetUser = req.getParameter("target_user");
 
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -28,23 +29,22 @@ public class RolesPermittedFlowsServlet extends HttpServlet {
             return;
         }
 
-        Gson gson = new Gson();
-
-        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
-
-        String roleName = requestBodyJsonObject.get("role_name").getAsString();
-        JsonElement permittedFlowsJsonString = requestBodyJsonObject.get("permitted_flows");
-
-        String[] permittedFlows = gson.fromJson(permittedFlowsJsonString, String[].class);
-
+        if (targetUser == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Required 'target_user' query parameter was not found in the request.");
+            return;
+        }
 
 
         try {
-            stepperUIManager.setPermittedFlowsForRole(roleName, permittedFlows);
+            userDescriptor = stepperUIManager.getUserDescriptor(targetUser);
+            resp.setContentType("application/json");
+            resp.getWriter().println(new Gson().toJson(userDescriptor));
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
+            return;
         }
     }
 }

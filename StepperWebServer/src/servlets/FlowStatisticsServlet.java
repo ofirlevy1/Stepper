@@ -1,10 +1,9 @@
 package servlets;
 
 
+import Flow.FlowStatistics;
 import Stepper.StepperUIManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,13 +13,15 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-@WebServlet(name = "Role's Permitted Flows Servlet", urlPatterns = "/role_permitted_flows")
-public class RolesPermittedFlowsServlet extends HttpServlet {
+@WebServlet(name = "FlowStatisticsServlet", urlPatterns = "/flows_statistics")
+public class FlowStatisticsServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
+        ArrayList<FlowStatistics> flowsStatistics = null;
 
         if (username == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -28,23 +29,15 @@ public class RolesPermittedFlowsServlet extends HttpServlet {
             return;
         }
 
-        Gson gson = new Gson();
-
-        JsonObject requestBodyJsonObject = ServletUtils.getRequestBodyAsJsonObject(req);
-
-        String roleName = requestBodyJsonObject.get("role_name").getAsString();
-        JsonElement permittedFlowsJsonString = requestBodyJsonObject.get("permitted_flows");
-
-        String[] permittedFlows = gson.fromJson(permittedFlowsJsonString, String[].class);
-
-
-
         try {
-            stepperUIManager.setPermittedFlowsForRole(roleName, permittedFlows);
+            flowsStatistics = stepperUIManager.getFlowStatistics();
+            resp.setContentType("application/json");
+            resp.getWriter().println(new Gson().toJson(flowsStatistics));
         }
         catch(Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println(e.getMessage());
+            return;
         }
     }
 }
