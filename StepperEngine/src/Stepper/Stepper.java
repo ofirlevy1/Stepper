@@ -158,6 +158,7 @@ public class Stepper {
             @Override
             public void run() {
                 flowsRunHistories.add(flow.execute());
+                user.addExecutedFlowID(flowID);
             }
         });
     }
