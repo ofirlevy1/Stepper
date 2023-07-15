@@ -4,6 +4,7 @@ import MainStage.Components.Main.MainStepperAdminClientController;
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
 import Users.UserDescriptor;
+import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -57,13 +58,17 @@ public class UsersManagementController {
                 rolesNames.add(roleCheckbox.getText());
         }
 
-        String json = GSON_INSTANCE.toJson(rolesNames);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.add("username", GSON_INSTANCE.toJsonTree(selectedUser.get()));
+        jsonObject.add("roles_to_assign",GSON_INSTANCE.toJsonTree(rolesNames));
+
+        String chosenRolesAsJson=GSON_INSTANCE.toJson(jsonObject);
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), chosenRolesAsJson);
 
         String finalUrl = HttpUrl
                 .parse(Constants.ASSIGN_ROLES)
                 .newBuilder()
-                .addQueryParameter("target_user", selectedUser.get())
                 .build()
                 .toString();
 

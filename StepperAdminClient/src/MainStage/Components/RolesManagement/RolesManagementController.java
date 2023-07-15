@@ -126,10 +126,8 @@ public class RolesManagementController {
         }
 
         JsonObject jsonObject=new JsonObject();
-        JsonElement jsonElement=GSON_INSTANCE.toJsonTree(roleName);
-        jsonObject.add("role_name", jsonElement);
-        jsonElement=GSON_INSTANCE.toJsonTree(chosenFlows);
-        jsonObject.add("permitted_flows",jsonElement);
+        jsonObject.add("role_name", GSON_INSTANCE.toJsonTree(roleName));
+        jsonObject.add("permitted_flows",GSON_INSTANCE.toJsonTree(chosenFlows));
 
         String chosenFlowsAsJson=GSON_INSTANCE.toJson(jsonObject);
 
@@ -155,11 +153,13 @@ public class RolesManagementController {
                     });
                 }
                 else{
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setHeaderText("Error");
-                    errorAlert.setContentText(response.body().string());
-                    errorAlert.show();
-
+                    String errorText=response.body().string();
+                    Platform.runLater(()->{
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText(errorText);
+                        errorAlert.show();
+                    });
                 }
             }
         });
@@ -217,12 +217,25 @@ public class RolesManagementController {
 
     @FXML
     void updateRoleButtonAction(ActionEvent event) {
+        List<String> chosenFlows =new ArrayList<>();
+        for(CheckBox flowCheckbox : roleUpdateCheckbox){
+            if(flowCheckbox.isSelected())
+                chosenFlows.add(flowCheckbox.getText());
+        }
+
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.add("role_name", GSON_INSTANCE.toJsonTree(selectedRole.get()));
+        jsonObject.add("permitted_flows",GSON_INSTANCE.toJsonTree(chosenFlows));
+
+        String chosenFlowsAsJson=GSON_INSTANCE.toJson(jsonObject);
+
         String finalUrl = HttpUrl
-                .parse(Constants.GET_FLOWS)
+                .parse(Constants.PERMITTED_FLOWS)
                 .newBuilder()
                 .build()
                 .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), chosenFlowsAsJson);
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -231,11 +244,7 @@ public class RolesManagementController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code()==200){
-                    String flowsNamesJson = response.body().string();
-                    flowNames= Arrays.asList(GSON_INSTANCE.fromJson(flowsNamesJson,String[].class));
-                    Platform.runLater(() -> {
-                        updateRoleCreationFlowPane(flowNames);
-                    });
+                    Platform.runLater(() -> updateRoleDeletionFlowPane());
                 }
                 else{
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -267,6 +276,7 @@ public class RolesManagementController {
                     flowNames= Arrays.asList(GSON_INSTANCE.fromJson(flowsNamesJson,String[].class));
                     Platform.runLater(() -> {
                         updateRoleCreationFlowPane(flowNames);
+                        updateRoleDeletionFlowPane();
                     });
                 }
             }

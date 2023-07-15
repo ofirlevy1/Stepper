@@ -57,7 +57,7 @@ public class Main {
         }
         ArrayList<FreeInputDescriptor> arr = stepperUIManager.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
 
-        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results");
+        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results","das");
 
         stepperUIManager.setFreeInput(RenameFilesFlowID, "FOLDER_NAME", "C:\\temp");
         stepperUIManager.setFreeInput(RenameFilesFlowID, "PREFIX", "666");
@@ -89,7 +89,7 @@ public class Main {
         }
         ArrayList<FreeInputDescriptor> arr = stepperUIManager.getFreeInputDescriptorsByFlow("Rename Files Zip Results");
 
-        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results");
+        String RenameFilesFlowID = stepperUIManager.createNewFlow("Rename Files Zip Results","da");
 
         stepperUIManager.setFreeInput(RenameFilesFlowID, "FOLDER_NAME", "C:\\temp");
         stepperUIManager.setFreeInput(RenameFilesFlowID, "PREFIX", "666");
