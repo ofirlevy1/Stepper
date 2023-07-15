@@ -2,8 +2,6 @@ package MainStage.Components.Statistics;
 
 import Flow.FlowStatistics;
 import MainStage.Components.Main.MainStepperAdminClientController;
-import MainStage.Components.Main.MainStepperAdminClientController;
-import MainStage.Components.RolesManagement.AvailableRolesRefresher;
 import MainStage.Components.util.Constants;
 import Steps.StepStatistics;
 import javafx.application.Platform;
@@ -16,6 +14,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -69,7 +69,7 @@ public class StatisticsController {
         stepStatisticsObservableList.clear();
     }
 
-    private void updateStepStatisticsTable(StepStatistics stepStatistics){
+    private void updateStepStatisticsTable(List<StepStatistics> stepStatistics){
         Platform.runLater(()->{
             stepStatisticsObservableList.clear();
             stepStatisticsObservableList.addAll(stepStatistics);
@@ -77,7 +77,7 @@ public class StatisticsController {
         });
     }
 
-    private void updateFlowStatisticsTable(FlowStatistics flowStatistics){
+    private void updateFlowStatisticsTable(List<FlowStatistics> flowStatistics){
         Platform.runLater(()->{
             flowStatisticsObservableList.clear();
             flowStatisticsObservableList.addAll(flowStatistics);
@@ -85,7 +85,7 @@ public class StatisticsController {
         });
     }
 
-    public void startAvailableRolesRefresher(){
+    public void startStatisticsRefresher(){
         statisticsRefresher=new StatisticsTableRefresher(
                 autoUpdate,
                 this::updateFlowStatisticsTable,

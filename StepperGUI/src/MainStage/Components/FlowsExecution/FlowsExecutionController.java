@@ -124,15 +124,18 @@ public class FlowsExecutionController {
     }
 
     private void runFlow(){
-        autoUpdate.set(true);
         startFlowExecutionButton.setText("Rerun Flow");
+
+        Map<String,String> map=new HashMap<>();
+        map.put("flow_id",flowID.get());
+        String json = GSON_INSTANCE.toJson(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         String finalUrl = HttpUrl
                 .parse(Constants.RUN_FLOW)
                 .newBuilder()
-                .addQueryParameter("flow_id", flowID.get())
                 .build()
                 .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 autoUpdate.set(false);
@@ -156,6 +159,7 @@ public class FlowsExecutionController {
                 }
             }
         });
+        autoUpdate.set(true);
         startFlowExecutionStatusRefresher();
     }
 
@@ -169,8 +173,8 @@ public class FlowsExecutionController {
         timer.schedule(flowExecutionStatusRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    private void checkOnFlow(List<Integer> flowStatus){
-        Platform.runLater(() -> flowProgression.set(flowStatus.get(0) + "steps out of " + flowStatus.get(1) + " steps completed"));
+    private void checkOnFlow(String flowStatus){
+        Platform.runLater(() -> flowProgression.set(flowStatus));
     }
     private void clearStatus(String  str){
         Platform.runLater(()->flowProgression.set(str));
@@ -208,13 +212,17 @@ public class FlowsExecutionController {
     }
 
     private void updateContinuationDataFlowPane(){
+        Map<String,String> map=new HashMap<>();
+        map.put("flow_id",flowID.get());
+        String json = GSON_INSTANCE.toJson(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
         String finalUrl = HttpUrl
                 .parse(Constants.CONTINUATION)
                 .newBuilder()
-                .addQueryParameter("flow_id", flowID.get())
                 .build()
                 .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
             }
@@ -278,7 +286,7 @@ public class FlowsExecutionController {
         flowInputsFlowPane.setPrefWrapLength(0);
 
         String finalUrl = HttpUrl
-                .parse(Constants.CONTINUATION_MAP)
+                .parse(Constants.FREE_INPUTS_DESCRIPTORS)
                 .newBuilder()
                 .addQueryParameter("flow_name", flowName)
                 .build()

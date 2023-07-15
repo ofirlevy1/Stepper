@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
@@ -19,11 +20,11 @@ import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
 public class StatisticsTableRefresher extends TimerTask {
 
-    private Consumer<FlowStatistics> flowStatisticsConsumer;
-    private Consumer<StepStatistics> stepStatisticsConsumer;
+    private Consumer<List<FlowStatistics>> flowStatisticsConsumer;
+    private Consumer<List<StepStatistics>> stepStatisticsConsumer;
     private BooleanProperty shouldUpdate;
 
-    public StatisticsTableRefresher(BooleanProperty autoUpdate, Consumer<FlowStatistics> updateStatisticsList, Consumer<StepStatistics> stepStatisticsConsumer) {
+    public StatisticsTableRefresher(BooleanProperty autoUpdate, Consumer<List<FlowStatistics>> updateStatisticsList, Consumer<List<StepStatistics>> stepStatisticsConsumer) {
         this.flowStatisticsConsumer =updateStatisticsList;
         this.stepStatisticsConsumer=stepStatisticsConsumer;
         this.shouldUpdate=autoUpdate;
@@ -41,9 +42,11 @@ public class StatisticsTableRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfRolesNames=response.body().string();
-                FlowStatistics flowStatistics= GSON_INSTANCE.fromJson(jsonArrayOfRolesNames, FlowStatistics.class);
-                flowStatisticsConsumer.accept(flowStatistics);
+                if(response.code()==200) {
+                    String jsonArrayOfRolesNames = response.body().string();
+                    FlowStatistics[] flowStatistics = GSON_INSTANCE.fromJson(jsonArrayOfRolesNames, FlowStatistics[].class);
+                    flowStatisticsConsumer.accept(Arrays.asList(flowStatistics));
+                }
             }
         });
 
@@ -55,9 +58,11 @@ public class StatisticsTableRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfRolesNames=response.body().string();
-                StepStatistics stepStatistics= GSON_INSTANCE.fromJson(jsonArrayOfRolesNames, StepStatistics.class);
-                stepStatisticsConsumer.accept(stepStatistics);
+                if(response.code()==200){
+                    String jsonArrayOfRolesNames = response.body().string();
+                    StepStatistics[] stepStatistics = GSON_INSTANCE.fromJson(jsonArrayOfRolesNames, StepStatistics[].class);
+                    stepStatisticsConsumer.accept(Arrays.asList(stepStatistics));
+                }
             }
         });
 

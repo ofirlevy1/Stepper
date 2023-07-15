@@ -5,6 +5,7 @@ import MainStage.Components.FlowsDefinition.FlowsDefinitionController;
 import MainStage.Components.FlowsExecution.FlowsExecutionController;
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
+import Users.UserDescriptor;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,10 +21,7 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class MainStepperController {
     @FXML
@@ -72,6 +70,7 @@ public class MainStepperController {
         this.flowsDefinitionController.setMainStepperController(this);
         this.flowsExecutionController.setMainStepperController(this);
         this.executionsHistoryController.setMainStepperController(this);
+        this.selectionTabPane.setDisable(true);
         isManagerNameLabel.setVisible(false);
         rolesNameLabel.setVisible(false);
         userNameNameLabel.setVisible(false);
@@ -136,6 +135,7 @@ public class MainStepperController {
                             userNameNameLabel.setVisible(true);
                             loginButton.setVisible(false);
                             userNameTextField.setVisible(false);
+                            selectionTabPane.setDisable(false);
                             startRefreshers();
                         });
                     }
@@ -154,16 +154,18 @@ public class MainStepperController {
     public void startUserRolesPresentationRefresherRefresher(){
         rolesNamesRefresher=new UserRolesPresentationRefresher(
                 autoUpdate,
-                this::updateUserRolesPresentation);
+                this::updateUserRolesPresentation,
+                userNameLabel.getText());
         timer=new Timer();
         timer.schedule(rolesNamesRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    private void updateUserRolesPresentation(List<String> rolesNames){
+    private void updateUserRolesPresentation(UserDescriptor userDescriptor){
         Platform.runLater(()->{
+            HashSet<String>rolesNames= userDescriptor.getRoles();
             StringBuilder rolesNamesListAsString= new StringBuilder();
             for(String roleName:rolesNames)
-                rolesNamesListAsString.append(roleName).append(" ");
+                rolesNamesListAsString.append(roleName).append(", ");
             rolesLabel.textProperty().set(rolesNamesListAsString.toString());
         });
     }
