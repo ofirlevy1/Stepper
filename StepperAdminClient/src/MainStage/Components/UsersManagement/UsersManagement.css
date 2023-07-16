@@ -3,3 +3,6 @@
     -fx-font-size: 14px;
     -fx-background-color: #76e06e;
 }
+.not-manager-button{
+    -fx-background-color: red;
+}

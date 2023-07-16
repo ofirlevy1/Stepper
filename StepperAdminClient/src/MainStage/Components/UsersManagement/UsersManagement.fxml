@@ -47,7 +47,7 @@
               </content>
             </ScrollPane>
             <Label text="Users" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.rowSpan="4">
+            <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.rowSpan="3">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -68,6 +68,9 @@
               </content>
             </ScrollPane>
             <Button mnemonicParsing="false" onAction="#saveButtonAction" text="Save" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
+            <Label text="Udpate Mangaer Status" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#turnToManagerButtonAction" text="Manager" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#turnToNonManagerButtonAction" styleClass="not-manager-button" text="Not Manager" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </center>

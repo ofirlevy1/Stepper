@@ -47,8 +47,9 @@ public class RolesManagementController {
     private List<String> roleNames;
     private List<String> flowNames;
     private List<CheckBox> flowsCreationCheckbox;
-    private List<CheckBox> rolesDeletionCheckbox;
     private List<CheckBox> roleUpdateCheckbox;
+    private ToggleGroup roleDeletionToggleGroup;
+
 
     private MainStepperAdminClientController mainStepperAdminClientController;
     private Timer timer;
@@ -63,9 +64,9 @@ public class RolesManagementController {
         this.flowNames=new ArrayList<>();
         this.flowsCreationCheckbox=new ArrayList<>();
         this.roleUpdateCheckbox=new ArrayList<>();
-        this.rolesDeletionCheckbox=new ArrayList<>();
         this.roleNames.add("Read Only Flows");
         this.roleNames.add("All Flows");
+        this.roleDeletionToggleGroup=new ToggleGroup();
     }
 
     public RolesManagementController(){
@@ -167,10 +168,10 @@ public class RolesManagementController {
 
     @FXML
     void deleteRoleButtonAction(ActionEvent event) {
-        List<String> chosenRoles=new ArrayList<>();
-        for(CheckBox roleCheckbox:rolesDeletionCheckbox)
-            chosenRoles.add(roleCheckbox.getText());
-        String chosenRolesAsJson=GSON_INSTANCE.toJson(chosenRoles);
+        Map<String,String>map=new HashMap<>();
+        RadioButton rb=(RadioButton)roleDeletionToggleGroup.getSelectedToggle();
+        map.put("role_name",rb.getText());
+        String chosenRolesAsJson=GSON_INSTANCE.toJson(map);
         String finalUrl = HttpUrl
                 .parse(Constants.DELETE_ROLES)
                 .newBuilder()
@@ -178,7 +179,7 @@ public class RolesManagementController {
                 .toString();
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), chosenRolesAsJson);
 
-        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+        HttpClientUtil.runAsyncDelete(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -188,16 +189,19 @@ public class RolesManagementController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code()==200){
                     Platform.runLater(() -> {
-                        for(String role:chosenRoles)
-                            roleNames.remove(role);
+                        roleNames.remove(rb.getText());
                         updateRoleDeletionFlowPane();
                     });
                 }
                 else{
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setHeaderText("Error");
-                    errorAlert.setContentText(response.body().string());
-                    errorAlert.show();
+                    String error=response.body().string();
+                    Platform.runLater(()->{
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText(error);
+                        errorAlert.show();
+                    });
+
                 }
             }
         });
@@ -206,11 +210,11 @@ public class RolesManagementController {
     private void updateRoleDeletionFlowPane(){
         rolesDeletionFlowPane.getChildren().clear();
         rolesDeletionFlowPane.setPrefWrapLength(100);
-        rolesDeletionCheckbox.clear();
+        roleDeletionToggleGroup.getToggles().clear();
         for(String roleName:roleNames){
-            CheckBox checkBox=new CheckBox(roleName);
-            rolesDeletionCheckbox.add(checkBox);
-            rolesDeletionFlowPane.getChildren().add(checkBox);
+            RadioButton rb=new RadioButton(roleName);
+            rb.setToggleGroup(roleDeletionToggleGroup);
+            rolesDeletionFlowPane.getChildren().add(rb);
             rolesDeletionFlowPane.setPrefWrapLength(rolesDeletionFlowPane.getPrefWrapLength()+20);
         }
     }
