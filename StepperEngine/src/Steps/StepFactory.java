@@ -28,6 +28,8 @@ public class StepFactory {
                 return new CommandLineStep();
             case "to json":
                 return new ToJsonStep();
+            case "json data extractor":
+                return new JsonDataExtractorStep();
         }
         return null;
     }
