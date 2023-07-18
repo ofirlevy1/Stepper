@@ -174,7 +174,7 @@ public class MainStepperController {
     private  void updateUserManager(Boolean isManager){
         Platform.runLater(()->{
             String isManagerString=isManager.toString();
-            isManagerNameLabel.setText(isManagerString);
+            isManagerLabel.setText(isManagerString);
         });
 
     }
