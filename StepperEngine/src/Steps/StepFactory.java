@@ -26,6 +26,10 @@ public class StepFactory {
                 return new ZipperStep();
             case "command line":
                 return new CommandLineStep();
+            case "to json":
+                return new ToJsonStep();
+            case "json data extractor":
+                return new JsonDataExtractorStep();
         }
         return null;
     }
