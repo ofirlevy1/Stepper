@@ -255,7 +255,7 @@ public class Stepper {
     }
 
     public boolean hasFlowFailed(String flowID) {
-        return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
+        return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() != Flow.Status.NOT_RUN_YET && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
     }
 
     private void validateContinuations() {
