@@ -190,6 +190,10 @@ public class MainStepperController {
         flowsExecutionController.loadFlowsExecutionInputsRerun(flowName, freeInputsMap);
     }
 
+    public Stage getPrimaryStage(){
+        return primaryStage ;
+    }
+
 //    public void restartUIElements(){
 //        this.flowsDefinitionController.restartUIElements();
 //        this.flowsExecutionController.restartUIElements();

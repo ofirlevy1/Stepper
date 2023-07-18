@@ -23,6 +23,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -186,6 +187,10 @@ public class FlowsExecutionController {
         startFlowExecutionStatusRefresher();
     }
 
+    public Stage getPrimaryStage(){
+        return mainStepperController.getPrimaryStage();
+    }
+
     public void startFlowExecutionStatusRefresher(){
         flowExecutionStatusRefresher=new FlowExecutionStatusRefresher(
                 autoUpdate,
@@ -333,7 +338,10 @@ public class FlowsExecutionController {
         for(FreeInputDescriptor freeInputDescriptor:freeInputDescriptors){
             try {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGUI.fxml"));
+                if(freeInputDescriptor.getInputEffectiveName().equalsIgnoreCase("folder")|| freeInputDescriptor.getInputEffectiveName().equalsIgnoreCase("file"))
+                    loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGuiFileLoader.fxml"));
+                else
+                    loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGUI.fxml"));
                 GridPane inputGUI = loader.load();
 
                 InputGUIController inputGUIController=loader.getController();
