@@ -575,4 +575,15 @@ public class Stepper {
         continuationOptions.removeAll(unpermittedContinuationOptions);
         return continuationOptions;
     }
+
+    public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {
+        UserDescriptor userDescriptor = getUserDescriptor(username);
+        ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<>();
+
+        for(String flowName : userDescriptor.getPermittedFlowsNames()) {
+            permittedFlowsDescriptors.add(getFlowDescriptor(flowName));
+        }
+
+        return permittedFlowsDescriptors;
+    }
 }
