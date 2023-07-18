@@ -26,7 +26,8 @@ public class Constants {
     public final static String GET_USER_DESCRIPTION = FULL_SERVER_PATH +"/user";
     public final static String GET_ROLE_DESCRIPTION = FULL_SERVER_PATH +"/role";
     public final static String CREATE_ROLE = FULL_SERVER_PATH +"/role";
-    public final static String DELETE_ROLES = FULL_SERVER_PATH +"/delete_roles";
+    public final static String SET_MANAGER = FULL_SERVER_PATH + "/user/manager";
+    public final static String DELETE_ROLES = FULL_SERVER_PATH +"/role";
     public final static String PERMITTED_FLOWS = FULL_SERVER_PATH +"/role_permitted_flows";
     public final static String MANAGER =  FULL_SERVER_PATH + "/user/manager";
     public final static String GET_FLOWS = FULL_SERVER_PATH +"/flows";

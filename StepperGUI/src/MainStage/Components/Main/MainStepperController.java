@@ -155,6 +155,7 @@ public class MainStepperController {
         rolesNamesRefresher=new UserRolesPresentationRefresher(
                 autoUpdate,
                 this::updateUserRolesPresentation,
+                this::updateUserManager,
                 userNameLabel.getText());
         timer=new Timer();
         timer.schedule(rolesNamesRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
@@ -168,6 +169,14 @@ public class MainStepperController {
                 rolesNamesListAsString.append(roleName).append(", ");
             rolesLabel.textProperty().set(rolesNamesListAsString.toString());
         });
+    }
+
+    private  void updateUserManager(Boolean isManager){
+        Platform.runLater(()->{
+            String isManagerString=isManager.toString();
+            isManagerLabel.setText(isManagerString);
+        });
+
     }
 
     public void switchTabs(Tabs tab,String flowName){

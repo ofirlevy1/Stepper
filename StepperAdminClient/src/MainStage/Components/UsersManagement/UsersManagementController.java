@@ -5,6 +5,7 @@ import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
 import Users.UserDescriptor;
 import com.google.gson.JsonObject;
+import com.sun.xml.internal.ws.wsdl.writer.document.soap.Body;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -212,6 +213,49 @@ public class UsersManagementController {
                 }
             }
 
+        });
+    }
+
+    @FXML
+    void turnToManagerButtonAction(ActionEvent event) {
+        setUserManager(true);
+    }
+
+    @FXML
+    void turnToNonManagerButtonAction(ActionEvent event) {
+        setUserManager(false);
+    }
+
+    private void setUserManager(boolean setManager){
+        if (selectedUser.get().isEmpty())
+            return;
+        String finalUrl = HttpUrl
+                .parse(Constants.SET_MANAGER)
+                .newBuilder()
+                .addQueryParameter("target_user", selectedUser.get())
+                .addQueryParameter("set_manager", setManager?"true":"false")
+                .build()
+                .toString();
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), "chosenRolesAsJson");
+
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()!=200){
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText("Something went wrong: " + responseBody);
+                        errorAlert.show();
+                    });
+                }
+            }
         });
     }
 

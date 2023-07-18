@@ -79,21 +79,13 @@ public class FlowsExecutionController {
 
     @FXML
     void startFlowExecutionAction(ActionEvent event) {
-        Map<String, Object> httpBody = new HashMap<>();
-
-        for (String inputGUIController : inputGUIControllers.keySet())
-           httpBody.put(inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
-
-        String json = GSON_INSTANCE.toJson(httpBody);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-
         String finalUrl = HttpUrl
                .parse(Constants.CREATE_FLOW)
                .newBuilder()
                .addQueryParameter("flow_name", selectedFlow.get())
                .build()
                .toString();
-        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -115,8 +107,50 @@ public class FlowsExecutionController {
                     });
                 }
                 else {
-                    String flowIDResponse =response.body().string();
-                    flowID.set(flowIDResponse);
+                    String flowIDString=GSON_INSTANCE.fromJson(response.body().string(),String.class);
+                    flowID.set(flowIDString);
+                    Platform.runLater(()->assignInputsToFlow());
+                }
+            }
+        });
+    }
+
+    private void assignInputsToFlow(){
+        Map<String, Object> httpBody = new HashMap<>();
+
+        for (String inputGUIController : inputGUIControllers.keySet())
+            httpBody.put(inputGUIControllers.get(inputGUIController).getInputName(), inputGUIControllers.get(inputGUIController).getInput());
+        httpBody.put("flow_id",flowID.get());
+        String json = GSON_INSTANCE.toJson(httpBody);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.SET_INPUTS)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("Input Invalid");
+                    errorAlert.setContentText("Input: "+e.getMessage());
+                    errorAlert.show();
+                });
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setHeaderText("Error");
+                        errorAlert.setContentText("Something went wrong: " + responseBody);
+                        errorAlert.show();
+                    });
+                }
+                else {
                     Platform.runLater(()->runFlow());
                 }
             }
@@ -124,11 +158,10 @@ public class FlowsExecutionController {
     }
 
     private void runFlow(){
-        startFlowExecutionButton.setText("Rerun Flow");
-
         Map<String,String> map=new HashMap<>();
         map.put("flow_id",flowID.get());
         String json = GSON_INSTANCE.toJson(map);
+        startFlowExecutionButton.setText("Rerun Flow");
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         String finalUrl = HttpUrl
                 .parse(Constants.RUN_FLOW)
@@ -145,17 +178,7 @@ public class FlowsExecutionController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 autoUpdate.set(false);
                 if (response.code() != 200) {
-                    String responseBody = response.body().string();
                     Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
-                }
-                else {
-                    String flowRunHistoryInJson=response.body().string();
-                    FlowRunHistory flowRunHistory=GSON_INSTANCE.fromJson(flowRunHistoryInJson,FlowRunHistory.class);
-                    Platform.runLater(()-> {
-                        flowProgression.set("The Flow has ended execution");
-                        updateFlowDetailsFlowPane(flowRunHistory);
-                        updateContinuationDataFlowPane();
-                    });
                 }
             }
         });

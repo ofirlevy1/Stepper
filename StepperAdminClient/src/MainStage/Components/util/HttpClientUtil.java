@@ -42,6 +42,17 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
+    public static void runAsyncDelete(String finalUrl, RequestBody body,Callback callback) {
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .delete(body)
+                .build();
+
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+
+        call.enqueue(callback);
+    }
+
     public static void shutdown() {
         System.out.println("Shutting down HTTP CLIENT");
         HTTP_CLIENT.dispatcher().executorService().shutdown();
