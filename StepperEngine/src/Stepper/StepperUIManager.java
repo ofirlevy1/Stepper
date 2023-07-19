@@ -174,4 +174,6 @@ public class StepperUIManager {
 
     public ArrayList<String> getFlowPermittedContinuationTargetForUser(String flowID, String username) {
         return stepper.getFlowPermittedContinuationTargetForUser(flowID, username);}
+
+    public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {return stepper.getPermittedFlowsDescriptorsByUser(username);}
 }

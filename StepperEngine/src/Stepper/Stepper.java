@@ -255,7 +255,7 @@ public class Stepper {
     }
 
     public boolean hasFlowFailed(String flowID) {
-        return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
+        return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() != Flow.Status.NOT_RUN_YET && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
     }
 
     private void validateContinuations() {
@@ -574,5 +574,16 @@ public class Stepper {
 
         continuationOptions.removeAll(unpermittedContinuationOptions);
         return continuationOptions;
+    }
+
+    public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {
+        UserDescriptor userDescriptor = getUserDescriptor(username);
+        ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<>();
+
+        for(String flowName : userDescriptor.getPermittedFlowsNames()) {
+            permittedFlowsDescriptors.add(getFlowDescriptor(flowName));
+        }
+
+        return permittedFlowsDescriptors;
     }
 }
