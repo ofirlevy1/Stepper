@@ -6,9 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-
-import java.io.File;
 
 public class InputGuiFileLoaderController extends InputGUIController{
 
@@ -26,11 +25,20 @@ public class InputGuiFileLoaderController extends InputGUIController{
 
     @FXML
     void loadFileButtonAction(ActionEvent event) {
-        FileChooser fileChooser=new FileChooser();
-        fileChooser.setTitle("Select file/folder");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(" files/folders", "*.*"));
-        String path = fileChooser.showOpenDialog(flowsExecutionController.getPrimaryStage()).getAbsolutePath();
-        setInput(path);
+        if(inputNameLabel.getText().contains("FOLDER")) {
+            DirectoryChooser folderChooser = new DirectoryChooser();
+            folderChooser.setTitle("Select Folder");
+            String selectedFolder = folderChooser.showDialog(flowsExecutionController.getPrimaryStage()).getAbsolutePath();
+            setInput(selectedFolder);
+
+        }
+        else {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(" files/folders", "*.*"));
+            String path = fileChooser.showOpenDialog(flowsExecutionController.getPrimaryStage()).getAbsolutePath();
+            setInput(path);
+        }
     }
 
     @FXML
