@@ -23,6 +23,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -176,8 +177,8 @@ public class FlowsExecutionController {
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                autoUpdate.set(false);
                 if (response.code() != 200) {
+                    autoUpdate.set(false);
                     Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
                 }
             }
@@ -186,17 +187,21 @@ public class FlowsExecutionController {
         startFlowExecutionStatusRefresher();
     }
 
+    public Stage getPrimaryStage(){
+        return mainStepperController.getPrimaryStage();
+    }
+
     public void startFlowExecutionStatusRefresher(){
         flowExecutionStatusRefresher=new FlowExecutionStatusRefresher(
                 autoUpdate,
-                this::checkOnFlow,
+                this::checkOnFlowLabel,
                 this::clearStatus,
                 flowID.get());
         timer=new Timer();
         timer.schedule(flowExecutionStatusRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    private void checkOnFlow(String flowStatus){
+    private void checkOnFlowLabel(String flowStatus){
         Platform.runLater(() -> flowProgression.set(flowStatus));
     }
     private void clearStatus(String  str){
@@ -333,7 +338,10 @@ public class FlowsExecutionController {
         for(FreeInputDescriptor freeInputDescriptor:freeInputDescriptors){
             try {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGUI.fxml"));
+                if(freeInputDescriptor.getInputEffectiveName().contains("FOLDER")|| freeInputDescriptor.getInputEffectiveName().contains("FILE"))
+                    loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGuiFileLoader.fxml"));
+                else
+                    loader.setLocation(getClass().getResource("/MainStage/Components/FlowsExecution/SubComponents/InputGUI/InputGUI.fxml"));
                 GridPane inputGUI = loader.load();
 
                 InputGUIController inputGUIController=loader.getController();

@@ -25,7 +25,7 @@ public class Constants {
     public final static String GET_USERS = FULL_SERVER_PATH + "/users";
 
     public final static String FLOW_HISTORIES=  FULL_SERVER_PATH + "/flows_runs_histories";
-    public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/get_flow_descriptors_by_user";
+    public final static String FLOWS_DESCRIPTORS= FULL_SERVER_PATH + "/flow_descriptors";
     public final static String CREATE_FLOW= FULL_SERVER_PATH + "/create_flow";
     public final static String SET_INPUTS= FULL_SERVER_PATH + "/set_free_inputs";
     public final static String RUN_FLOW= FULL_SERVER_PATH + "/run_flow";
