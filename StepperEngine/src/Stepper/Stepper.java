@@ -360,7 +360,6 @@ public class Stepper {
 
         User adminUser = new User("admin");
         adminUser.setManager(true);
-        adminUser.addRole(allFlowsRole);
 
         users.add(adminUser);
 
@@ -427,7 +426,7 @@ public class Stepper {
 
     public UserDescriptor getUserDescriptor(String userName) {
         validateThatUserExists(userName);
-        return getUserByName(userName).getUserDescriptor();
+        return getUserByName(userName).getUserDescriptor(getFlowNames());
     }
 
     private User getUserByName(String userName) {
