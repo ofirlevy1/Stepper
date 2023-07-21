@@ -586,4 +586,9 @@ public class Stepper {
 
         return permittedFlowsDescriptors;
     }
+
+    public Flow.Status getFlowStatus(String flowID) {
+        ValidateThatFlowExist(flowID);
+        return getFlowByID(flowID).getStatus();
+    }
 }

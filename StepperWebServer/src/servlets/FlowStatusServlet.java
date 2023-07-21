@@ -12,8 +12,9 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = "User IsFlowRunningServlet", urlPatterns = "/has_flow_failed")
-public class IsFlowRunningServlet extends HttpServlet {
+@WebServlet(name = "FlowStatusServlet", urlPatterns = "/flow_status")
+
+public class FlowStatusServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
@@ -32,7 +33,7 @@ public class IsFlowRunningServlet extends HttpServlet {
         String flowID = requestBodyJsonObject.get("flow_id").getAsString();
 
         try {
-            resp.getWriter().println(stepperUIManager.hasFlowFailed(flowID));
+            resp.getWriter().println(stepperUIManager.getFlowStatus(flowID));
             return;
         }
         catch(Exception e) {
