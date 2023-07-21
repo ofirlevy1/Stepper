@@ -209,15 +209,14 @@ public class Stepper {
         return getFlowDefinitionByName(flowName).getContinuationTargets();
     }
 
-    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowID){
+    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowName){
         HashMap<String,String> dataMap=new HashMap<>();
-        Flow sourcFlow=getFlowByID(sourceFlowID);
-        Flow targetFlow=getFlowByID(targetFlowID);
-        Continuation continuation=sourcFlow.getContinuation(targetFlowID);
+        Flow sourceFlow=getFlowByID(sourceFlowID);
+        Continuation continuation=sourceFlow.getContinuation(targetFlowName);
         if(!continuation.hasCustomContinuationDataMappings())
             return dataMap;
         for(String sourceDataName:continuation.getDataMap().keySet()){
-            DataType sourceData=sourcFlow.getDataTypeByEffectiveName(sourceDataName);
+            DataType sourceData=sourceFlow.getDataTypeByEffectiveName(sourceDataName);
             dataMap.put(continuation.getDataMap().get(sourceDataName),sourceData.getPresentableString());
         }
         return dataMap;
