@@ -591,4 +591,15 @@ public class Stepper {
         ValidateThatFlowExist(flowID);
         return getFlowByID(flowID).getStatus();
     }
+
+    public FlowRunHistory getFlowRunHistory(String flowID) {
+        ValidateThatFlowExist(flowID);
+
+        for(FlowRunHistory flowRunHistory : flowsRunHistories) {
+            if(flowRunHistory.getFlowId().equals(flowID))
+                return flowRunHistory;
+        }
+
+        throw new RuntimeException("The requested flow history does not exist yet.");
+    }
 }

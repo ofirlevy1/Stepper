@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="json-smart-2.4.8">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/json-smart-2.4.8.jar!/" />
+      <root url="jar://$USER_HOME$/slf4j-api-2.0.6.jar!/" />
+      <root url="jar://$USER_HOME$/json-path-2.7.0.jar!/" />
+      <root url="jar://$USER_HOME$/accessors-smart-2.4.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
