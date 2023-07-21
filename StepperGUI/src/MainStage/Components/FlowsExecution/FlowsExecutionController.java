@@ -57,6 +57,7 @@ public class FlowsExecutionController {
     private SimpleStringProperty selectedFlow;
     private SimpleStringProperty flowID;
     private SimpleStringProperty flowProgression;
+    private SimpleStringProperty flowExecutionEndMessage;
 
     private Timer timer;
     private TimerTask flowExecutionStatusRefresher;
@@ -64,6 +65,7 @@ public class FlowsExecutionController {
 
     @FXML
     public  void  initialize(){
+        flowExecutionEndMessage=new SimpleStringProperty("");
         autoUpdate=new SimpleBooleanProperty(true);
         allMandatoryInputsFilled=new SimpleBooleanProperty(false);
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
@@ -172,14 +174,14 @@ public class FlowsExecutionController {
         HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                flowExecutionEndMessage.set("Something went wrong");
                 autoUpdate.set(false);
-                Platform.runLater(() -> Platform.runLater(() -> flowProgression.set("Something went wrong")));
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
+                    flowExecutionEndMessage.set("The Flow has failed!");
                     autoUpdate.set(false);
-                    Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
                 }
             }
         });
@@ -194,14 +196,26 @@ public class FlowsExecutionController {
     public void startFlowExecutionStatusRefresher(){
         flowExecutionStatusRefresher=new FlowExecutionStatusRefresher(
                 autoUpdate,
-                this::checkOnFlowLabel,
+                flowExecutionEndMessage,
+                this::checkOnFlow,
+                this::updateCheckOnFlowLabel,
                 this::clearStatus,
                 flowID.get());
         timer=new Timer();
         timer.schedule(flowExecutionStatusRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    private void checkOnFlowLabel(String flowStatus){
+    private void checkOnFlow(Boolean isFlowRunning){
+        if(!isFlowRunning){
+
+        }
+        else{
+
+        }
+
+    }
+
+    private void updateCheckOnFlowLabel(String flowStatus){
         Platform.runLater(() -> flowProgression.set(flowStatus));
     }
     private void clearStatus(String  str){

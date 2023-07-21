@@ -30,6 +30,7 @@ public class Constants {
     public final static String SET_INPUTS= FULL_SERVER_PATH + "/set_free_inputs";
     public final static String RUN_FLOW= FULL_SERVER_PATH + "/run_flow";
     public final static String FLOW_STATUS= FULL_SERVER_PATH + "/completed_steps_count";
+    public final static String IS_FLOW_RUNNING= FULL_SERVER_PATH + "/has_flow_failed";
     public final static String CONTINUATION= FULL_SERVER_PATH + "/get_permitted_continuation_options";
     public final static String CONTINUATION_MAP= FULL_SERVER_PATH + "/continuation_map";
     public final static String FREE_INPUTS_DESCRIPTORS= FULL_SERVER_PATH + "/flow/free_inputs_descriptors";
