@@ -401,7 +401,8 @@ public class Stepper {
 
         HashSet<String> userNames = new HashSet<>();
         for(User user : users) {
-            userNames.add(user.getName());
+            if(!user.getName().equals("admin"))
+                userNames.add(user.getName());
         }
         return userNames;
     }
