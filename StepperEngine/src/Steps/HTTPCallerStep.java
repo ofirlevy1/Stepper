@@ -58,14 +58,17 @@ public class HTTPCallerStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         String url = protocol.getPresentableString() + "://" + address.getPresentableString() + resource.getData();
-
         Request request = new Request.Builder().url(url).method(method.getPresentableString(), requestBody.isDataSet() ? RequestBody.create(requestBody.getData().getBytes()) : null).build();
-
         OkHttpClient client = new OkHttpClient();
+
+        addLog("About to invoke http request: " + protocol.getPresentableString() + " | " + method.getPresentableString() + " | " + address.getPresentableString() + " | " + resource.getPresentableString());
         Call call = client.newCall(request);
         Response response = call.execute();
+        addLog("Received Response. Status code: " + response.code());
+
         responseStatusCode.setData(response.code());
         responseBody.setData(response.body().string());
+        setStatus(Status.Success);
     }
 
     @Override
