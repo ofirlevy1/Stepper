@@ -174,7 +174,7 @@ public class Flow {
     }
 
     public enum Status {
-        NOT_RUN_YET, SUCCESS, WARNING, FAILURE
+        NOT_RUN_YET, RUNNING, SUCCESS, WARNING, FAILURE
     }
 
 
@@ -317,6 +317,7 @@ public class Flow {
         if(!areAllMandatoryFreeInputsSet())
             throw new RuntimeException("An attempt was made to run the Flow while there are UNSET mandatory free inputs");
         Instant start=Instant.now();
+        status = Status.RUNNING;
         try {
             for (Step step : steps) {
                 step.execute();

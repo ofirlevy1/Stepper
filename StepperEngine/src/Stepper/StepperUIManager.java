@@ -105,7 +105,7 @@ public class StepperUIManager {
     public boolean isFlowRan(){return  isFlowRan;}
     public boolean doesFlowHasContinuations(String flowName) {return stepper.doesFlowHaveContinuations(flowName);}
     public ArrayList<String> getFlowContinuationOptions(String flowName) {return stepper.getFlowContinuationOptions(flowName);}
-    public HashMap<String,String> getFlowContinuationMap(String flowID, String targetFlowID){return stepper.getFlowContinuationMap(flowID, targetFlowID);}
+    public HashMap<String,String> getFlowContinuationMap(String flowID, String targetFlowName){return stepper.getFlowContinuationMap(flowID, targetFlowName);}
     public void activateContinuation(String sourceFlowName, String targetFlowName) {activateContinuation(sourceFlowName, targetFlowName);}
     public HashMap<String, String> getFreeInputsCurrentValues(String flowID) {return stepper.getFreeInputsCurrentValues(flowID);}
     public int getFlowTotalNumberOfSteps(String flowID) {
@@ -176,4 +176,6 @@ public class StepperUIManager {
         return stepper.getFlowPermittedContinuationTargetForUser(flowID, username);}
 
     public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {return stepper.getPermittedFlowsDescriptorsByUser(username);}
+    public Flow.Status getFlowStatus(String flowID) { return stepper.getFlowStatus(flowID);}
+    public FlowRunHistory getFlowRunHistory(String flowID) { return stepper.getFlowRunHistory(flowID);}
 }

@@ -209,15 +209,14 @@ public class Stepper {
         return getFlowDefinitionByName(flowName).getContinuationTargets();
     }
 
-    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowID){
+    public HashMap<String, String> getFlowContinuationMap(String sourceFlowID, String targetFlowName){
         HashMap<String,String> dataMap=new HashMap<>();
-        Flow sourcFlow=getFlowByID(sourceFlowID);
-        Flow targetFlow=getFlowByID(targetFlowID);
-        Continuation continuation=sourcFlow.getContinuation(targetFlowID);
+        Flow sourceFlow=getFlowByID(sourceFlowID);
+        Continuation continuation=sourceFlow.getContinuation(targetFlowName);
         if(!continuation.hasCustomContinuationDataMappings())
             return dataMap;
         for(String sourceDataName:continuation.getDataMap().keySet()){
-            DataType sourceData=sourcFlow.getDataTypeByEffectiveName(sourceDataName);
+            DataType sourceData=sourceFlow.getDataTypeByEffectiveName(sourceDataName);
             dataMap.put(continuation.getDataMap().get(sourceDataName),sourceData.getPresentableString());
         }
         return dataMap;
@@ -361,7 +360,6 @@ public class Stepper {
 
         User adminUser = new User("admin");
         adminUser.setManager(true);
-        adminUser.addRole(allFlowsRole);
 
         users.add(adminUser);
 
@@ -401,7 +399,8 @@ public class Stepper {
 
         HashSet<String> userNames = new HashSet<>();
         for(User user : users) {
-            userNames.add(user.getName());
+            if(!user.getName().equals("admin"))
+                userNames.add(user.getName());
         }
         return userNames;
     }
@@ -427,7 +426,7 @@ public class Stepper {
 
     public UserDescriptor getUserDescriptor(String userName) {
         validateThatUserExists(userName);
-        return getUserByName(userName).getUserDescriptor();
+        return getUserByName(userName).getUserDescriptor(getFlowNames());
     }
 
     private User getUserByName(String userName) {
@@ -585,5 +584,21 @@ public class Stepper {
         }
 
         return permittedFlowsDescriptors;
+    }
+
+    public Flow.Status getFlowStatus(String flowID) {
+        ValidateThatFlowExist(flowID);
+        return getFlowByID(flowID).getStatus();
+    }
+
+    public FlowRunHistory getFlowRunHistory(String flowID) {
+        ValidateThatFlowExist(flowID);
+
+        for(FlowRunHistory flowRunHistory : flowsRunHistories) {
+            if(flowRunHistory.getFlowId().equals(flowID))
+                return flowRunHistory;
+        }
+
+        throw new RuntimeException("The requested flow history does not exist yet.");
     }
 }

@@ -1,11 +1,12 @@
 package Users;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class UserDescriptor {
     private String name;
     private HashSet<String> rolesNames;
-    private HashSet<String> permittedFlowsNames;
+    private ArrayList<String> permittedFlowsNames;
     private int numberOfExecutedFlows;
 
     public String getName() {
@@ -32,11 +33,11 @@ public class UserDescriptor {
         this.numberOfExecutedFlows = numberOfExecutedFlows;
     }
 
-    public HashSet<String> getPermittedFlowsNames() {
+    public ArrayList<String> getPermittedFlowsNames() {
         return permittedFlowsNames;
     }
 
-    public void setPermittedFlowsNames(HashSet<String> permittedFlowsNames) {
+    public void setPermittedFlowsNames(ArrayList<String> permittedFlowsNames) {
         this.permittedFlowsNames = permittedFlowsNames;
     }
 }
