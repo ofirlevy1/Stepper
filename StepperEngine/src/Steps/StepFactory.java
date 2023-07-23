@@ -30,6 +30,8 @@ public class StepFactory {
                 return new ToJsonStep();
             case "json data extractor":
                 return new JsonDataExtractorStep();
+            case "http call":
+                return new HTTPCallerStep();
         }
         return null;
     }
