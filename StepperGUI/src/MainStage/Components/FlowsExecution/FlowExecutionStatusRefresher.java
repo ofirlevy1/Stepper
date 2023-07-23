@@ -1,6 +1,6 @@
 package MainStage.Components.FlowsExecution;
 
-import Flow.FlowDescriptor;
+import Flow.Flow;
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
 import javafx.beans.property.BooleanProperty;
@@ -15,18 +15,14 @@ import java.util.function.Consumer;
 import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
 public class FlowExecutionStatusRefresher extends TimerTask {
-    private Consumer<Boolean> checkOnFlowConsumer;
-    private Consumer<String> flowExecutionStatusConsumer;
-    private Consumer<String> clearStatusConsumer;
+    private Consumer<Flow.Status> checkOnFlowConsumer;
     private BooleanProperty shouldUpdate;
     private StringProperty endMessage;
     private String flowID;
 
-    public FlowExecutionStatusRefresher(BooleanProperty autoUpdate, StringProperty endMessage, Consumer<Boolean> checkOnFlow, Consumer<String> updateFlowsStatusLabel, Consumer<String>clearStatus, String flowID) {
+    public FlowExecutionStatusRefresher(BooleanProperty autoUpdate, StringProperty endMessage, Consumer<Flow.Status> checkOnFlow, String flowID) {
         this.shouldUpdate = autoUpdate;
         this.checkOnFlowConsumer=checkOnFlow;
-        this.flowExecutionStatusConsumer = updateFlowsStatusLabel;
-        this.clearStatusConsumer=clearStatus;
         this.flowID = flowID;
         this.endMessage=endMessage;
     }
@@ -34,7 +30,6 @@ public class FlowExecutionStatusRefresher extends TimerTask {
     @Override
     public void run() {
         if (!shouldUpdate.get()) {
-            clearStatusConsumer.accept(endMessage.get());
             return;
         }
 
@@ -44,21 +39,21 @@ public class FlowExecutionStatusRefresher extends TimerTask {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
 
         String finalUrl = HttpUrl
-                .parse(Constants.IS_FLOW_RUNNING)
+                .parse(Constants.FLOW_STATUS)
                 .newBuilder()
                 .build()
                 .toString();
         HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                System.out.println("check");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonArrayOfFlowStatus = response.body().string();
-                Boolean isFlowRunning = GSON_INSTANCE.fromJson(jsonArrayOfFlowStatus, Boolean.class);
-                checkOnFlowConsumer.accept(isFlowRunning);
+                Flow.Status flowStatus = GSON_INSTANCE.fromJson(jsonArrayOfFlowStatus, Flow.Status.class);
+                checkOnFlowConsumer.accept(flowStatus);
             }
         });
 
