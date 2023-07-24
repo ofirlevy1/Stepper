@@ -29,7 +29,7 @@ public class ToJsonStep extends Step {
 
     @Override
     protected void updateStaticTimers() {
-        stepStartUpCount= startUpCounter;
+        stepStartUpCount += startUpCounter;
         stepAvgDuration=durationAvgInMs;
     }
 
