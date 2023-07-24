@@ -26,7 +26,7 @@ public class HTTPCallerStep extends Step {
     public enum Methods {GET, PUT, POST, DELETE}
 
     public HTTPCallerStep() {
-        super("HTTP Caller", false);
+        super("HTTP Call", false);
         resource = new StringType("RESOURCE", true);
         resource.setMandatory(true);
         address = new StringType("ADDRESS", true);
