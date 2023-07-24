@@ -43,7 +43,6 @@ public class Flow {
     private boolean isReadOnly;
     private HashMap<String, HashSet<DataType>> freeInputs;
     private Flow.Status status;
-    private boolean isRunning;
     private String flowRunsummery;
     private ArrayList<Long> runDurations;
     private  long runTime=0;
@@ -311,13 +310,14 @@ public class Flow {
     }
 
     public synchronized FlowRunHistory execute(){
-        isRunning = true;
+        status = Status.RUNNING;
         completedStepsCounter = 0;
         clearAllStepsLogs();
-        if(!areAllMandatoryFreeInputsSet())
+        if(!areAllMandatoryFreeInputsSet()) {
+            status = Status.FAILURE;
             throw new RuntimeException("An attempt was made to run the Flow while there are UNSET mandatory free inputs");
+        }
         Instant start=Instant.now();
-        status = Status.RUNNING;
         try {
             for (Step step : steps) {
                 step.execute();
@@ -329,7 +329,6 @@ public class Flow {
                         getStepByFinalName(mapping.getTargetStepName(), "").setInputByName(step.getOutputs(mapping.getSourceDataName()).get(0),mapping.getTargetDataName());
                 }
             }
-            isRunning = false;
             flowRunsummery="flow execution ended successfully";
             Instant finish=Instant.now();
             runTime= Duration.between(start,finish).toMillis();
@@ -346,7 +345,6 @@ public class Flow {
 
         createFlowLog();
         createFlowHistory();
-        isRunning = false;
         return flowRunHistory;
     }
 
@@ -623,7 +621,7 @@ public class Flow {
         return freeInputs.containsKey(name);
     }
 
-    public boolean isRunning() {return isRunning;}
+    public boolean isRunning() {return status == Status.RUNNING;}
 
     public String getID() {
         return ID;
