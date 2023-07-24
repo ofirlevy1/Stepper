@@ -225,7 +225,7 @@ public class FlowsExecutionController {
             else if(flowStatus.equals(Flow.Status.NOT_RUN_YET))
                 updateFlowExecutionProgression();
             else
-                updateContinuationDataFlowPane();
+                updateFlowExecutionProgression();
 
         });
 
