@@ -17,7 +17,7 @@ import java.io.IOException;
 @WebServlet(name = "FlowRunStatusServlet", urlPatterns = "/completed_steps_count")
 public class FlowNumberOfCompletedStepsServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
 

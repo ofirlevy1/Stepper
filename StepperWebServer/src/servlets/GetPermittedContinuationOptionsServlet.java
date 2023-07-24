@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @WebServlet(name = "GetPermittedContinuationOptionsServlet", urlPatterns = "/get_permitted_continuation_options")
 public class GetPermittedContinuationOptionsServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = SessionUtils.getUsername(req);
         StepperUIManager stepperUIManager = ServletUtils.getStepperUIManager(getServletContext());
         ArrayList<String> permittedContinuationOptions = null;
