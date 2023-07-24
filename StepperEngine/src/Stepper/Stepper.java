@@ -43,7 +43,10 @@ public class Stepper {
     private HashSet<Role> roles;
     private Object rolesLock;
 
-    public Stepper(String xmlString, String username) throws FileNotFoundException, JAXBException{
+    // possibleContinuationTargetsForValidation: In case this is NOT the first stepper file that is loaded,
+    // it can define continuations to flows in PREVIOUS stepper files that are already in the system.
+    // so we give those existing flows to the constructor so that it can validate the continuation data,
+    public Stepper(String xmlString, String username, HashSet<Flow> possibleContinuationTargetsForValidation) throws FileNotFoundException, JAXBException{
         if(!isUserAllowedToLoadNewStepperFile(username))
             throw new RuntimeException("Non-admin user '" + username + " has tried to load a new file into the system.");
         //validatePathPointsToXMLFile(xmlFilePath);
@@ -54,7 +57,7 @@ public class Stepper {
         flowsRunHistories = new Vector<>();
         for(STFlow stFlow : stStepper.getSTFlows().getSTFlow())
             flowsDefinitions.add(new Flow(stFlow));
-        validateContinuations();
+        validateContinuations(possibleContinuationTargetsForValidation);
         if(stStepper.getSTThreadPool() < 1)
             throw new RuntimeException("The Stepper XML file defined a thread pool of size lower than 1");
         threadPool = Executors.newFixedThreadPool(stStepper.getSTThreadPool());
@@ -68,7 +71,11 @@ public class Stepper {
     }
 
     private Flow getFlowDefinitionByName(String flowName) {
-        for(Flow flow : flowsDefinitions) {
+        return getFlowDefinitionByName(flowName, this.flowsDefinitions);
+    }
+
+    private Flow getFlowDefinitionByName(String flowName, HashSet<Flow> flowDefinitionsPool) {
+        for(Flow flow : flowDefinitionsPool) {
             if(flow.getName().equals(flowName))
                 return flow;
         }
@@ -257,12 +264,20 @@ public class Stepper {
         return (!getFlowByID(flowID).isRunning()) && (getFlowByID(flowID).getStatus() != null && getFlowByID(flowID).getStatus() != Flow.Status.NOT_RUN_YET && getFlowByID(flowID).getStatus() == Flow.Status.FAILURE);
     }
 
-    private void validateContinuations() {
+    private void validateContinuations(HashSet<Flow> possibleContinuationTargetsForValidation) {
+
+        HashSet<Flow> possibleContinuationTargets = (HashSet<Flow>) possibleContinuationTargetsForValidation.clone();
+        possibleContinuationTargets.addAll(this.flowsDefinitions);
+
         for(Flow flow : flowsDefinitions) {
             if(flow.hasContinuations()) {
                 for(String continuationTarget : flow.getContinuationTargets()) {
-                    // Making sure the target continuation flow actually exists in the XML
-                    if(!this.getFlowNames().contains(continuationTarget)) {
+
+                    // Making sure the target continuation flow actually exists in the XML or previous flows in the system.
+                    try {
+                        getFlowDefinitionByName(continuationTarget, possibleContinuationTargets);
+                    }
+                    catch (Exception e){
                         throw new RuntimeException("Flow '" + flow.getName() + "' has an undefined continuation target: '" + continuationTarget + "'");
                     }
 
@@ -272,7 +287,8 @@ public class Stepper {
                             if(!flow.hasDataType(sourceDataType)) {
                                 throw new RuntimeException("Flow '" + flow.getName() + "' defined a non existing data type as a continuation source: '" + sourceDataType + "'");
                             }
-                            if(!getFlowDefinitionByName(continuationTarget).isFreeInput(customMap.get(sourceDataType))) {
+
+                            if(!getFlowDefinitionByName(continuationTarget, possibleContinuationTargets).isFreeInput(customMap.get(sourceDataType))) {
                                 throw new RuntimeException("Flow '" + flow.getName() + "' defined a continuation target that either doesn't exists, or is not a free input: " + customMap.get(sourceDataType) + "'");
                             }
                         }
@@ -600,5 +616,9 @@ public class Stepper {
         }
 
         throw new RuntimeException("The requested flow history does not exist yet.");
+    }
+
+    public HashSet<Flow> getFlowDefinitions() {
+        return (HashSet<Flow>) flowsDefinitions.clone();
     }
 }

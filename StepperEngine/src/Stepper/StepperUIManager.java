@@ -27,33 +27,33 @@ public class StepperUIManager {
         isFlowRan=false;
     }
 
-    public synchronized void LoadStepperFromXmlFile(String xmlFilePath, String username) throws FileNotFoundException, JAXBException {
-        // First assigning it to a new Stepper object, to not override anything in case of failure.
-        Stepper newStepper = new Stepper(xmlFilePath, username);
-
-        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
-
-        if(!isLoaded) {
-            stepper = newStepper;
-            isLoaded = true;
-        }
-        else
-            stepper.addFlowDefinitionsFromANewStepper(newStepper);
-
-    }
+//    public synchronized void LoadStepperFromXmlFile(String xmlFilePath, String username) throws FileNotFoundException, JAXBException {
+//        // First assigning it to a new Stepper object, to not override anything in case of failure.
+//        Stepper newStepper = new Stepper(xmlFilePath, username);
+//
+//        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
+//
+//        if(!isLoaded) {
+//            stepper = newStepper;
+//            isLoaded = true;
+//        }
+//        else
+//            stepper.addFlowDefinitionsFromANewStepper(newStepper);
+//
+//    }
 
     public synchronized void LoadStepperFromXmlString(String xmlString, String username) throws FileNotFoundException, JAXBException {
-        // First assigning it to a new Stepper object, to not override anything in case of failure.
-        Stepper newStepper = new Stepper(xmlString, username);
-
-        // If we got here, no exceptions were thrown, thus the stepper was loaded successfully.
+        Stepper newStepper = null;
 
         if(!isLoaded) {
-            stepper = newStepper;
+            stepper = new Stepper(xmlString, username, new HashSet<Flow>());
             isLoaded = true;
         }
-        else
+        else {
+            newStepper = new Stepper(xmlString, username, stepper.getFlowDefinitions());
             stepper.addFlowDefinitionsFromANewStepper(newStepper);
+        }
+
 
     }
 
