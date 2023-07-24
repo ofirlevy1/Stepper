@@ -1,9 +1,10 @@
 package MainStage.Components.FlowsExecution;
 
-import Flow.FlowDescriptor;
+import Flow.Flow;
 import MainStage.Components.util.Constants;
 import MainStage.Components.util.HttpClientUtil;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,22 +15,21 @@ import java.util.function.Consumer;
 import static MainStage.Components.util.Constants.GSON_INSTANCE;
 
 public class FlowExecutionStatusRefresher extends TimerTask {
-    private Consumer<String> flowExecutionStatusConsumer;
-    private Consumer<String> clearStatusConsumer;
+    private Consumer<Flow.Status> checkOnFlowConsumer;
     private BooleanProperty shouldUpdate;
+    private StringProperty endMessage;
     private String flowID;
 
-    public FlowExecutionStatusRefresher(BooleanProperty autoUpdate, Consumer<String> updateFlowsList, Consumer<String> clearStatus, String flowID) {
+    public FlowExecutionStatusRefresher(BooleanProperty autoUpdate, StringProperty endMessage, Consumer<Flow.Status> checkOnFlow, String flowID) {
         this.shouldUpdate = autoUpdate;
-        this.flowExecutionStatusConsumer = updateFlowsList;
-        this.clearStatusConsumer=clearStatus;
+        this.checkOnFlowConsumer=checkOnFlow;
         this.flowID = flowID;
+        this.endMessage=endMessage;
     }
 
     @Override
     public void run() {
         if (!shouldUpdate.get()) {
-            clearStatusConsumer.accept("");
             return;
         }
 
@@ -46,14 +46,14 @@ public class FlowExecutionStatusRefresher extends TimerTask {
         HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                System.out.println("check");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonArrayOfFlowStatus = response.body().string();
-                String flowStatus = GSON_INSTANCE.fromJson(jsonArrayOfFlowStatus, String.class);
-                flowExecutionStatusConsumer.accept(flowStatus);
+                Flow.Status flowStatus = GSON_INSTANCE.fromJson(jsonArrayOfFlowStatus, Flow.Status.class);
+                checkOnFlowConsumer.accept(flowStatus);
             }
         });
 

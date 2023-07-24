@@ -1,5 +1,6 @@
 package MainStage.Components.FlowsExecution;
 
+import Flow.Flow;
 import Flow.FreeInputDescriptor;
 import MainStage.Components.FlowsExecution.SubComponents.InputGUI.InputGUIController;
 import MainStage.Components.Main.MainStepperController;
@@ -9,6 +10,8 @@ import RunHistory.FlowRunHistory;
 import RunHistory.FreeInputHistory;
 import RunHistory.OutputHistory;
 import RunHistory.StepHistory;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -57,6 +60,7 @@ public class FlowsExecutionController {
     private SimpleStringProperty selectedFlow;
     private SimpleStringProperty flowID;
     private SimpleStringProperty flowProgression;
+    private SimpleStringProperty flowExecutionEndMessage;
 
     private Timer timer;
     private TimerTask flowExecutionStatusRefresher;
@@ -64,6 +68,7 @@ public class FlowsExecutionController {
 
     @FXML
     public  void  initialize(){
+        flowExecutionEndMessage=new SimpleStringProperty("");
         autoUpdate=new SimpleBooleanProperty(true);
         allMandatoryInputsFilled=new SimpleBooleanProperty(false);
         startFlowExecutionButton.disableProperty().bind(allMandatoryInputsFilled.not());
@@ -86,7 +91,8 @@ public class FlowsExecutionController {
                .addQueryParameter("flow_name", selectedFlow.get())
                .build()
                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        RequestBody emptyBody = RequestBody.create(MediaType.parse("application/json"), "empty");
+        HttpClientUtil.runAsyncPost(finalUrl, emptyBody,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -108,8 +114,9 @@ public class FlowsExecutionController {
                     });
                 }
                 else {
-                    String flowIDString=GSON_INSTANCE.fromJson(response.body().string(),String.class);
-                    flowID.set(flowIDString);
+                    JsonObject jsonObject= JsonParser.parseString(response.body().string()).getAsJsonObject();
+                    String flowIDFromJson=jsonObject.get("flow_id").getAsString();
+                    flowID.set(flowIDFromJson);
                     Platform.runLater(()->assignInputsToFlow());
                 }
             }
@@ -172,14 +179,14 @@ public class FlowsExecutionController {
         HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                flowExecutionEndMessage.set("Something went wrong");
                 autoUpdate.set(false);
-                Platform.runLater(() -> Platform.runLater(() -> flowProgression.set("Something went wrong")));
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
+                    flowExecutionEndMessage.set("The Flow has failed!");
                     autoUpdate.set(false);
-                    Platform.runLater(() -> flowProgression.set("The Flow has failed!"));
                 }
             }
         });
@@ -194,18 +201,89 @@ public class FlowsExecutionController {
     public void startFlowExecutionStatusRefresher(){
         flowExecutionStatusRefresher=new FlowExecutionStatusRefresher(
                 autoUpdate,
-                this::checkOnFlowLabel,
-                this::clearStatus,
+                flowExecutionEndMessage,
+                this::checkOnFlow,
                 flowID.get());
         timer=new Timer();
         timer.schedule(flowExecutionStatusRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
-    private void checkOnFlowLabel(String flowStatus){
-        Platform.runLater(() -> flowProgression.set(flowStatus));
+    private void checkOnFlow(Flow.Status flowStatus){
+        Platform.runLater(()->{
+            if(flowStatus.equals(Flow.Status.FAILURE)) {
+                autoUpdate.set(false);
+                updateStatusLabel("Flow Execution Failed");
+                getLatestFlowRunHistory();
+                updateContinuationDataFlowPane();
+            }
+            else if (flowStatus.equals(Flow.Status.SUCCESS)||flowStatus.equals(Flow.Status.WARNING)) {
+                autoUpdate.set(false);
+                updateStatusLabel("Flow Execution Finished");
+                getLatestFlowRunHistory();
+                updateContinuationDataFlowPane();
+            }
+            else if(flowStatus.equals(Flow.Status.NOT_RUN_YET))
+                updateFlowExecutionProgression();
+            else
+                updateFlowExecutionProgression();
+
+        });
+
     }
-    private void clearStatus(String  str){
+
+    private void updateFlowExecutionProgression(){
+        Map<String,String> map=new HashMap<>();
+        map.put("flow_id",flowID.get());
+        String json = GSON_INSTANCE.toJson(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.COMPLETED_STEPS_COUNT)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonArrayOfFlowProgression = response.body().string();
+                String flowProgressionString = GSON_INSTANCE.fromJson(jsonArrayOfFlowProgression, String.class);
+                updateStatusLabel(flowProgressionString);
+            }
+        });
+
+    }
+    private void updateStatusLabel(String  str){
         Platform.runLater(()->flowProgression.set(str));
+    }
+    private void getLatestFlowRunHistory(){
+        Map<String,String> map=new HashMap<>();
+        map.put("flow_id",flowID.get());
+        String json = GSON_INSTANCE.toJson(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FLOW_HISTORIES)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonArrayOfFlowRunHistory = response.body().string();
+                List<FlowRunHistory> flowRunHistories = Arrays.asList(GSON_INSTANCE.fromJson(jsonArrayOfFlowRunHistory, FlowRunHistory[].class));
+                updateFlowDetailsFlowPane(flowRunHistories.get(0));
+            }
+        });
     }
 
     private void updateFlowDetailsFlowPane(FlowRunHistory flowRunHistory){
@@ -275,14 +353,18 @@ public class FlowsExecutionController {
         }
 
     private void loadFlowContinuation(String flowName){
+
+        Map<String,String> map=new HashMap<>();
+        map.put("source_flow_id",flowID.get());
+        map.put("target_flow_name",flowName);
+        String json = GSON_INSTANCE.toJson(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         String finalUrl = HttpUrl
                 .parse(Constants.CONTINUATION_MAP)
                 .newBuilder()
-                .addQueryParameter("flow_id", flowID.get())
-                .addQueryParameter("target_flow_name", flowName)
                 .build()
                 .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
             }

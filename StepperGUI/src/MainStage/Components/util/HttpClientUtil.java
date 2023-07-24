@@ -42,6 +42,18 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
+    public static void runAsyncPostButGet(String finalUrl, RequestBody body, Callback callback) {
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .method("GET",null)
+                .build();
+
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+
+        call.enqueue(callback);
+    }
+
     public static void shutdown() {
         System.out.println("Shutting down HTTP CLIENT");
         HTTP_CLIENT.dispatcher().executorService().shutdown();
