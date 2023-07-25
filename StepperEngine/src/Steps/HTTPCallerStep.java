@@ -33,7 +33,7 @@ public class HTTPCallerStep extends Step {
         address.setMandatory(true);
         protocol = new EnumeratorType("PROTOCOL", true, Protocols.class);
         protocol.setMandatory(true);
-        method = new EnumeratorType("PROTOCOL", true, Methods.class);
+        method = new EnumeratorType("METHOD", true, Methods.class);
         requestBody = new JsonType("BODY", true);
         responseStatusCode = new NumberType("CODE", false);
         responseBody = new StringType("RESPONSE_BODY", false);
