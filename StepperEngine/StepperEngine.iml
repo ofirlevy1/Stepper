@@ -7,8 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="gson-2.10.1" level="project" />
-    <orderEntry type="library" exported="" name="json-smart-2.4.8" level="project" />
-    <orderEntry type="library" exported="" name="okio-2.8.0" level="project" />
+    <orderEntry type="library" name="gson-2.10.1" level="project" />
+    <orderEntry type="library" name="json-smart-2.4.8" level="project" />
+    <orderEntry type="library" name="okio-2.8.0" level="project" />
+    <orderEntry type="library" exported="" name="okHttp" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.8.8" level="project" />
+    <orderEntry type="library" exported="" name="jsonPath" level="project" />
   </component>
 </module>

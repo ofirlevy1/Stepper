@@ -210,6 +210,8 @@ public class FlowsExecutionController {
 
     private void checkOnFlow(Flow.Status flowStatus){
         Platform.runLater(()->{
+            if(!autoUpdate.get())
+                return;
             if(flowStatus.equals(Flow.Status.FAILURE)) {
                 autoUpdate.set(false);
                 updateStatusLabel("Flow Execution Failed");
@@ -222,11 +224,8 @@ public class FlowsExecutionController {
                 getLatestFlowRunHistory();
                 updateContinuationDataFlowPane();
             }
-            else if(flowStatus.equals(Flow.Status.NOT_RUN_YET))
+            else if(flowStatus.equals(Flow.Status.RUNNING))
                 updateFlowExecutionProgression();
-            else
-                updateFlowExecutionProgression();
-
         });
 
     }
@@ -250,9 +249,9 @@ public class FlowsExecutionController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfFlowProgression = response.body().string();
-                String flowProgressionString = GSON_INSTANCE.fromJson(jsonArrayOfFlowProgression, String.class);
-                updateStatusLabel(flowProgressionString);
+                JsonObject jsonObject= JsonParser.parseString(response.body().string()).getAsJsonObject();
+                String flowProgress =jsonObject.get("completed_Steps").getAsString();
+                updateStatusLabel("Number of completed steps is "+flowProgress);
             }
         });
 
@@ -271,7 +270,7 @@ public class FlowsExecutionController {
                 .newBuilder()
                 .build()
                 .toString();
-        HttpClientUtil.runAsyncPost(finalUrl, body,new Callback() {
+        HttpClientUtil.runAsync(finalUrl,new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -281,7 +280,7 @@ public class FlowsExecutionController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonArrayOfFlowRunHistory = response.body().string();
                 List<FlowRunHistory> flowRunHistories = Arrays.asList(GSON_INSTANCE.fromJson(jsonArrayOfFlowRunHistory, FlowRunHistory[].class));
-                updateFlowDetailsFlowPane(flowRunHistories.get(0));
+                Platform.runLater(()->updateFlowDetailsFlowPane(flowRunHistories.get(flowRunHistories.size()-1)));
             }
         });
     }
@@ -347,6 +346,10 @@ public class FlowsExecutionController {
                             continuationDataFlowPane.setPrefWrapLength(continuationDataFlowPane.getPrefWrapLength() + 150);
                         }
                     });
+                }
+                else {
+                    String body=response.body().string();
+                    String body2=body;
                 }
             }
         });

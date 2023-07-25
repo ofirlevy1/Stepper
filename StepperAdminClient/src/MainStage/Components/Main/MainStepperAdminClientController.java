@@ -113,7 +113,7 @@ public class MainStepperAdminClientController {
                         statisticsController.startStatisticsRefresher();
                         rolesManagementController.startAvailableRolesRefresher();
                         usersManagementController.startAvailableUsersRefresher();
-                        //executionsHistoryController
+                        executionsHistoryController.startFlowsHistoriesRefresher();
                     });
             }
 
