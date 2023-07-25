@@ -115,7 +115,7 @@ public class CsvExporterStep extends Step {
 
     @Override
     protected void updateStaticTimers() {
-        stepStartUpCount= startUpCounter;
+        stepStartUpCount += startUpCounter;
         stepAvgDuration=durationAvgInMs;
     }
 

@@ -592,11 +592,12 @@ public class Stepper {
     }
 
     public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {
+        validateThatUserExists(username);
         UserDescriptor userDescriptor = getUserDescriptor(username);
-        ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<>();
+        ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<FlowDescriptor>();
 
-        for(String flowName : userDescriptor.getPermittedFlowsNames()) {
-            permittedFlowsDescriptors.add(getFlowDescriptor(flowName));
+        for(String permittedFlowName : userDescriptor.getPermittedFlowsNames()) {
+            permittedFlowsDescriptors.add(getFlowDescriptor(permittedFlowName));
         }
 
         return permittedFlowsDescriptors;
