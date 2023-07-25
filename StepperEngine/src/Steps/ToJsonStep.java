@@ -73,7 +73,7 @@ public class ToJsonStep extends Step {
     @Override
     public void setInputByName(DataType input, String inputName) {
         if(inputName.equals(content.getEffectiveName()))
-            content.setData((String)input.getData());
+            content.setData(input.getPresentableString());
         else
             throw new RuntimeException("An attempt was made to set a non-existing input data type '" + inputName + "'");
     }

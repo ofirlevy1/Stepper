@@ -20,31 +20,31 @@ import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
-        testLoadingNewFlows();
+        System.out.println("hello");
     }
 
 
-    public static void testLoadingNewFlows() {
-        StepperUIManager stepperUIManager = new StepperUIManager();
-        try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml", "admin");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
-            throw new RuntimeException();
-        }
-        try {
-            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2_newFlows.xml", "admin");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
-            throw new RuntimeException();
-        }
-    }
+//    public static void testLoadingNewFlows() {
+//        StepperUIManager stepperUIManager = new StepperUIManager();
+//        try {
+//            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2.xml", "admin");
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            System.out.println(e.getStackTrace());
+//            throw new RuntimeException();
+//        }
+//        try {
+//            stepperUIManager.LoadStepperFromXmlFile("C:\\users\\ofir\\ex2_newFlows.xml", "admin");
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            System.out.println(e.getStackTrace());
+//            throw new RuntimeException();
+//        }
+//    }
 
-    public static void testStatistics() {
-        //testMultiThreadAndStatistics();
-    }
+//    public static void testStatistics() {
+//        //testMultiThreadAndStatistics();
+//    }
 //
 //    public static void testMultiThreadAndStatistics() {
 //        StepperUIManager stepperUIManager = new StepperUIManager();
