@@ -210,6 +210,8 @@ public class FlowsExecutionController {
 
     private void checkOnFlow(Flow.Status flowStatus){
         Platform.runLater(()->{
+            if(!autoUpdate.get())
+                return;
             if(flowStatus.equals(Flow.Status.FAILURE)) {
                 autoUpdate.set(false);
                 updateStatusLabel("Flow Execution Failed");
@@ -222,11 +224,8 @@ public class FlowsExecutionController {
                 getLatestFlowRunHistory();
                 updateContinuationDataFlowPane();
             }
-            else if(flowStatus.equals(Flow.Status.NOT_RUN_YET))
+            else if(flowStatus.equals(Flow.Status.RUNNING))
                 updateFlowExecutionProgression();
-            else
-                updateFlowExecutionProgression();
-
         });
 
     }
@@ -250,9 +249,9 @@ public class FlowsExecutionController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonArrayOfFlowProgression = response.body().string();
-                String flowProgressionString = GSON_INSTANCE.fromJson(jsonArrayOfFlowProgression, String.class);
-                updateStatusLabel(flowProgressionString);
+                JsonObject jsonObject= JsonParser.parseString(response.body().string()).getAsJsonObject();
+                String flowProgress =jsonObject.get("completed_Steps").getAsString();
+                updateStatusLabel("Number of completed steps is "+flowProgress);
             }
         });
 
