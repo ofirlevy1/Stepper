@@ -80,9 +80,12 @@ public class ToJsonStep extends Step {
 
     @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
-        ArrayList<DataType> outputs = new ArrayList<>();
-        outputs.add(json);
-        return outputs;
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.json.getEffectiveName().equals(outputName))
+                outputsArray.add(this.json);
+        }
+        return outputsArray;
     }
 
     @Override

@@ -104,10 +104,14 @@ public class HTTPCallerStep extends Step {
 
     @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
-        ArrayList<DataType> outputs = new ArrayList<>();
-        outputs.add(responseStatusCode);
-        outputs.add(responseBody);
-        return outputs;
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.responseStatusCode.getEffectiveName().equals(outputName))
+                outputsArray.add(this.responseStatusCode);
+            if(this.responseBody.getEffectiveName().equals(outputName))
+                outputsArray.add(this.responseBody);
+        }
+        return outputsArray;
     }
 
     @Override
