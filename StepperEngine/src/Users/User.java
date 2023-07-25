@@ -41,12 +41,13 @@ public class User {
         roles.add(roleToAdd);
     }
 
-    public ArrayList<String> getAllPermittedFlowsNames(ArrayList<String> allFlows) {
+    public HashSet<String> getAllPermittedFlowsNames(ArrayList<String> allFlows) {
+        HashSet<String> permittedFlows = new HashSet<>();
 
-        if(isManager == true)
-            return (ArrayList<String>) allFlows.clone();
-
-        ArrayList<String> permittedFlows = new ArrayList<>();
+        if(isManager == true) {
+            permittedFlows.addAll(allFlows);
+            return permittedFlows;
+        }
 
         for(Role role : roles)
             permittedFlows.addAll(role.getPermittedFlowsNames());
@@ -71,7 +72,7 @@ public class User {
     }
 
     public UserDescriptor getUserDescriptor(ArrayList<String> allFlows) {
-        ArrayList<String> permittedFlowsNames = this.getAllPermittedFlowsNames(allFlows);
+        HashSet<String> permittedFlowsNames = this.getAllPermittedFlowsNames(allFlows);
         UserDescriptor userDescriptor = new UserDescriptor();
         userDescriptor.setName(this.name);
         userDescriptor.setNumberOfExecutedFlows(executedFlowsIDs.size());
