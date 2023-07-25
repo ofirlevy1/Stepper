@@ -58,7 +58,8 @@ public class HTTPCallerStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         String url = protocol.getPresentableString() + "://" + address.getPresentableString() + resource.getData();
-        Request request = new Request.Builder().url(url).method(method.getPresentableString(), requestBody.isDataSet() ? RequestBody.create(requestBody.getData().getBytes()) : null).build();
+
+        Request request = new Request.Builder().url(url).method(method.getPresentableString(), requestBody.isDataSet() && !requestBody.getData().isEmpty() ? RequestBody.create(requestBody.getData().getBytes()) : null).build();
         OkHttpClient client = new OkHttpClient();
 
         addLog("About to invoke http request: " + protocol.getPresentableString() + " | " + method.getPresentableString() + " | " + address.getPresentableString() + " | " + resource.getPresentableString());

@@ -9,6 +9,8 @@
         <element id="directory" name="lib">
           <element id="artifact" artifact-name="StepperEngine:jar" />
           <element id="library" level="project" name="gson-2.10.1" />
+          <element id="library" level="project" name="okio-2.8.0" />
+          <element id="library" level="project" name="json-smart-2.4.8" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="StepperWebServer/web/Web" />
