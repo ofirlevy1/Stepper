@@ -2,9 +2,12 @@ package MainStage.Components.ExecutionsHistory;
 
 import Flow.Flow;
 import MainStage.Components.Main.MainStepperAdminClientController;
+import MainStage.Components.util.Constants;
 import RunHistory.FlowRunHistory;
 import RunHistory.FreeInputHistory;
 import RunHistory.StepHistory;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,8 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
 
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 
 public class ExecutionsHistoryController {
 
@@ -53,8 +55,13 @@ public class ExecutionsHistoryController {
     private ObservableList<FlowRunHistory> flowRunHistoryObservableList;
     private ToggleGroup flowStatusToggleGroup;
 
+    private Timer timer;
+    private TimerTask flowsHistoriesRefresher;
+    private BooleanProperty autoUpdate;
+
     @FXML
     public void initialize(){
+        autoUpdate=new SimpleBooleanProperty(true);
         flowNameColumn.setCellValueFactory(new PropertyValueFactory<>("flowName"));
         timeStampColumn.setCellValueFactory(new PropertyValueFactory<>("timeStamp"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -131,15 +138,22 @@ public class ExecutionsHistoryController {
         this.mainStepperController = mainStepperController;
     }
 
-    public void updateExecutionsTable(){
+    public void startFlowsHistoriesRefresher(){
+        flowsHistoriesRefresher=new ExecutionsHistoryRefresher(
+                autoUpdate,
+                this::updateExecutionsTable);
+        timer=new Timer();
+        timer.schedule(flowsHistoriesRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
+    }
 
-//        if(flowRunHistoryObservableList.size()==mainStepperController.getStepperUIManager().getFlowsRunHistories().size())
-//            return;
-//        flowRunHistoryObservableList.clear();
-//        flowRunHistoryObservableList.addAll(mainStepperController.getStepperUIManager().getFlowsRunHistories());
-//        pastExecutionsTable.setItems(flowRunHistoryObservableList);
-//        filterCheckboxMarked=false;
-//        flowStatusToggleGroup.selectToggle(allRadioButton);
+    public void updateExecutionsTable(List<FlowRunHistory> flowRunHistories){
+
+        if(flowRunHistoryObservableList.size()==flowRunHistories.size())
+            return;
+        flowRunHistoryObservableList.clear();
+        flowRunHistoryObservableList.addAll(flowRunHistories);
+        pastExecutionsTable.setItems(flowRunHistoryObservableList);
+        flowStatusToggleGroup.selectToggle(allRadioButton);
     }
 
     private void updateFlowsDetails(FlowRunHistory flowRunHistory){
