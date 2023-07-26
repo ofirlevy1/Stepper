@@ -26,8 +26,6 @@ public class MainStepperAdminClientController {
     @FXML
     private Label adminNameLabel;
     @FXML
-    private TextField userNameTextField;
-    @FXML
     private Label selectedFileLabel;
     @FXML
     private Button loginButton;
@@ -151,18 +149,10 @@ public class MainStepperAdminClientController {
     }
 
     private  void startLogin(){
-        if(userNameTextField.getText().isEmpty()){
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("Error");
-            errorAlert.setContentText("User Name Is Empty");
-            errorAlert.show();
-        }
-        else{
-
             String finalUrl = HttpUrl
                     .parse(Constants.LOGIN_PAGE)
                     .newBuilder()
-                    .addQueryParameter("username", userNameTextField.getText())
+                    .addQueryParameter("username", "admin")
                     .build()
                     .toString();
 
@@ -192,16 +182,14 @@ public class MainStepperAdminClientController {
                     }
                     else {
                         Platform.runLater(() -> {
-                            userName.set(userNameTextField.getText());
+                            userName.set("admin");
                             loadFileButton.setVisible(true);
                             selectedFileLabel.setVisible(true);
                             loginButton.setVisible(false);
-                            userNameTextField.setVisible(false);
                         });
                     }
                 }
             });
-        }
     }
 
     public void restartUIElements(){

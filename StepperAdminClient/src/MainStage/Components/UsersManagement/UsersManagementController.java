@@ -255,6 +255,11 @@ public class UsersManagementController {
                         errorAlert.show();
                     });
                 }
+                else {
+                    Platform.runLater(() -> {
+                        loadUserDetails(selectedUser.get());
+                    });
+                }
             }
         });
     }

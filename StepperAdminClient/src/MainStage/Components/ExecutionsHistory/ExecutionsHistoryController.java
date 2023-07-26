@@ -36,8 +36,6 @@ public class ExecutionsHistoryController {
     @FXML
     private FlowPane executionElementsFlowPane;
     @FXML
-    private Button rerunFlowButton;
-    @FXML
     private RadioButton allRadioButton;
 
     @FXML
@@ -82,13 +80,6 @@ public class ExecutionsHistoryController {
             }
         });
 
-    }
-
-    @FXML
-    void rerunFlowButtonAction(ActionEvent event) {
-        if(currentlySelectedFlowRunHistory!=null) {
-            //  mainStepperController.rerunFlow(currentlySelectedFlowRunHistory.getFlowName(), currentlySelectedFlowRunHistory.getFreeInputsEnteredByUser());
-        }
     }
 
     void pastExecutionsFilter(String str) {
