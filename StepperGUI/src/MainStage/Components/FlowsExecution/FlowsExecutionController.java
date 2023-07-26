@@ -213,12 +213,14 @@ public class FlowsExecutionController {
             if(!autoUpdate.get())
                 return;
             if(flowStatus.equals(Flow.Status.FAILURE)) {
+                flowExecutionStatusRefresher.cancel();
                 autoUpdate.set(false);
                 updateStatusLabel("Flow Execution Failed");
                 getLatestFlowRunHistory();
                 updateContinuationDataFlowPane();
             }
             else if (flowStatus.equals(Flow.Status.SUCCESS)||flowStatus.equals(Flow.Status.WARNING)) {
+                flowExecutionStatusRefresher.cancel();
                 autoUpdate.set(false);
                 updateStatusLabel("Flow Execution Finished");
                 getLatestFlowRunHistory();
