@@ -39,6 +39,13 @@ public class LoginServlet extends HttpServlet {
                         response.setStatus(HttpServletResponse.SC_OK);
                         return;
                     }
+
+                    if(!stepperUIManager.isLoaded()) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().println("The Stepper system is not loaded yet! to start the system, an admin has to login first and load a stepper file.");
+                        return;
+                    }
+
                     if (stepperUIManager.isUserExists(usernameFromParameter)) {
                         response.setStatus(HttpServletResponse.SC_CONFLICT);
                         response.getWriter().println("Username " + usernameFromParameter + " already exists. Please enter a different username.");
