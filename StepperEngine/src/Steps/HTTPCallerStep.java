@@ -58,7 +58,8 @@ public class HTTPCallerStep extends Step {
     @Override
     protected void runStepFlow() throws Exception {
         String url = protocol.getPresentableString() + "://" + address.getPresentableString() + resource.getData();
-        Request request = new Request.Builder().url(url).method(method.getPresentableString(), requestBody.isDataSet() ? RequestBody.create(requestBody.getData().getBytes()) : null).build();
+
+        Request request = new Request.Builder().url(url).method(method.getPresentableString(), requestBody.isDataSet() && !requestBody.getData().isEmpty() ? RequestBody.create(requestBody.getData().getBytes()) : null).build();
         OkHttpClient client = new OkHttpClient();
 
         addLog("About to invoke http request: " + protocol.getPresentableString() + " | " + method.getPresentableString() + " | " + address.getPresentableString() + " | " + resource.getPresentableString());
@@ -103,10 +104,14 @@ public class HTTPCallerStep extends Step {
 
     @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
-        ArrayList<DataType> outputs = new ArrayList<>();
-        outputs.add(responseStatusCode);
-        outputs.add(responseBody);
-        return outputs;
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.responseStatusCode.getEffectiveName().equals(outputName))
+                outputsArray.add(this.responseStatusCode);
+            if(this.responseBody.getEffectiveName().equals(outputName))
+                outputsArray.add(this.responseBody);
+        }
+        return outputsArray;
     }
 
     @Override

@@ -73,16 +73,19 @@ public class ToJsonStep extends Step {
     @Override
     public void setInputByName(DataType input, String inputName) {
         if(inputName.equals(content.getEffectiveName()))
-            content.setData((String)input.getData());
+            content.setData(input.getPresentableString());
         else
             throw new RuntimeException("An attempt was made to set a non-existing input data type '" + inputName + "'");
     }
 
     @Override
     public ArrayList<DataType> getOutputs(String... outputNames) {
-        ArrayList<DataType> outputs = new ArrayList<>();
-        outputs.add(json);
-        return outputs;
+        ArrayList<DataType> outputsArray=new ArrayList<>();
+        for(String outputName: outputNames){
+            if(this.json.getEffectiveName().equals(outputName))
+                outputsArray.add(this.json);
+        }
+        return outputsArray;
     }
 
     @Override

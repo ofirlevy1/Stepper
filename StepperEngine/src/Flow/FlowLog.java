@@ -50,7 +50,7 @@ public class FlowLog {
     }
 
     public void addFormalOutputsPresentation(DataType output){
-        formalOutputsPresentation+="Formal Output name: "+output.getUserFriendlyName()+":\n"+output.getPresentableString()+"\n\n";
+        formalOutputsPresentation+="Formal Output name: "+output.getUserFriendlyName()+":\n" + (output.isDataSet() ? output.getPresentableString() : "NOT_SET") +"\n\n";
     }
 
     public String getFlowLogAsString(){
