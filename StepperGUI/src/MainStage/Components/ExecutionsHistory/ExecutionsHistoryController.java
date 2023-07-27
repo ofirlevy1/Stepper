@@ -208,4 +208,8 @@ public class ExecutionsHistoryController {
             }
         }
     }
+
+    public TimerTask getFlowsHistoriesRefresher() {
+        return flowsHistoriesRefresher;
+    }
 }
