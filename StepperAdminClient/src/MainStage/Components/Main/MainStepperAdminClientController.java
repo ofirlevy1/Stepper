@@ -181,15 +181,50 @@ public class MainStepperAdminClientController {
                         });
                     }
                     else {
-                        Platform.runLater(() -> {
-                            userName.set("admin");
-                            loadFileButton.setVisible(true);
-                            selectedFileLabel.setVisible(true);
-                            loginButton.setVisible(false);
-                        });
+                        Platform.runLater(() -> checkIfXMLLoaded());
                     }
                 }
             });
+    }
+
+    private void checkIfXMLLoaded(){
+        String finalUrl = HttpUrl
+                .parse(Constants.SYSTEM_LOADED)
+                .newBuilder()
+                .build()
+                .toString();
+
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200) {
+                    String isSystemLoaded=response.body().string().trim();
+                    Platform.runLater(() -> {
+                        if(isSystemLoaded.equals("true")) {
+                            fileLoaded.set(true);
+                            restartUIElements();
+                            rolesManagementController.updateFlows();
+                            statisticsController.startStatisticsRefresher();
+                            rolesManagementController.startAvailableRolesRefresher();
+                            usersManagementController.startAvailableUsersRefresher();
+                            executionsHistoryController.startFlowsHistoriesRefresher();
+                        }
+                        userName.set("admin");
+                        loadFileButton.setVisible(true);
+                        selectedFileLabel.setVisible(true);
+                        loginButton.setVisible(false);
+                    });
+                }
+            }
+        });
+
     }
 
     public void restartUIElements(){
