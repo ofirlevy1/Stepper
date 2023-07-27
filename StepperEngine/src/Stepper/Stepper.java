@@ -42,6 +42,7 @@ public class Stepper {
     private HashSet<User> users;
     private HashSet<Role> roles;
     private Object rolesLock;
+    private Object usersLock;
 
     // possibleContinuationTargetsForValidation: In case this is NOT the first stepper file that is loaded,
     // it can define continuations to flows in PREVIOUS stepper files that are already in the system.
@@ -64,6 +65,7 @@ public class Stepper {
         stFlows = stStepper.getSTFlows().getSTFlow();
         initiatePredefinedRolesAndUsers();
         this.rolesLock = new Object();
+        this.usersLock = new Object();
     }
 
     public FlowDescriptor getFlowDescriptor(String flowName) {
@@ -412,13 +414,14 @@ public class Stepper {
     }
 
     public HashSet<String> getAllUsersNames() {
-
-        HashSet<String> userNames = new HashSet<>();
-        for(User user : users) {
-            if(!user.getName().equals("admin"))
-                userNames.add(user.getName());
+        synchronized (usersLock) {
+            HashSet<String> userNames = new HashSet<>();
+            for(User user : users) {
+                if(!user.getName().equals("admin"))
+                    userNames.add(user.getName());
+            }
+            return userNames;
         }
-        return userNames;
     }
 
     // This is static so that it can be called even when the Stepper object is not loaded yet (the first time).
@@ -427,39 +430,49 @@ public class Stepper {
     }
 
     public boolean isUserExists(String username) {
-        for(User user : users) {
-            if(user.getName().equals(username))
-                return true;
+        synchronized (usersLock) {
+            for(User user : users) {
+                if(user.getName().equals(username))
+                    return true;
+            }
+            return false;
         }
-        return false;
     }
 
     public void addUser(String username) {
-        if(isUserExists(username))
-            throw new RuntimeException("An attempt was made to add a user that already exists in the system! ('" + username + "')");
-        users.add(new User(username));
+        synchronized (usersLock) {
+            if(isUserExists(username))
+                throw new RuntimeException("An attempt was made to add a user that already exists in the system! ('" + username + "')");
+            users.add(new User(username));
+        }
     }
 
     public UserDescriptor getUserDescriptor(String userName) {
-        validateThatUserExists(userName);
-        return getUserByName(userName).getUserDescriptor(getFlowNames());
+        synchronized (usersLock) {
+            validateThatUserExists(userName);
+            return getUserByName(userName).getUserDescriptor(getFlowNames());
+        }
     }
 
     private User getUserByName(String userName) {
-        for(User user : users) {
-            if(user.getName().equals(userName))
-                return user;
+        synchronized (usersLock) {
+            for(User user : users) {
+                if(user.getName().equals(userName))
+                    return user;
+            }
+            throw new RuntimeException("'getUserByName' was called on a user that doesn't exist - " + userName + "'");
         }
-        throw new RuntimeException("'getUserByName' was called on a user that doesn't exist - " + userName + "'");
     }
 
     public void assignRoleToUser(String username, String roleName) {
         synchronized(rolesLock) {
-            validateThatUserExists(username);
-            if(!isRoleExists(roleName))
-                throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
+            synchronized (usersLock) {
+                validateThatUserExists(username);
+                if(!isRoleExists(roleName))
+                    throw new RuntimeException("An attempt was made to assign a user to a role that doesn't exist - '" + roleName + "'");
 
-            getUserByName(username).addRole(getRoleByName(roleName));
+                getUserByName(username).addRole(getRoleByName(roleName));
+            }
         }
     }
 
@@ -482,13 +495,17 @@ public class Stepper {
     }
 
     public boolean isUserManager(String userName) {
-        validateThatUserExists(userName);
-        return getUserByName(userName).isManager();
+        synchronized (usersLock) {
+            validateThatUserExists(userName);
+            return getUserByName(userName).isManager();
+        }
     }
 
     private void validateThatUserExists(String userName) {
-        if(!isUserExists(userName))
-            throw new RuntimeException("User '" + userName + "' does not exist!");
+        synchronized (usersLock) {
+            if(!isUserExists(userName))
+                throw new RuntimeException("User '" + userName + "' does not exist!");
+        }
     }
 
     private void validateThatRoleExists(String roleName) {
@@ -517,8 +534,10 @@ public class Stepper {
     }
 
     public void setManager(String username, boolean value) {
-        validateThatUserExists(username);
-        getUserByName(username).setManager(value);
+        synchronized (usersLock) {
+            validateThatUserExists(username);
+            getUserByName(username).setManager(value);
+        }
     }
 
     public RoleDescriptor getRoleDescriptor(String roleName) {
@@ -592,15 +611,17 @@ public class Stepper {
     }
 
     public ArrayList<FlowDescriptor> getPermittedFlowsDescriptorsByUser(String username) {
-        validateThatUserExists(username);
-        UserDescriptor userDescriptor = getUserDescriptor(username);
-        ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<FlowDescriptor>();
+        synchronized (usersLock) {
+            validateThatUserExists(username);
+            UserDescriptor userDescriptor = getUserDescriptor(username);
+            ArrayList<FlowDescriptor> permittedFlowsDescriptors = new ArrayList<FlowDescriptor>();
 
-        for(String permittedFlowName : userDescriptor.getPermittedFlowsNames()) {
-            permittedFlowsDescriptors.add(getFlowDescriptor(permittedFlowName));
+            for(String permittedFlowName : userDescriptor.getPermittedFlowsNames()) {
+                permittedFlowsDescriptors.add(getFlowDescriptor(permittedFlowName));
+            }
+
+            return permittedFlowsDescriptors;
         }
-
-        return permittedFlowsDescriptors;
     }
 
     public Flow.Status getFlowStatus(String flowID) {
@@ -621,5 +642,21 @@ public class Stepper {
 
     public HashSet<Flow> getFlowDefinitions() {
         return (HashSet<Flow>) flowsDefinitions.clone();
+    }
+
+    public void removeUser(String username) {
+        synchronized (usersLock) {
+            validateThatUserExists(username);
+
+            for(User user : users) {
+                if(user.getName().equals(username))
+                {
+                    users.remove(user);
+                    return;
+                }
+            }
+
+            throw new RuntimeException("The user to delete was not found in the server's users");
+        }
     }
 }
