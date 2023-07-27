@@ -132,4 +132,12 @@ public class HTTPCallerStep extends Step {
         for(DataType dataType : getAllData())
             dataType.eraseData();
     }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
+    }
 }

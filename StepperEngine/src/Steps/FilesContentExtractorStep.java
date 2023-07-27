@@ -143,7 +143,7 @@ public class FilesContentExtractorStep extends Step {
     @Override
     protected void updateStaticTimers() {
         stepStartUpCount += startUpCounter;
-        stepAvgDuration=durationAvgInMs;
+        stepAvgDuration=stepAvgDuration+((durationAvgInMs-stepAvgDuration)/ stepStartUpCount);
     }
 
     public static int getStepStartUpCount() {

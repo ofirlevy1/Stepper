@@ -49,11 +49,11 @@ public class StatisticsController {
     @FXML
     public void initialize(){
         flowNameColumn.setCellValueFactory(new PropertyValueFactory<>("flowName"));
-        flowAverageRunTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startUpCount"));
+        flowAverageRunTimeColumn.setCellValueFactory(new PropertyValueFactory<>("AvgDuration"));
         flowExecutionCounterColumn.setCellValueFactory(new PropertyValueFactory<>("startUpCount"));
         stepNameColumn.setCellValueFactory(new PropertyValueFactory<>("stepName"));
         stepExecutionCounterColumn.setCellValueFactory(new PropertyValueFactory<>("startUpCount"));
-        stepAverageRunTimeColumn.setCellValueFactory(new PropertyValueFactory<>("avgDuration"));
+        stepAverageRunTimeColumn.setCellValueFactory(new PropertyValueFactory<>("AvgDuration"));
         autoUpdate=new SimpleBooleanProperty();
         flowStatisticsObservableList= FXCollections.observableArrayList();
         stepStatisticsObservableList= FXCollections.observableArrayList();

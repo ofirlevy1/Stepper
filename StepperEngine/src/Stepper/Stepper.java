@@ -147,6 +147,13 @@ public class Stepper {
         stepStatistics.add(new StepStatistics(FilesRenamerStep.getStepStartUpCount(), FilesRenamerStep.getStepAvgDuration(), new FilesRenamerStep().getName()));
         stepStatistics.add(new StepStatistics(PropertiesExporterStep.getStepStartUpCount(), PropertiesExporterStep.getStepAvgDuration(), new PropertiesExporterStep().getName()));
         stepStatistics.add(new StepStatistics(SpendSomeTimeStep.getStepStartUpCount(), SpendSomeTimeStep.getStepAvgDuration(), new SpendSomeTimeStep().getName()));
+
+        stepStatistics.add(new StepStatistics(HTTPCallerStep.getStepStartUpCount(), HTTPCallerStep.getStepAvgDuration(), new HTTPCallerStep().getName()));
+        stepStatistics.add(new StepStatistics(JsonDataExtractorStep.getStepStartUpCount(), JsonDataExtractorStep.getStepAvgDuration(), new JsonDataExtractorStep().getName()));
+        stepStatistics.add(new StepStatistics(ToJsonStep.getStepStartUpCount(), ToJsonStep.getStepAvgDuration(), new ToJsonStep().getName()));
+        stepStatistics.add(new StepStatistics(CommandLineStep.getStepStartUpCount(), CommandLineStep.getStepAvgDuration(), new CommandLineStep().getName()));
+        stepStatistics.add(new StepStatistics(ZipperStep.getStepStartUpCount(), ZipperStep.getStepAvgDuration(), new ZipperStep().getName()));
+
         return  stepStatistics;
     }
 

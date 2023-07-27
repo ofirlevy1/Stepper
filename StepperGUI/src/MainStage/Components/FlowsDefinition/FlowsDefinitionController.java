@@ -35,6 +35,8 @@ public class FlowsDefinitionController {
     private MainStepperController mainStepperController;
     private SimpleStringProperty currentSelectedFlow;
 
+    List<FlowDescriptor> currentFlowDescriptors;
+
     private Timer timer;
     private TimerTask flowsDefinitionRefresher;
     private BooleanProperty autoUpdate;
@@ -48,6 +50,7 @@ public class FlowsDefinitionController {
         flowsButtonsMap=new HashMap<>();
         flowsDefinitionStepToolTipLabelControllerMap =new HashMap<>();
         currentSelectedFlow=new SimpleStringProperty("");
+        currentFlowDescriptors = new ArrayList<>();
     }
 
     @FXML
@@ -60,12 +63,14 @@ public class FlowsDefinitionController {
         this.mainStepperController=mainStepperController;
     }
 
-    private void updateFlowsDefinitionList(List<FlowDescriptor> flowDescriptors){
+    private void updateFlowsDefinitionList(List<FlowDescriptor> newFlowDescriptors){
         Platform.runLater(()->{
-            if(availableFlowsFlowPane.getChildren().size()!= flowDescriptors.size()){
+
+            if(!isFlowDescriptorsListRepresentSameFlows(currentFlowDescriptors, newFlowDescriptors))
+            {
                 availableFlowsFlowPane.getChildren().clear();
                 availableFlowsFlowPane.setPrefWrapLength(200);
-                for(FlowDescriptor flowDescriptor:flowDescriptors){
+                for(FlowDescriptor flowDescriptor:newFlowDescriptors){
                     try {
                         FXMLLoader loader=new FXMLLoader();
                         loader.setLocation(getClass().getResource("/MainStage/Components/FlowsDefinition/SubComponents/FlowDefinitionButton.fxml"));
@@ -84,9 +89,29 @@ public class FlowsDefinitionController {
                     }
                 }
             }
-
+            currentFlowDescriptors = newFlowDescriptors;
         });
     }
+
+
+    public boolean isFlowDescriptorsListRepresentSameFlows(List<FlowDescriptor> listA, List<FlowDescriptor> listB) {
+        ArrayList<String> listANames = new ArrayList<>();
+
+        if(listA.size() != listB.size())
+            return false;
+
+        for(FlowDescriptor flowDescriptor : listA) {
+            listANames.add(flowDescriptor.getFlowName());
+        }
+
+        for(FlowDescriptor flowDescriptor : listB) {
+            if(listANames.contains(flowDescriptor.getFlowName()))
+                listANames.remove(flowDescriptor.getFlowName());
+        }
+
+        return listANames.isEmpty();
+    }
+
 
     public void startAvailableFlowsRefresher(){
         flowsDefinitionRefresher=new FlowsDefinitionRefresher(

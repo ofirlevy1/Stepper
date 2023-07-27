@@ -30,7 +30,7 @@ public class ToJsonStep extends Step {
     @Override
     protected void updateStaticTimers() {
         stepStartUpCount += startUpCounter;
-        stepAvgDuration=durationAvgInMs;
+        //stepAvgDuration=stepAvgDuration+((durationAvgInMs-stepAvgDuration)/ stepStartUpCount);
     }
 
     @Override
@@ -100,5 +100,13 @@ public class ToJsonStep extends Step {
     public void clearDataMembers() {
         content.eraseData();
         json.eraseData();
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }

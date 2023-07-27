@@ -162,7 +162,7 @@ public class ZipperStep extends Step{
     @Override
     protected void updateStaticTimers() {
         stepStartUpCount += startUpCounter;
-        stepAvgDuration=durationAvgInMs;
+        stepAvgDuration=stepAvgDuration+((durationAvgInMs-stepAvgDuration)/ stepStartUpCount);
     }
 
     public class ZipException extends Exception{

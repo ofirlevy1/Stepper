@@ -34,7 +34,7 @@ public class JsonDataExtractorStep extends Step {
     @Override
     protected void updateStaticTimers() {
         stepStartUpCount += startUpCounter;
-        stepAvgDuration=durationAvgInMs;
+        stepAvgDuration=stepAvgDuration+((durationAvgInMs-stepAvgDuration)/ stepStartUpCount);
     }
 
     @Override
@@ -117,5 +117,13 @@ public class JsonDataExtractorStep extends Step {
         jsonPath.eraseData();
         json.eraseData();
         value.eraseData();
+    }
+
+    public static int getStepStartUpCount() {
+        return stepStartUpCount;
+    }
+
+    public static double getStepAvgDuration() {
+        return stepAvgDuration;
     }
 }
