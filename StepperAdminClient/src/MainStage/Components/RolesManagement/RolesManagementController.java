@@ -49,6 +49,7 @@ public class RolesManagementController {
     private List<CheckBox> flowsCreationCheckbox;
     private List<CheckBox> roleUpdateCheckbox;
     private ToggleGroup roleDeletionToggleGroup;
+    private List<String> rolesNamesList;
 
 
     private MainStepperAdminClientController mainStepperAdminClientController;
@@ -67,6 +68,7 @@ public class RolesManagementController {
         this.roleNames.add("Read Only Flows");
         this.roleNames.add("All Flows");
         this.roleDeletionToggleGroup=new ToggleGroup();
+        this.rolesNamesList=new ArrayList<>();
     }
 
     public RolesManagementController(){
@@ -75,11 +77,19 @@ public class RolesManagementController {
 
     @FXML
     void createRoleButtonAction(ActionEvent event) {
-        if(roleCreationDescriptionTextField.getText().isEmpty()&&roleCreationNameTextField.getText().isEmpty()){
+        if(roleCreationDescriptionTextField.getText().isEmpty()||roleCreationNameTextField.getText().isEmpty()){
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Error");
             errorAlert.setContentText("Text Fields Are Not Filled");
             errorAlert.show();
+            return;
+        }
+        if(rolesNamesList.contains(roleCreationNameTextField.getText())){
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Error");
+            errorAlert.setContentText("Role "+roleCreationNameTextField.getText()+" already exists");
+            errorAlert.show();
+            return;
         }
 
         String finalUrl = HttpUrl
@@ -352,6 +362,8 @@ public class RolesManagementController {
 
     private void updateRolesList(List<String> rolesNames){
         Platform.runLater(()->{
+            rolesNamesList.clear();
+            rolesNamesList.addAll(rolesNames);
             if(availableRolesFlowPane.getChildren().size()!=rolesNames.size()){
                 availableRolesFlowPane.getChildren().clear();
                 availableRolesFlowPane.setPrefWrapLength(200);
