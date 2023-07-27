@@ -19,6 +19,7 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
+    public final static String SYSTEM_LOADED = FULL_SERVER_PATH + "/is_system_loaded";
     public final static String FLOW_STATISTICS = FULL_SERVER_PATH + "/flows_statistics";
     public final static String STEP_STATISTICS=FULL_SERVER_PATH+"/steps_statistics";
     public final static String GET_ROLES = FULL_SERVER_PATH + "/roles";
