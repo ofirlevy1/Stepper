@@ -60,6 +60,7 @@
                         </Label>
                         <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginButtonAction" text="Login" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <TextField fx:id="userNameTextField" promptText="Enter Username Here" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutButtonAction" text="Logout" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </top>

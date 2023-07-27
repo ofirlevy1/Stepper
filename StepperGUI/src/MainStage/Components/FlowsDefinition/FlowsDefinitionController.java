@@ -96,6 +96,10 @@ public class FlowsDefinitionController {
         timer.schedule(flowsDefinitionRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
+    public TimerTask getFlowsDefinitionRefresher(){
+        return flowsDefinitionRefresher;
+    }
+
 //    public void loadFlowsButtons(){
 //        flowsButtonsMap.clear();
 //        availableFlowsFlowPane.getChildren().clear();

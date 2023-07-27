@@ -54,6 +54,8 @@ public class MainStepperController {
     private Label isManagerNameLabel;
     @FXML
     private Label rolesNameLabel;
+    @FXML
+    private Button logoutButton;
 
     private Stage primaryStage;
     private Timer timer;
@@ -74,6 +76,7 @@ public class MainStepperController {
         isManagerNameLabel.setVisible(false);
         rolesNameLabel.setVisible(false);
         userNameNameLabel.setVisible(false);
+        logoutButton.setVisible(false);
     }
 
     public void setPrimaryStage(Stage primaryStage){
@@ -133,6 +136,7 @@ public class MainStepperController {
                             isManagerNameLabel.setVisible(true);
                             rolesNameLabel.setVisible(true);
                             userNameNameLabel.setVisible(true);
+                            logoutButton.setVisible(true);
                             loginButton.setVisible(false);
                             userNameTextField.setVisible(false);
                             selectionTabPane.setDisable(false);
@@ -144,6 +148,48 @@ public class MainStepperController {
         }
 
     }
+    @FXML
+    private void logoutButtonAction(ActionEvent event){
+        String finalUrl = HttpUrl
+                .parse(Constants.LOGOUT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                HttpClientUtil.removeCookiesOf(Constants.BASE_DOMAIN);
+                loadLogin();
+            }
+        });
+    }
+
+    private void loadLogin(){
+        this.selectionTabPane.setDisable(true);
+        isManagerNameLabel.setVisible(false);
+        rolesNameLabel.setVisible(false);
+        userNameNameLabel.setVisible(false);
+        logoutButton.setVisible(false);
+        loginButton.setVisible(true);
+        userNameTextField.setVisible(true);
+        userNameTextField.setText("");
+        if(flowsDefinitionController.getFlowsDefinitionRefresher()!=null)
+            flowsDefinitionController.getFlowsDefinitionRefresher().cancel();
+        if(executionsHistoryController.getFlowsHistoriesRefresher()!=null)
+            executionsHistoryController.getFlowsHistoriesRefresher().cancel();
+        if(flowsExecutionController.getFlowExecutionStatusRefresher()!=null)
+            flowsExecutionController.getFlowExecutionStatusRefresher().cancel();
+        if(rolesNamesRefresher!=null)
+            rolesNamesRefresher.cancel();
+    }
+
+
+
 
     private void startRefreshers(){
         startUserRolesPresentationRefresherRefresher();

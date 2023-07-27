@@ -123,6 +123,10 @@ public class FlowsExecutionController {
         });
     }
 
+    public TimerTask getFlowExecutionStatusRefresher(){
+        return flowExecutionStatusRefresher;
+    }
+
     private void assignInputsToFlow(){
         Map<String, Object> httpBody = new HashMap<>();
 
