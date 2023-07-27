@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+import java.io.File;
+
 public class InputGuiFileLoaderController extends InputGUIController{
 
     @FXML
@@ -28,16 +30,17 @@ public class InputGuiFileLoaderController extends InputGUIController{
         if(inputNameLabel.getText().contains("FOLDER")) {
             DirectoryChooser folderChooser = new DirectoryChooser();
             folderChooser.setTitle("Select Folder");
-            String selectedFolder = folderChooser.showDialog(flowsExecutionController.getPrimaryStage()).getAbsolutePath();
-            setInput(selectedFolder);
-
+            File selectedFolder = folderChooser.showDialog(flowsExecutionController.getPrimaryStage());
+            if(selectedFolder!=null)
+                setInput(selectedFolder.getAbsolutePath());
         }
         else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select File");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(" files/folders", "*.*"));
-            String path = fileChooser.showOpenDialog(flowsExecutionController.getPrimaryStage()).getAbsolutePath();
-            setInput(path);
+            File path = fileChooser.showOpenDialog(flowsExecutionController.getPrimaryStage());
+            if(path!=null)
+                setInput(path.getAbsolutePath());
         }
     }
 

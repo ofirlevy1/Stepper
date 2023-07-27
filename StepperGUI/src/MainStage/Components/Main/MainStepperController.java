@@ -181,7 +181,7 @@ public class MainStepperController {
 
     public void switchTabs(Tabs tab,String flowName){
         selectionTabPane.getSelectionModel().select(tab.ordinal());
-        flowsExecutionController.loadFlowsExecutionInputsHttpCall(flowName);
+        flowsExecutionController.loadFlowsExecutionInputsHttpCall(flowName, null);
         flowsExecutionController.loadFlowsExecutionFlowDetails(flowName);
     }
 

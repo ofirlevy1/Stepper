@@ -394,7 +394,7 @@ public class FlowsExecutionController {
 //        }
     }
 
-    public void loadFlowsExecutionInputsHttpCall(String flowName){
+    public void loadFlowsExecutionInputsHttpCall(String flowName, HashMap<String, String> freeInputsMap){
         setUpFlowExecutionGui(flowName);
         if(flowName.isEmpty())
             return;
@@ -415,13 +415,13 @@ public class FlowsExecutionController {
                 if (response.code() == 200) {
                     String freeInputDescriptorsJson=response.body().string();
                     List<FreeInputDescriptor> freeInputDescriptors=Arrays.asList(GSON_INSTANCE.fromJson(freeInputDescriptorsJson,FreeInputDescriptor[].class));
-                    Platform.runLater(()-> loadFlowsExecutionInputs(freeInputDescriptors));
+                    Platform.runLater(()-> loadFlowsExecutionInputs(freeInputDescriptors,freeInputsMap));
                 }
             }
         });
     }
 
-    private void loadFlowsExecutionInputs(List<FreeInputDescriptor> freeInputDescriptors){
+    private void loadFlowsExecutionInputs(List<FreeInputDescriptor> freeInputDescriptors, HashMap<String, String> freeInputsMap){
         for(FreeInputDescriptor freeInputDescriptor:freeInputDescriptors){
             try {
                 FXMLLoader loader = new FXMLLoader();
@@ -449,6 +449,11 @@ public class FlowsExecutionController {
                 e.printStackTrace();
             }
         }
+        if(freeInputsMap==null)
+            return;
+        for(String freeInput:freeInputsMap.keySet())
+            inputGUIControllers.get(freeInput).setInput(freeInputsMap.get(freeInput));
+
     }
 
     private void setUpFlowExecutionGui(String flowName){
@@ -491,10 +496,6 @@ public class FlowsExecutionController {
     }
 
     public void loadFlowsExecutionInputsRerun(String flowName, HashMap<String, String> freeInputsMap) {
-        loadFlowsExecutionInputsHttpCall(flowName);
-        for(String freeInput:freeInputsMap.keySet()){
-            inputGUIControllers.get(freeInput).setInput(freeInputsMap.get(freeInput));
-        }
-
+        loadFlowsExecutionInputsHttpCall(flowName, freeInputsMap);
     }
 }
