@@ -91,7 +91,8 @@ public class MainStepperAdminClientController {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 errorMessage="something went wrong";
                 Platform.runLater(()->{
-                    fileLoaded.set(false);
+                    if(!fileLoaded.get())
+                        fileLoaded.set(false);
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                     errorAlert.setHeaderText("File Invalid");
                     errorAlert.setContentText(errorMessage);
@@ -118,7 +119,8 @@ public class MainStepperAdminClientController {
                 else {
                     errorMessage="Error"+response.body().string();
                     Platform.runLater(()->{
-                        fileLoaded.set(false);
+                        if(!fileLoaded.get())
+                            fileLoaded.set(false);
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                         errorAlert.setHeaderText("Something Went Wrong");
                         errorAlert.setContentText(errorMessage);
